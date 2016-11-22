@@ -34,5 +34,5 @@
 *.bmp
 
 #Folders
-sequences/*
+vision/sequences/*
 build/*
