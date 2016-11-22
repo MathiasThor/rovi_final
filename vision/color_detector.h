@@ -8,9 +8,9 @@ using namespace std;
 using namespace cv;
 
 // Decleration
-vector<Mat> color_detector();
-vector<Mat> color_segmentation(vector<Mat> &input, int type);
-vector<vector<vector<Point> > > find_circle_contours(vector<Mat> &input, int perimeter_thresh, int circle_thresh);
-vector<vector<Point> > find_centers(vector<vector<vector<Point> > > &input_contours);
+void color_detector(Mat &input_image, vector<Point> &marker_points);
+Mat color_segmentation(Mat &input, int type);
+vector<vector<Point> > find_circle_contours(Mat &input, int perimeter_thresh, int circle_thresh);
+vector<Point> find_centers(vector<vector<Point> > &input_contours);
 
 #endif

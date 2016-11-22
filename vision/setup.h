@@ -22,11 +22,13 @@ using namespace std;
 
 #define COLOR_INPUT             1
 #define COLOR_INPUT_HARD        2
-#define LINE_INPUT              3
-#define LINE_INPUT_HARD         4
-#define THICKLINE_INPUT         5
-#define THICKLINE_INPUT_HARD    6
-#define TEST                    7
+#define CORNY_INPUT             3
+#define CORNY_INPUT_HARD        4
+#define LINE_INPUT              5
+#define LINE_INPUT_HARD         6
+#define THICKLINE_INPUT         7
+#define THICKLINE_INPUT_HARD    8
+#define TEST                    9
 
 #define PI                  3.14159265359
 

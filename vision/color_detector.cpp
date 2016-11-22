@@ -6,40 +6,47 @@
 
 // *** Color segmentation ***
 // Example on syntax for function
-vector<Mat> color_detector()
+void color_detector(Mat &input_image, vector<Point> &marker_points)
 {
-  //_________ LOAD DATA __________
-  vector<Mat> input_sequence;
-  String color_path("./sequences/marker_color_hard/*.png");
-  load_data(input_sequence, color_path, HSV);
+    // Segment the blue and red color in the images
+    Mat blue_output  = color_segmentation(input_image, BLUE);
+    Mat red_output   = color_segmentation(input_image, RED);
 
-  // Segment the blue color in the images
-  vector<Mat> blue_output = color_segmentation(input_sequence, BLUE);
+    // Find contours that belong to circles
+    vector<vector<Point> > blue_circles = find_circle_contours(blue_output, 100, 0.7);
+    vector<vector<Point> > red_circles  = find_circle_contours(red_output, 100, 0.7);
 
-  // Find contours that belong to circles
-  vector<vector<vector<Point> > > circles = find_circle_contours(blue_output, 100, 0.7);
+    // Find the center of the contours
+    vector<Point> blue_centers = find_centers(blue_circles);
+    vector<Point> red_centers  = find_centers(red_circles);
 
-  // Find the center of the contours
-  vector<vector<Point> > centers = find_centers(circles);
+    float u_center = 0;
+    float v_center = 0;
 
-  // Set the output sequence and draw the centers on the images.
-  for(int i = 0; i < input_sequence.size();i++)
-  {
-    for(int j = 0; j < centers[i].size(); j++)
-    {
-        circle(input_sequence[i], centers[i][j], 5, Scalar(255, 255, 255));
+    for(int i = 0; i < blue_centers.size(); i++){
+      u_center += blue_centers[i].x;
+      v_center += blue_centers[i].y;
+      marker_points.push_back(blue_centers[i]);
     }
-  }
 
-  return input_sequence;
+    for(int i = 0; i < red_centers.size(); i++){
+      u_center += red_centers[i].x;
+      v_center += red_centers[i].y;
+      marker_points.push_back(red_centers[i]);
+    }
+
+    u_center = u_center/(blue_centers.size() + red_centers.size());
+    v_center = v_center/(blue_centers.size() + red_centers.size());
+
+    marker_points.push_back(Point(floor(u_center), floor(v_center)));
 
 }
 
 // *** Color segmentation ***
 // Example on syntax for function
-vector<Mat> color_segmentation(vector<Mat> &input, int type)
+Mat color_segmentation(Mat &input, int type)
 {
-  vector<Mat> output;
+  Mat output;
 
   int Sat_lower = 30;
   int Sat_upper = 220;
@@ -53,48 +60,17 @@ vector<Mat> color_segmentation(vector<Mat> &input, int type)
     Hue_upper = 15;
     Sat_lower = 150;
 
-    for(int i = 0; i < input.size(); i++)
-    {
-       Mat lower_temp;
-       Mat upper_temp;
-       output.push_back(input[i]);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output[i]);
-    }
+    inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
   else if(type == BLUE){
     Hue_lower = 110;
     Hue_upper = 120;
 
-    for(int i = 0; i < input.size(); i++)
-    {
-       output.push_back(input[i]);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output[i]);
-    }
-  }
-  else if(type == B_W){
-    int Val_lower_1 = 0;
-    int Val_upper_1 = 10;
-    int Val_lower_2 = 245;
-    int Val_upper_2 = 255;
-    int Sat_lower1 = 0;
-    int Sat_upper1 = 255;
-
-    for(int i = 0; i < input.size(); i++)
-    {
-       Mat lower_temp;
-       Mat upper_temp;
-       output.push_back(input[i]);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower_1), Scalar(Hue_upper, Sat_upper, Val_upper_1), lower_temp);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower_2), Scalar(Hue_upper, Sat_upper, Val_upper_2), upper_temp);
-       addWeighted( lower_temp, 1, upper_temp, 1, 0.0, output[i]);
-    }
+    inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
   else{
-    for(int i = 0; i < input.size(); i++)
-    {
-       output.push_back(input[i]);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output[i]);
-    }
+    cout << "Error, no type chosen" << endl;
+    return input;
   }
 
   return output;
@@ -102,56 +78,46 @@ vector<Mat> color_segmentation(vector<Mat> &input, int type)
 
 // *** Find Circle Contours ***
 // Example on syntax for function
-vector<vector<vector<Point> > > find_circle_contours(vector<Mat> &input, int perimeter_thresh, int circle_thresh)
+vector<vector<Point> > find_circle_contours(Mat &input, int perimeter_thresh, int circle_thresh)
 {
-  vector<vector<vector<Point> > > result_contours;
+  vector<vector<Point> > contours;
+  vector<vector<Point> > circle_contours;
+  vector<Vec4i> hierarchy;
 
-  for(int i = 0; i < input.size(); i++)
+  /// Find contours
+  findContours( input, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+
+  /// Extract correct contours
+  for( int j = 0; j < contours.size(); j++ )
   {
-    vector<vector<Point> > contours;
-    vector<vector<Point> > circle_contours;
-    vector<Vec4i> hierarchy;
+    // Calculate parameters
+    double area             = abs(contourArea(contours[j], true));
+    double perimeter        = arcLength(contours[j], 1);
+    double circle_constant  = (4 * PI * area) / (perimeter*perimeter);
 
-    /// Find contours
-    findContours( input[i], contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
-
-    /// Extract correct contours
-    for( int j = 0; j < contours.size(); j++ )
+    if(perimeter > 100 && circle_constant > 0.7)
     {
-      // Calculate parameters
-      double area             = abs(contourArea(contours[j], true));
-      double perimeter        = arcLength(contours[j], 1);
-      double circle_constant  = (4 * PI * area) / (perimeter*perimeter);
-
-      if(perimeter > 100 && circle_constant > 0.7)
-      {
-        circle_contours.push_back(contours[j]);
-      }
+      circle_contours.push_back(contours[j]);
     }
-
-    result_contours.push_back(circle_contours);
   }
 
-  return result_contours;
+  return circle_contours;
 
 }
 
 // *** Find Centers ***
 // Example on syntax for function
-vector<vector<Point> > find_centers(vector<vector<vector<Point> > > &input_contours)
+vector<Point> find_centers(vector<vector<Point> > &input_contours)
 {
-  vector<vector<Point> > circle_centers(input_contours.size());
+  vector<Point> circle_centers;
 
-  for(int i = 0; i < input_contours.size(); i++) // For every frame
+  for(int i = 0; i < input_contours.size(); i++) // For every contour
   {
-    for(int j = 0; j < input_contours[i].size(); j++) // For every contour in frame
-    {
-      Moments circle_moments = moments(input_contours[i][j], false);
-      int center_u = floor(circle_moments.m10/circle_moments.m00);
-      int center_v = floor(circle_moments.m01/circle_moments.m00);
+    Moments circle_moments = moments(input_contours[i], false);
+    int center_u = floor(circle_moments.m10/circle_moments.m00);
+    int center_v = floor(circle_moments.m01/circle_moments.m00);
 
-      circle_centers[i].push_back(Point(center_u, center_v));
-    }
+    circle_centers.push_back(Point(center_u, center_v));
   }
 
   return circle_centers;
