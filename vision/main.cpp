@@ -94,7 +94,7 @@ int main( int argc, char** argv)
     case COLOR_INPUT:
         {
           //_________ LOAD DATA __________
-          String color_path("../sequences/marker_color/*.png");
+          String color_path("./sequences/marker_color/*.png");
           load_data(input_sequence, color_path, HSV);
 
           // Segment the blue color in the images
@@ -121,7 +121,7 @@ int main( int argc, char** argv)
     case COLOR_INPUT_HARD:
         {
           // LOAD DATA
-          String color_path_hard("../sequences/marker_color_hard/*.png");
+          String color_path_hard("./sequences/marker_color_hard/*.png");
           load_data(input_sequence, color_path_hard, HSV);
 
           // Segment the blue and red color in the images
@@ -181,7 +181,7 @@ int main( int argc, char** argv)
     case LINE_INPUT:
         {
         // LOAD DATA
-        String line_path("../sequences/marker_thinline/*.png");
+        String line_path("./sequences/marker_thinline/*.png");
         load_data(input_sequence, line_path, GRAY);
 
         vector<Mat> canny_sequence;
@@ -252,7 +252,7 @@ int main( int argc, char** argv)
     case LINE_INPUT_HARD:
         {
         // LOAD DATA
-        String line_path_hard("../sequences/marker_thinline/*.png");
+        String line_path_hard("./sequences/marker_thinline/*.png");
         load_data(input_sequence, line_path_hard, GRAY);
 
         output_sequence = input_sequence;
@@ -261,7 +261,7 @@ int main( int argc, char** argv)
     case THICKLINE_INPUT:
         {
         // LOAD DATA
-        String thickline_path("../sequences/marker_thickline/*.png");
+        String thickline_path("./sequences/marker_thickline/*.png");
         load_data(input_sequence, thickline_path, HSV);
 
         vector<Mat> canny_sequence;
@@ -293,7 +293,7 @@ int main( int argc, char** argv)
     case THICKLINE_INPUT_HARD:
         {
         // LOAD DATA
-        String corny_path_hard("../sequences/marker_thickline/*.png");
+        String corny_path_hard("./sequences/marker_thickline/*.png");
         load_data(input_sequence, corny_path_hard, HSV);
 
         vector<Mat> Black_white = color_segmentation(input_sequence, B_W);
@@ -307,7 +307,7 @@ int main( int argc, char** argv)
 
         Mat image;
         Mat dst;
-        image = imread("../sequences/marker_thickline/marker_thickline_01.png", 1);
+        image = imread("./sequences/marker_thickline/marker_thickline_01.png", 1);
 
         cvtColor(image, dst, CV_BGR2HSV);
         inRange(dst, Scalar(0, 0, 0), Scalar(255, 255, 30), dst);
