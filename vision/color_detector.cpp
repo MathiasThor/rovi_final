@@ -2,6 +2,39 @@
 // These functions are used for detection of color marker
 //______________________________________________________________________________
 
+#include "color_detector.h"
+
+// *** Color segmentation ***
+// Example on syntax for function
+vector<Mat> color_detector()
+{
+  //_________ LOAD DATA __________
+  vector<Mat> input_sequence;
+  String color_path("./sequences/marker_color_hard/*.png");
+  load_data(input_sequence, color_path, HSV);
+
+  // Segment the blue color in the images
+  vector<Mat> blue_output = color_segmentation(input_sequence, BLUE);
+
+  // Find contours that belong to circles
+  vector<vector<vector<Point> > > circles = find_circle_contours(blue_output, 100, 0.7);
+
+  // Find the center of the contours
+  vector<vector<Point> > centers = find_centers(circles);
+
+  // Set the output sequence and draw the centers on the images.
+  for(int i = 0; i < input_sequence.size();i++)
+  {
+    for(int j = 0; j < centers[i].size(); j++)
+    {
+        circle(input_sequence[i], centers[i][j], 5, Scalar(255, 255, 255));
+    }
+  }
+
+  return input_sequence;
+
+}
+
 // *** Color segmentation ***
 // Example on syntax for function
 vector<Mat> color_segmentation(vector<Mat> &input, int type)

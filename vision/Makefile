@@ -8,7 +8,9 @@ INCPATH=
 
 LDFLAGS+=`pkg-config --libs opencv` #Linker options
 
-SOURCES= 	main.cpp
+SOURCES= 	main.cpp 	\
+					general_functions.cpp  \
+					color_detector.cpp
 
 OBJECTS=$(SOURCES:.cpp=.o)  #Object files
 

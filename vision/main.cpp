@@ -7,63 +7,19 @@
 //______________________________________________________________________________
 
 //____________________ INCLUDE FILES ____________________
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <iostream>
-#include "stdio.h"
-
-//____________________ NAME SPACES ____________________
-using namespace cv;
-using namespace std;
-
-//_____________________ DEFINES _______________________
-#define HSV         3
-#define GRAY        2
-
-#define RED         1
-#define BLUE        2
-#define B_W         3
-
-#define COLOR_INPUT             1
-#define COLOR_INPUT_HARD        2
-#define LINE_INPUT              3
-#define LINE_INPUT_HARD         4
-#define THICKLINE_INPUT         5
-#define THICKLINE_INPUT_HARD    6
-#define TEST                    7
-
-#define PI                  3.14159265359
+#include "setup.h"
+#include "color_detector.h"
 
 // _____________ GLOBAL VARIABLES ____________________
-Mat src, src_threshold;
-Mat dst, output_threshold;
-
-int edgeThresh = 1;
-int lowThreshold;
-int const max_lowThreshold = 255;
-int highThreshold;
-int const max_highThreshold = 255;
-int ratio = 3;
-int kernel_size;
-int const max_kernel_size = 21;
-int low_hueThreshold;
-int high_hueThreshold;
-int low_satThreshold;
-int high_satThreshold;
-int low_valThreshold;
-int high_valThreshold;
-int const max_colorThreshold = 255;
-
 char* window_name = "Output Sequence";
 
 //______________ FUNCTION DECLARATIONS ________________
 // See explanations of functions below the function, further down in the code.
-void load_data(vector<Mat> &input, String &path, int type = 1);
+//void load_data(vector<Mat> &input, String &path, int type = 1);
 bool intersection(Point o1, Point p1, Point o2, Point p2, Point &r);
-vector<Mat> color_segmentation(vector<Mat> &input, int type);
-vector<vector<vector<Point> > > find_circle_contours(vector<Mat> &input, int perimeter_thresh, int circle_thresh);
-vector<vector<Point> > find_centers(vector<vector<vector<Point> > > &input_contours);
+//vector<Mat> color_segmentation(vector<Mat> &input, int type);
+//vector<vector<vector<Point> > > find_circle_contours(vector<Mat> &input, int perimeter_thresh, int circle_thresh);
+//vector<vector<Point> > find_centers(vector<vector<vector<Point> > > &input_contours);
 void CannyThreshold(int, void*);
 void ColorThreshold(int, void*);
 
@@ -93,29 +49,8 @@ int main( int argc, char** argv)
   switch(sequence_number){
     case COLOR_INPUT:
         {
-          //_________ LOAD DATA __________
-          String color_path("./sequences/marker_color/*.png");
-          load_data(input_sequence, color_path, HSV);
-
-          // Segment the blue color in the images
-          vector<Mat> blue_output = color_segmentation(input_sequence, BLUE);
-
-          // Find contours that belong to circles
-          vector<vector<vector<Point> > > circles = find_circle_contours(blue_output, 100, 0.7);
-
-          // Find the center of the contours
-          vector<vector<Point> > centers = find_centers(circles);
-
-          // Set the output sequence and draw the centers on the images.
-          output_sequence = input_sequence;
-
-          for(int i = 0; i < output_sequence.size();i++)
-          {
-            for(int j = 0; j < centers[i].size(); j++)
-            {
-                circle(output_sequence[i], centers[i][j], 5, Scalar(255, 255, 255));
-            }
-          }
+          //_________ DETECTOR __________
+          output_sequence = color_detector();
         }
         break;
     case COLOR_INPUT_HARD:
@@ -374,31 +309,6 @@ int main( int argc, char** argv)
 }
 
 //____________________ FUNCTIONS ___________________
-// *** Load data ***
-// Loads the image data into a vector of Mat's, and converts to either gray or HSV
-void load_data(vector<Mat> &input, String &path, int type)
-{
-  vector<String> fn;
-  glob(path, fn, true); // true = Recursive
-
-  for (size_t k = 0; k < fn.size(); k++)
-  {
-       Mat im_in = imread(fn[k]);
-       Mat im_out;
-
-       if(type == 2){
-         cvtColor(im_in, im_out, CV_BGR2GRAY);
-       }
-       else if(type == 3){
-         cvtColor(im_in, im_out, CV_BGR2HSV);
-       }
-       else{
-         im_out = im_in;
-       }
-
-       input.push_back(im_out);
-  }
-}
 
 // *** Find Intersections ***
 // Finds the intersection of two lines, or returns false.
@@ -417,158 +327,4 @@ bool intersection(Point o1, Point p1, Point o2, Point p2,
     double t1 = (x.x * d2.y - x.y * d2.x)/cross;
     r = (o1 + d1 * t1);
     return true;
-}
-
-// *** Color segmentation ***
-// Example on syntax for function
-vector<Mat> color_segmentation(vector<Mat> &input, int type)
-{
-  vector<Mat> output;
-
-  int Sat_lower = 30;
-  int Sat_upper = 220;
-  int Val_lower = 30;
-  int Val_upper = 220;
-  int Hue_lower = 0;
-  int Hue_upper = 255;
-
-  if(type == RED){
-    Hue_lower = 0;
-    Hue_upper = 15;
-    Sat_lower = 150;
-
-    for(int i = 0; i < input.size(); i++)
-    {
-       Mat lower_temp;
-       Mat upper_temp;
-       output.push_back(input[i]);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output[i]);
-    }
-  }
-  else if(type == BLUE){
-    Hue_lower = 110;
-    Hue_upper = 120;
-
-    for(int i = 0; i < input.size(); i++)
-    {
-       output.push_back(input[i]);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output[i]);
-    }
-  }
-  else if(type == B_W){
-    int Val_lower_1 = 0;
-    int Val_upper_1 = 10;
-    int Val_lower_2 = 245;
-    int Val_upper_2 = 255;
-    int Sat_lower1 = 0;
-    int Sat_upper1 = 255;
-
-    for(int i = 0; i < input.size(); i++)
-    {
-       Mat lower_temp;
-       Mat upper_temp;
-       output.push_back(input[i]);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower_1), Scalar(Hue_upper, Sat_upper, Val_upper_1), lower_temp);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower_2), Scalar(Hue_upper, Sat_upper, Val_upper_2), upper_temp);
-       addWeighted( lower_temp, 1, upper_temp, 1, 0.0, output[i]);
-    }
-  }
-  else{
-    for(int i = 0; i < input.size(); i++)
-    {
-       output.push_back(input[i]);
-       inRange(input[i], Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output[i]);
-    }
-  }
-
-  return output;
-}
-
-// *** Find Circle Contours ***
-// Example on syntax for function
-vector<vector<vector<Point> > > find_circle_contours(vector<Mat> &input, int perimeter_thresh, int circle_thresh)
-{
-  vector<vector<vector<Point> > > result_contours;
-
-  for(int i = 0; i < input.size(); i++)
-  {
-    vector<vector<Point> > contours;
-    vector<vector<Point> > circle_contours;
-    vector<Vec4i> hierarchy;
-
-    /// Find contours
-    findContours( input[i], contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
-
-    /// Extract correct contours
-    for( int j = 0; j < contours.size(); j++ )
-    {
-      // Calculate parameters
-      double area             = abs(contourArea(contours[j], true));
-      double perimeter        = arcLength(contours[j], 1);
-      double circle_constant  = (4 * PI * area) / (perimeter*perimeter);
-
-      if(perimeter > 100 && circle_constant > 0.7)
-      {
-        circle_contours.push_back(contours[j]);
-      }
-    }
-
-    result_contours.push_back(circle_contours);
-  }
-
-  return result_contours;
-
-}
-
-// *** Find Centers ***
-// Example on syntax for function
-vector<vector<Point> > find_centers(vector<vector<vector<Point> > > &input_contours)
-{
-  vector<vector<Point> > circle_centers(input_contours.size());
-
-  for(int i = 0; i < input_contours.size(); i++) // For every frame
-  {
-    for(int j = 0; j < input_contours[i].size(); j++) // For every contour in frame
-    {
-      Moments circle_moments = moments(input_contours[i][j], false);
-      int center_u = floor(circle_moments.m10/circle_moments.m00);
-      int center_v = floor(circle_moments.m01/circle_moments.m00);
-
-      circle_centers[i].push_back(Point(center_u, center_v));
-    }
-  }
-
-  return circle_centers;
-}
-
-// *** Color Threshold ***
-// Example on syntax for function
-void ColorThreshold(int, void*)
-{
-  inRange(src_threshold, Scalar(low_hueThreshold, low_satThreshold, low_valThreshold), Scalar(high_hueThreshold, high_satThreshold, high_valThreshold), output_threshold);
-  dst = Scalar::all(0);
-
-  src_threshold.copyTo( dst, output_threshold);
-  imshow( window_name, dst );
-}
-
-// *** Canny Threshold ***
-// Example on syntax for function
-void CannyThreshold(int, void*)
-{
-  /// Reduce noise with a kernel 3x3
-  if (kernel_size > 0)
-    blur( src_threshold, output_threshold, Size(kernel_size,kernel_size) );
-  else
-    blur( src_threshold, output_threshold, Size(1,1) );
-
-
-  /// Canny detector
-  Canny( output_threshold, output_threshold, lowThreshold, highThreshold, 3 );
-
-  /// Using Canny's output as a mask, we display our result
-  dst = Scalar::all(0);
-
-  src_threshold.copyTo( dst, output_threshold);
-  imshow( window_name, dst );
 }
