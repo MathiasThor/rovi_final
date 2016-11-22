@@ -33,4 +33,6 @@
 *.jpg
 *.bmp
 
+#Folders
 sequences/*
+build/*
