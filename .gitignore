@@ -32,3 +32,5 @@
 *.png
 *.jpg
 *.bmp
+
+sequences/*
