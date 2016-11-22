@@ -78,31 +78,9 @@ int main( int argc, char** argv)
         }
         break;
     case TEST:
-        cout << "-- Test case --" << endl;
-
-        Mat image;
-        Mat dst;
-        image = imread("./sequences/marker_thickline/marker_thickline_01.png", 1);
-
-        cvtColor(image, dst, CV_BGR2HSV);
-        inRange(dst, Scalar(0, 0, 0), Scalar(255, 255, 30), dst);
-
-        Canny( dst, dst, 100, 150, 3 );
-
-        vector<Vec4i> lines;
-        HoughLinesP( dst, lines, 1, CV_PI/180, 20, 175, 250 );
-
-        for(int i = 0; i < lines.size(); i++){
-            Point first(lines[i][0], lines[i][1]);
-            Point second(lines[i][2], lines[i][3]);
-            line( image, first, second, Scalar(0,0,255), 1, CV_AA);
+        {
+          // For test purposes if needed...
         }
-
-        imshow("Test", dst);
-
-        waitKey(0);
-
-        return 0;
         break;
   }
 
