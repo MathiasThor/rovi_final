@@ -13,5 +13,6 @@ using namespace cv::xfeatures2d;
 
 // Decleration
 void sift(Mat &input_image, vector<Point> &marker_points);
+void pose_estimator(Mat &input_image, vector<Point> &marker_points);
 
 #endif

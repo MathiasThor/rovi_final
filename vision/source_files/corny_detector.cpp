@@ -58,20 +58,86 @@ void sift(Mat &input_image, vector<Point> &marker_points)
   std::vector<Point2f> scene_corners(4);
   perspectiveTransform( obj_corners, scene_corners, H);
 
-  // Calculate centroid of best matches
-  cv::Point corny_center = (scene_corners[0] + Point2f( img_object.cols, 0) + scene_corners[1] + Point2f( img_object.cols, 0) + scene_corners[2] + Point2f( img_object.cols, 0) + scene_corners[3] + Point2f( img_object.cols, 0)) / 4;
-  cout << "SCENE CORNOR: " << scene_corners[0] << endl;
+  for (int i = 0; i < scene_corners.size(); i++) {
+    scene_corners[i] += Point2f( img_object.cols, 0);
+  }
+
+  Point2f scene_midt_point = (scene_corners[0] + scene_corners[1] + scene_corners[2] +scene_corners[3]) / 4;
+
+  cout << "SCENE CORNER  1: " << (scene_corners[0])-scene_midt_point << endl;
+  cout << "SCENE CORNER  2: " << (scene_corners[1])-scene_midt_point << endl;
+  cout << "SCENE CORNER  3: " << (scene_corners[2])-scene_midt_point << endl;
+  cout << "SCENE CORNER  4: " << (scene_corners[3])-scene_midt_point << endl;
+  cout << "SCENE MIDTPOINT: " << scene_midt_point-scene_midt_point << endl << endl;
   // Draw centroid
-  cv::circle(img_matches, corny_center, 5, cv::Scalar(0, 0, 255), 5);
+  cv::circle(img_matches, scene_midt_point, 5, cv::Scalar(0, 0, 255), 5);
 
   //-- Draw lines between the corners (the mapped object in the scene - image_2 )
-  line( img_matches, scene_corners[0] + Point2f( img_object.cols, 0), scene_corners[1] + Point2f( img_object.cols, 0), Scalar(0, 0, 255), 2 );
-  line( img_matches, scene_corners[1] + Point2f( img_object.cols, 0), scene_corners[2] + Point2f( img_object.cols, 0), Scalar(0, 0, 255), 2 );
-  line( img_matches, scene_corners[2] + Point2f( img_object.cols, 0), scene_corners[3] + Point2f( img_object.cols, 0), Scalar(0, 0, 255), 2 );
-  line( img_matches, scene_corners[3] + Point2f( img_object.cols, 0), scene_corners[0] + Point2f( img_object.cols, 0), Scalar(0, 0, 255), 2 );
+  line( img_matches, scene_corners[0], scene_corners[1], Scalar(0, 0, 255), 2 );
+  line( img_matches, scene_corners[1], scene_corners[2], Scalar(0, 0, 255), 2 );
+  line( img_matches, scene_corners[2], scene_corners[3], Scalar(0, 0, 255), 2 );
+  line( img_matches, scene_corners[3], scene_corners[0], Scalar(0, 0, 255), 2 );
+
+  for(int i=0; i < scene_corners.size(); i++)
+  {
+      circle(img_matches, scene_corners[i], 3, Scalar(0,255,0), -1);
+  }
 
   //-- Show detected matches
   //imshow( "Good Matches & Object detection", img_matches );
 
   input_image = img_matches.clone();
+
+  if (false) {
+
+    // 2D image points
+    std::vector<cv::Point2d> image_points;
+    image_points.push_back( cv::Point2d( (double)scene_midt_point.x, (double)scene_midt_point.y ) );    // MIDT
+    image_points.push_back( cv::Point2d( (double)scene_corners[0].x, (double)scene_corners[0].y ) );    // TOP-LEFT
+    image_points.push_back( cv::Point2d( (double)scene_corners[1].x, (double)scene_corners[1].y ) );    // TOP-RIGHT
+    image_points.push_back( cv::Point2d( (double)scene_corners[2].x, (double)scene_corners[2].y ) );    // BOT-LEFT
+    image_points.push_back( cv::Point2d( (double)scene_corners[3].x, (double)scene_corners[3].y ) );    // BOT-LEFT
+
+    // 3D model points.
+    std::vector<cv::Point3d> model_points;
+    model_points.push_back(cv::Point3d(   0.0f,    0.0f, 0.0f));     // MIDT
+    model_points.push_back(cv::Point3d( 200.0f, -200.0f, 0.0f));     // TOP-LEFT
+    model_points.push_back(cv::Point3d( 200.0f,  200.0f, 0.0f));     // TOP-RIGHT
+    model_points.push_back(cv::Point3d(-200.0f,  200.0f, 0.0f));     // BOT-RIGHT
+    model_points.push_back(cv::Point3d(-200.0f, -200.0f, 0.0f));     // BOT-LEFT
+
+    // Camera internals
+    double focal_length = input_image.cols;//input_image.cols*5; // Approximate focal length.
+    Point2d center = cv::Point2d(input_image.cols/2,input_image.rows/2);
+    cv::Mat camera_matrix = (cv::Mat_<double>(3,3) << focal_length, 0, center.x, 0 , focal_length, center.y, 0, 0, 1);
+    cv::Mat dist_coeffs = cv::Mat::zeros(4,1,cv::DataType<double>::type); // Assuming no lens distortion
+
+    cout << "Camera Matrix " << endl << camera_matrix << endl ;
+    // Output rotation and translation
+    cv::Mat rotation_vector; // Rotation in axis-angle form
+    cv::Mat translation_vector;
+
+    // Solve for pose
+    cv::solvePnP(model_points, image_points, camera_matrix, dist_coeffs, rotation_vector, translation_vector);
+
+    // Project a 3D point (0, 0, 1000.0) onto the image plane.
+    // We use this to draw a line sticking out of the nose
+    vector<Point3d> midpoint3D;
+    vector<Point2d> midpoint2D;
+    midpoint3D.push_back(Point3d(0,0,1000));
+
+    projectPoints(midpoint3D, rotation_vector, translation_vector, camera_matrix, dist_coeffs, midpoint2D);
+
+    cv::line(input_image, image_points[0], midpoint2D[0], cv::Scalar(255,0,0), 2);
+
+    cout << "Rotation Vector " << endl << rotation_vector << endl;
+    cout << "Translation Vector" << endl << translation_vector << endl;
+
+    cout <<  midpoint2D << endl;
+
+    // Display image.
+    //cv::imshow("Output", input_image);
+    //waitKey(0);
+
+  }
 }

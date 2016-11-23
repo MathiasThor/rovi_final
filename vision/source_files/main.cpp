@@ -94,10 +94,10 @@ int main( int argc, char** argv)
         break;
     case TEST:
         {
-          String color_path("./../sequences/marker_corny_hard/*.png");
+          String color_path("./../sequences/marker_corny/*.png");
           load_data(input_sequence, color_path, GRAY);
           vector<Point> marker_points;
-          sift(input_sequence[2], marker_points);
+          sift(input_sequence[12], marker_points);
 
         }
         break;
@@ -111,7 +111,8 @@ int main( int argc, char** argv)
       i = 0;
     }
     imshow(window_name, input_sequence[i]);
-    if(waitKey(250) >= 0) break; // Increase x of waitKey(x) to slow down the video
+    //if(waitKey(250) >= 0) break; // Increase x of waitKey(x) to slow down the video
+    waitKey(0);
   }
 
   waitKey(0);
