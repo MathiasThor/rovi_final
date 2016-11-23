@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mat/7_semester_workspace/rovi_final/vision/source_files
+CMAKE_SOURCE_DIR = /home/mat/7_semester_workspace/rovi_final/vision
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mat/7_semester_workspace/rovi_final/vision
+CMAKE_BINARY_DIR = /home/mat/7_semester_workspace/rovi_final/vision/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mat/7_semester_workspace/rovi_final/vision/CMakeFiles /home/mat/7_semester_workspace/rovi_final/vision/CMakeFiles/progress.marks
-	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mat/7_semester_workspace/rovi_final/vision/CMakeFiles 0
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/mat/7_semester_workspace/rovi_final/vision/build/CMakeFiles /home/mat/7_semester_workspace/rovi_final/vision/build/source_files/CMakeFiles/progress.marks
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f CMakeFiles/Makefile2 source_files/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mat/7_semester_workspace/rovi_final/vision/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	$(MAKE) -f CMakeFiles/Makefile2 clean
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f CMakeFiles/Makefile2 source_files/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,31 +97,33 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	$(MAKE) -f CMakeFiles/Makefile2 preinstall
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f CMakeFiles/Makefile2 source_files/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	$(MAKE) -f CMakeFiles/Makefile2 preinstall
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f CMakeFiles/Makefile2 source_files/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-#=============================================================================
-# Target rules for targets named Main
+# Convenience name for target.
+source_files/CMakeFiles/tracker.dir/rule:
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f CMakeFiles/Makefile2 source_files/CMakeFiles/tracker.dir/rule
+.PHONY : source_files/CMakeFiles/tracker.dir/rule
 
-# Build rule for target.
-Main: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Main
-.PHONY : Main
+# Convenience name for target.
+tracker: source_files/CMakeFiles/tracker.dir/rule
+
+.PHONY : tracker
 
 # fast build rule for target.
-Main/fast:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/build
-.PHONY : Main/fast
+tracker/fast:
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/build
+.PHONY : tracker/fast
 
 color_detector.o: color_detector.cpp.o
 
@@ -129,7 +131,7 @@ color_detector.o: color_detector.cpp.o
 
 # target to build an object file
 color_detector.cpp.o:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/color_detector.cpp.o
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/color_detector.cpp.o
 .PHONY : color_detector.cpp.o
 
 color_detector.i: color_detector.cpp.i
@@ -138,7 +140,7 @@ color_detector.i: color_detector.cpp.i
 
 # target to preprocess a source file
 color_detector.cpp.i:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/color_detector.cpp.i
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/color_detector.cpp.i
 .PHONY : color_detector.cpp.i
 
 color_detector.s: color_detector.cpp.s
@@ -147,7 +149,7 @@ color_detector.s: color_detector.cpp.s
 
 # target to generate assembly for a file
 color_detector.cpp.s:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/color_detector.cpp.s
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/color_detector.cpp.s
 .PHONY : color_detector.cpp.s
 
 corny_detector.o: corny_detector.cpp.o
@@ -156,7 +158,7 @@ corny_detector.o: corny_detector.cpp.o
 
 # target to build an object file
 corny_detector.cpp.o:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/corny_detector.cpp.o
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/corny_detector.cpp.o
 .PHONY : corny_detector.cpp.o
 
 corny_detector.i: corny_detector.cpp.i
@@ -165,7 +167,7 @@ corny_detector.i: corny_detector.cpp.i
 
 # target to preprocess a source file
 corny_detector.cpp.i:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/corny_detector.cpp.i
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/corny_detector.cpp.i
 .PHONY : corny_detector.cpp.i
 
 corny_detector.s: corny_detector.cpp.s
@@ -174,7 +176,7 @@ corny_detector.s: corny_detector.cpp.s
 
 # target to generate assembly for a file
 corny_detector.cpp.s:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/corny_detector.cpp.s
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/corny_detector.cpp.s
 .PHONY : corny_detector.cpp.s
 
 general_functions.o: general_functions.cpp.o
@@ -183,7 +185,7 @@ general_functions.o: general_functions.cpp.o
 
 # target to build an object file
 general_functions.cpp.o:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/general_functions.cpp.o
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/general_functions.cpp.o
 .PHONY : general_functions.cpp.o
 
 general_functions.i: general_functions.cpp.i
@@ -192,7 +194,7 @@ general_functions.i: general_functions.cpp.i
 
 # target to preprocess a source file
 general_functions.cpp.i:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/general_functions.cpp.i
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/general_functions.cpp.i
 .PHONY : general_functions.cpp.i
 
 general_functions.s: general_functions.cpp.s
@@ -201,35 +203,8 @@ general_functions.s: general_functions.cpp.s
 
 # target to generate assembly for a file
 general_functions.cpp.s:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/general_functions.cpp.s
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/general_functions.cpp.s
 .PHONY : general_functions.cpp.s
-
-line_detector.o: line_detector.cpp.o
-
-.PHONY : line_detector.o
-
-# target to build an object file
-line_detector.cpp.o:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/line_detector.cpp.o
-.PHONY : line_detector.cpp.o
-
-line_detector.i: line_detector.cpp.i
-
-.PHONY : line_detector.i
-
-# target to preprocess a source file
-line_detector.cpp.i:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/line_detector.cpp.i
-.PHONY : line_detector.cpp.i
-
-line_detector.s: line_detector.cpp.s
-
-.PHONY : line_detector.s
-
-# target to generate assembly for a file
-line_detector.cpp.s:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/line_detector.cpp.s
-.PHONY : line_detector.cpp.s
 
 main.o: main.cpp.o
 
@@ -237,7 +212,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/main.cpp.o
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -246,7 +221,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/main.cpp.i
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -255,35 +230,8 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/main.cpp.s
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/main.cpp.s
 .PHONY : main.cpp.s
-
-thresholding.o: thresholding.cpp.o
-
-.PHONY : thresholding.o
-
-# target to build an object file
-thresholding.cpp.o:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/thresholding.cpp.o
-.PHONY : thresholding.cpp.o
-
-thresholding.i: thresholding.cpp.i
-
-.PHONY : thresholding.i
-
-# target to preprocess a source file
-thresholding.cpp.i:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/thresholding.cpp.i
-.PHONY : thresholding.cpp.i
-
-thresholding.s: thresholding.cpp.s
-
-.PHONY : thresholding.s
-
-# target to generate assembly for a file
-thresholding.cpp.s:
-	$(MAKE) -f CMakeFiles/Main.dir/build.make CMakeFiles/Main.dir/thresholding.cpp.s
-.PHONY : thresholding.cpp.s
 
 # Help Target
 help:
@@ -293,7 +241,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Main"
+	@echo "... tracker"
 	@echo "... color_detector.o"
 	@echo "... color_detector.i"
 	@echo "... color_detector.s"
@@ -303,15 +251,9 @@ help:
 	@echo "... general_functions.o"
 	@echo "... general_functions.i"
 	@echo "... general_functions.s"
-	@echo "... line_detector.o"
-	@echo "... line_detector.i"
-	@echo "... line_detector.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... thresholding.o"
-	@echo "... thresholding.i"
-	@echo "... thresholding.s"
 .PHONY : help
 
 
@@ -323,6 +265,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/mat/7_semester_workspace/rovi_final/vision/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
