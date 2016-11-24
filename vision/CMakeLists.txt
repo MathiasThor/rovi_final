@@ -5,7 +5,7 @@ project(ROVI_FINAL)
 find_package(OpenCV 3.1.0 EXACT REQUIRED)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set(CMAKE_BINARY_DIR ${PROJECT_BINARY_DIR}/bin)
+set (CMAKE_BINARY_DIR ${PROJECT_BINARY_DIR}/bin)
 
 set(HEADERS headers/color_detector.h)
 set(HEADERS headers/corny_detector.h)

@@ -1,0 +1,3 @@
+/home/mat/SamplePluginPA10/build/CMakeFiles/edit_cache.dir
+/home/mat/SamplePluginPA10/build/CMakeFiles/rebuild_cache.dir
+/home/mat/SamplePluginPA10/build/CMakeFiles/SamplePlugin.dir

@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mat/7_semester_workspace/rovi_final/vision
+CMAKE_SOURCE_DIR = /home/mat/SamplePluginPA10
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mat/7_semester_workspace/rovi_final/vision/build
+CMAKE_BINARY_DIR = /home/mat/SamplePluginPA10/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mat/7_semester_workspace/rovi_final/vision/build/CMakeFiles /home/mat/7_semester_workspace/rovi_final/vision/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mat/SamplePluginPA10/build/CMakeFiles /home/mat/SamplePluginPA10/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mat/7_semester_workspace/rovi_final/vision/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mat/SamplePluginPA10/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,98 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named tracker
+# Target rules for targets named SamplePlugin
 
 # Build rule for target.
-tracker: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tracker
-.PHONY : tracker
+SamplePlugin: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 SamplePlugin
+.PHONY : SamplePlugin
 
 # fast build rule for target.
-tracker/fast:
-	$(MAKE) -f source_files/CMakeFiles/tracker.dir/build.make source_files/CMakeFiles/tracker.dir/build
-.PHONY : tracker/fast
+SamplePlugin/fast:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/build
+.PHONY : SamplePlugin/fast
+
+qrc_resources.o: qrc_resources.cxx.o
+
+.PHONY : qrc_resources.o
+
+# target to build an object file
+qrc_resources.cxx.o:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/qrc_resources.cxx.o
+.PHONY : qrc_resources.cxx.o
+
+qrc_resources.i: qrc_resources.cxx.i
+
+.PHONY : qrc_resources.i
+
+# target to preprocess a source file
+qrc_resources.cxx.i:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/qrc_resources.cxx.i
+.PHONY : qrc_resources.cxx.i
+
+qrc_resources.s: qrc_resources.cxx.s
+
+.PHONY : qrc_resources.s
+
+# target to generate assembly for a file
+qrc_resources.cxx.s:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/qrc_resources.cxx.s
+.PHONY : qrc_resources.cxx.s
+
+src/SamplePlugin.o: src/SamplePlugin.cpp.o
+
+.PHONY : src/SamplePlugin.o
+
+# target to build an object file
+src/SamplePlugin.cpp.o:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
+.PHONY : src/SamplePlugin.cpp.o
+
+src/SamplePlugin.i: src/SamplePlugin.cpp.i
+
+.PHONY : src/SamplePlugin.i
+
+# target to preprocess a source file
+src/SamplePlugin.cpp.i:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.i
+.PHONY : src/SamplePlugin.cpp.i
+
+src/SamplePlugin.s: src/SamplePlugin.cpp.s
+
+.PHONY : src/SamplePlugin.s
+
+# target to generate assembly for a file
+src/SamplePlugin.cpp.s:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.s
+.PHONY : src/SamplePlugin.cpp.s
+
+src/moc_SamplePlugin.o: src/moc_SamplePlugin.cxx.o
+
+.PHONY : src/moc_SamplePlugin.o
+
+# target to build an object file
+src/moc_SamplePlugin.cxx.o:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
+.PHONY : src/moc_SamplePlugin.cxx.o
+
+src/moc_SamplePlugin.i: src/moc_SamplePlugin.cxx.i
+
+.PHONY : src/moc_SamplePlugin.i
+
+# target to preprocess a source file
+src/moc_SamplePlugin.cxx.i:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.i
+.PHONY : src/moc_SamplePlugin.cxx.i
+
+src/moc_SamplePlugin.s: src/moc_SamplePlugin.cxx.s
+
+.PHONY : src/moc_SamplePlugin.s
+
+# target to generate assembly for a file
+src/moc_SamplePlugin.cxx.s:
+	$(MAKE) -f CMakeFiles/SamplePlugin.dir/build.make CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.s
+.PHONY : src/moc_SamplePlugin.cxx.s
 
 # Help Target
 help:
@@ -131,7 +212,16 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... tracker"
+	@echo "... SamplePlugin"
+	@echo "... qrc_resources.o"
+	@echo "... qrc_resources.i"
+	@echo "... qrc_resources.s"
+	@echo "... src/SamplePlugin.o"
+	@echo "... src/SamplePlugin.i"
+	@echo "... src/SamplePlugin.s"
+	@echo "... src/moc_SamplePlugin.o"
+	@echo "... src/moc_SamplePlugin.i"
+	@echo "... src/moc_SamplePlugin.s"
 .PHONY : help
 
 
