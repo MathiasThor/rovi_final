@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/mat/SamplePluginPA10/build/qrc_resources.cxx" "/home/mat/SamplePluginPA10/build/CMakeFiles/SamplePlugin.dir/qrc_resources.cxx.o"
-  "/home/mat/SamplePluginPA10/src/SamplePlugin.cpp" "/home/mat/SamplePluginPA10/build/CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o"
-  "/home/mat/SamplePluginPA10/build/src/moc_SamplePlugin.cxx" "/home/mat/SamplePluginPA10/build/CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o"
+  "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/qrc_resources.cxx" "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/CMakeFiles/SamplePlugin.dir/qrc_resources.cxx.o"
+  "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/src/SamplePlugin.cpp" "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o"
+  "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/src/moc_SamplePlugin.cxx" "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -31,7 +31,6 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/home/mat/RobWork/RobWork/cmake/../ext/lua/src"
   "/home/mat/RobWork/RobWork/cmake/../ext/qhull/src"
   "/home/mat/RobWork/RobWork/cmake/../ext/csgjs/src"
-  "/home/mat/RobWork/RobWork/cmake/../ext/zlib"
   "/home/mat/RobWork/RobWork/cmake/../ext/unzip"
   "/home/mat/RobWork/RobWork/cmake/../ext/assimp/include"
   "/usr/include/qt4"
@@ -42,8 +41,8 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/include/qt4/QtCore"
   "/home/mat/RobWork/RobWorkStudio/cmake/../src"
   "/home/mat/RobWork/RobWorkStudio/cmake/../ext/qtpropertybrowser/src"
-  "/usr/local/include/opencv"
   "/usr/local/include"
+  "/usr/local/include/opencv"
   )
 
 # Targets to which this target links.

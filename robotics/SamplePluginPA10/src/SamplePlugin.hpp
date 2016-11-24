@@ -7,10 +7,20 @@
 
 #include <rws/RobWorkStudioPlugin.hpp>
 
-#include <rw/kinematics/State.hpp>
 #include <rwlibs/opengl/RenderImage.hpp>
 #include <rwlibs/simulation/GLFrameGrabber.hpp>
+
+#include <rw/kinematics/State.hpp>
 #include <rw/models/WorkCell.hpp>
+#include <rw/loaders/ImageLoader.hpp>
+//#include <rw/loaders/PGMLoader.hpp>
+#include <rws/RobWorkStudio.hpp>
+#include <rw/loaders/WorkCellFactory.hpp>
+
+#include <QPushButton>
+#include <QTimer>
+#include <QtPlugin>
+#include <boost/bind.hpp>
 
 class SamplePlugin: public rws::RobWorkStudioPlugin, private Ui::SamplePlugin
 {
@@ -43,4 +53,4 @@ private:
 	rwlibs::simulation::GLFrameGrabber* _framegrabber;
 };
 
-#endif /*RINGONHOOKPLUGIN_HPP_*/
+#endif /*SAMPLEPLUGIN_HPP*/

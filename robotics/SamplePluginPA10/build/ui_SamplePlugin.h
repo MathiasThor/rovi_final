@@ -17,6 +17,7 @@
 #include <QtGui/QDockWidget>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
+#include <QtGui/QProgressBar>
 #include <QtGui/QPushButton>
 #include <QtGui/QSlider>
 #include <QtGui/QSpinBox>
@@ -35,6 +36,7 @@ public:
     QPushButton *_btn1;
     QCheckBox *_checkBox;
     QSpinBox *_spinBox;
+    QProgressBar *progressBar;
     QSlider *_slider;
     QLabel *_label;
 
@@ -42,7 +44,7 @@ public:
     {
         if (SamplePlugin->objectName().isEmpty())
             SamplePlugin->setObjectName(QString::fromUtf8("SamplePlugin"));
-        SamplePlugin->resize(428, 475);
+        SamplePlugin->resize(428, 479);
         dockWidgetContents = new QWidget();
         dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
         verticalLayout_2 = new QVBoxLayout(dockWidgetContents);
@@ -69,6 +71,12 @@ public:
 
         verticalLayout->addWidget(_spinBox);
 
+        progressBar = new QProgressBar(dockWidgetContents);
+        progressBar->setObjectName(QString::fromUtf8("progressBar"));
+        progressBar->setValue(24);
+
+        verticalLayout->addWidget(progressBar);
+
         _slider = new QSlider(dockWidgetContents);
         _slider->setObjectName(QString::fromUtf8("_slider"));
         _slider->setOrientation(Qt::Horizontal);
@@ -93,8 +101,8 @@ public:
     void retranslateUi(QDockWidget *SamplePlugin)
     {
         SamplePlugin->setWindowTitle(QApplication::translate("SamplePlugin", "DockWidget", 0, QApplication::UnicodeUTF8));
-        _btn0->setText(QApplication::translate("SamplePlugin", "PushButton0", 0, QApplication::UnicodeUTF8));
-        _btn1->setText(QApplication::translate("SamplePlugin", "PushButton1", 0, QApplication::UnicodeUTF8));
+        _btn0->setText(QApplication::translate("SamplePlugin", "Load textures", 0, QApplication::UnicodeUTF8));
+        _btn1->setText(QApplication::translate("SamplePlugin", "Move marker", 0, QApplication::UnicodeUTF8));
         _checkBox->setText(QApplication::translate("SamplePlugin", "CheckBox", 0, QApplication::UnicodeUTF8));
         _label->setText(QApplication::translate("SamplePlugin", "Label", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

@@ -1,0 +1,43 @@
+<CollisionSetup>
+    <Exclude>
+	 <FramePair first="Env" second="conveyorBelt"/>
+	 <FramePair first="Env" second="Foot"/>
+	 <FramePair first="Env" second="Table"/>
+     <FramePair first="Env" second="WPtable"/>
+	 <FramePair first="Foot" second="conveyorBelt"/>
+     <FramePair first="Foot" second="Table"/>
+     <FramePair first="Foot" second="WPtable"/>
+	 <FramePair first="Table" second="conveyorBelt"/>
+     <FramePair first="Table" second="WPtable"/>
+     <FramePair first="conveyorBelt" second="WPtable"/>
+     
+     <FramePair first="Env" second="PA10.Base"/>
+     <FramePair first="Env" second="PA10.Joint1"/>
+     <FramePair first="Env" second="PA10.Joint2"/>
+     
+     <FramePair first="Foot" second="PA10.Base"/>
+     <FramePair first="Foot" second="PA10.Joint1"/>
+     <FramePair first="Foot" second="PA10.Joint2"/>
+     <FramePair first="Foot" second="PA10.Joint3"/>
+     <FramePair first="Foot" second="PA10.Joint4"/>
+     
+     <FramePair first="WPtable" second="PA10.Base"/>
+     <FramePair first="WPtable" second="PA10.Joint1"/>
+     <FramePair first="WPtable" second="PA10.Joint2"/>
+     
+     <FramePair first="Table" second="PA10.*"/>
+     <FramePair first="Table" second="CameraSim"/>
+     
+     <FramePair first="conveyorBelt" second="PA10.Base"/>
+     <FramePair first="conveyorBelt" second="PA10.Joint1"/>
+     <FramePair first="conveyorBelt" second="PA10.Joint2"/>
+     <FramePair first="conveyorBelt" second="PA10.Joint3"/>
+     
+     <FramePair first="CameraSim" second="PA10.Joint1"/>
+     <FramePair first="CameraSim" second="PA10.Joint2"/>
+     <FramePair first="CameraSim" second="PA10.Joint3"/>
+     <FramePair first="CameraSim" second="PA10.Joint4"/>
+     <FramePair first="CameraSim" second="PA10.Joint5"/>
+     <FramePair first="CameraSim" second="PA10.Joint6"/>
+    </Exclude>
+</CollisionSetup>

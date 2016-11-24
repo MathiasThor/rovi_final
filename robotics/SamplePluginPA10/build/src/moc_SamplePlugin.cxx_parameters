@@ -7,7 +7,6 @@
 -I/home/mat/RobWork/RobWork/cmake/../ext/lua/src
 -I/home/mat/RobWork/RobWork/cmake/../ext/qhull/src
 -I/home/mat/RobWork/RobWork/cmake/../ext/csgjs/src
--I/home/mat/RobWork/RobWork/cmake/../ext/zlib
 -I/home/mat/RobWork/RobWork/cmake/../ext/unzip
 -I/home/mat/RobWork/RobWork/cmake/../ext/assimp/include
 -I/usr/include/qt4
@@ -26,14 +25,11 @@
 -I/home/mat/RobWork/RobWork/cmake/../ext/lua/src
 -I/home/mat/RobWork/RobWork/cmake/../ext/qhull/src
 -I/home/mat/RobWork/RobWork/cmake/../ext/csgjs/src
--I/home/mat/RobWork/RobWork/cmake/../ext/zlib
 -I/home/mat/RobWork/RobWork/cmake/../ext/unzip
 -I/home/mat/RobWork/RobWork/cmake/../ext/assimp/include
 -I/home/mat/RobWork/RobWorkStudio/cmake/../ext/qtpropertybrowser/src
--I/usr/local/include/opencv
 -I/usr/local/include
 -I/usr/local/include/opencv
--I/usr/local/include
 -DBOOST_DISABLE_ASSERTS
 -DBOOST_DISABLE_ASSERTS
 -DQT_NO_DEBUG
@@ -44,5 +40,5 @@
 -DQT_GUI_LIB
 -DQT_CORE_LIB
 -o
-/home/mat/SamplePluginPA10/build/src/moc_SamplePlugin.cxx
-/home/mat/SamplePluginPA10/src/SamplePlugin.hpp
+/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/src/moc_SamplePlugin.cxx
+/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/src/SamplePlugin.hpp

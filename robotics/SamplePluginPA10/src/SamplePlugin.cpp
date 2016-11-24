@@ -1,16 +1,5 @@
 #include "SamplePlugin.hpp"
 
-#include <rws/RobWorkStudio.hpp>
-
-#include <QPushButton>
-#include <QTimer>
-#include <QtPlugin>
-#include <boost/bind.hpp>
-
-//#include <rw/graphics/Render.hpp>
-#include <rw/loaders/ImageLoader.hpp>
-#include <rw/loaders/WorkCellFactory.hpp>
-
 using namespace rw::common;
 using namespace rw::graphics;
 using namespace rw::kinematics;
@@ -35,7 +24,7 @@ SamplePlugin::SamplePlugin():
 	// now connect stuff from the ui component
 	connect(_btn0    ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
 	connect(_btn1    ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
-	connect(_spinBox  ,SIGNAL(valueChanged(int)), this, SLOT(btnPressed()) );
+	connect(_spinBox ,SIGNAL(valueChanged(int)), this, SLOT(btnPressed()) );
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
 	_textureRender = new RenderImage(textureImage);
@@ -56,12 +45,15 @@ void SamplePlugin::initialize() {
 	getRobWorkStudio()->stateChangedEvent().add(boost::bind(&SamplePlugin::stateChangedListener, this, _1), this);
 
 	// Auto load workcell
-	WorkCell::Ptr wc = WorkCellLoader::Factory::load("/home/mat/PA10WorkCell/ScenePA10RoVi1.wc.xml");
+	WorkCell::Ptr wc = WorkCellLoader::Factory::load("./../../../PA10WorkCell/ScenePA10RoVi1.wc.xml");
+  if (wc == NULL) {
+    std::cerr << "WorkCell: not found!" << std::endl;
+  }
 	getRobWorkStudio()->setWorkCell(wc);
 
 	// Load Lena image
 	Mat im, image;
-	im = imread("/home/mat/SamplePluginPA10/src/lena.bmp", CV_LOAD_IMAGE_COLOR); // Read the file
+	im = imread("./../../src/lena.bmp", CV_LOAD_IMAGE_COLOR); // Read the file
 	cvtColor(im, image, CV_BGR2RGB); // Switch the red and blue color channels
 	if(! image.data ) {
 		RW_THROW("Could not open or find the image: please modify the file path in the source code!");
@@ -141,12 +133,12 @@ Mat SamplePlugin::toOpenCVImage(const Image& img) {
 void SamplePlugin::btnPressed() {
 	QObject *obj = sender();
 	if(obj==_btn0){
-		log().info() << "Button 0\n";
+		log().info() << "Change Texture\n";
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
-		image = ImageLoader::Factory::load("/home/mat/SamplePluginPA10/markers/Marker3.ppm");
+		image = ImageLoader::Factory::load("./../../markers/Marker3.ppm");
 		_textureRender->setImage(*image);
-		image = ImageLoader::Factory::load("/home/mat/SamplePluginPA10/backgrounds/chrelle.jpg");
+		image = ImageLoader::Factory::load("./../../backgrounds/color1.ppm");
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
 	} else if(obj==_btn1){
@@ -167,7 +159,7 @@ void SamplePlugin::timer() {
 		Frame* cameraFrame = _wc->findFrame("CameraSim");
 		_framegrabber->grab(cameraFrame, _state);
 		const Image& image = _framegrabber->getImage();
-
+    std::cout << "timer" << std::endl;
 		// Convert to OpenCV image
 		Mat im = toOpenCVImage(image);
 		Mat imflip;

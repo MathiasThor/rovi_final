@@ -1,0 +1,82 @@
+<WorkCell name="ScenePA10">
+
+	<Frame name="Background" refframe="WORLD" type="Movable">
+		<Pos>-0.15 -2.1 1.5</Pos>
+		<RPY>0 180 -90</RPY>
+	</Frame>
+	
+	<Frame name="Foot" refframe="WORLD">
+		<Drawable name="EnvGeo" refframe="Env">
+			<Polytope file="Geometry/foot" />
+		</Drawable>
+	</Frame>
+
+	<Frame name="Robot" refframe="Foot">
+		<RPY> -90 0 0 </RPY>
+		<Pos>0 0.0 0.815</Pos>
+	</Frame>
+	<Include file="PA10/pa10.xml" />
+
+	<Frame name="Tool" refframe="PA10.Joint7">
+		<RPY>0 0 0</RPY>
+		<Pos>0 0 0</Pos>
+	</Frame>
+
+	<Frame name="Camera" refframe="Tool">
+		<RPY>0 0 0</RPY>
+		<Pos>0 0 0.055</Pos>
+	</Frame>
+	
+	<Frame name="CameraSim" refframe="Camera" type="Movable">
+		<RPY>0 0 180</RPY>
+		<Pos>0 0 0</Pos>
+		<Property name="Camera">50 1024 768</Property>
+	</Frame>
+	
+	<Drawable name="CameraGeo" refframe="CameraSim">
+		<RPY>0 0 0 </RPY>
+		<Pos> 0 0 0.03 </Pos>
+		<Box x="0.05" y="0.05" z="0.05" />
+	</Drawable>
+
+	<Frame name="Marker" refframe="WORLD" type="Movable">
+		<Pos>-0.0315 -0.819 1.649</Pos>
+		<RPY>0 0 -90</RPY>
+		<Drawable name="MarkerGeo">
+			<Box x="0.25" y="0.25" z="0.01" />
+		</Drawable>
+	</Frame>
+
+	<Frame name="MarkerTexture" refframe="Marker">
+		<RPY>180 0 0</RPY>
+		<Pos>0 0 0.0051</Pos>
+	</Frame>
+
+	<Frame name="WPtable" refframe="WORLD">
+		<RPY> 0 0 0 </RPY>
+		<Pos> 0 -1.10 -0.02 </Pos>
+		<Drawable name="WPtablegeo" refframe="WPtable">
+			<Polytope file="Geometry/WPtable" />
+		</Drawable>
+	</Frame>
+
+	<Frame name="Env" refframe="WORLD">
+		<Drawable name="Fencegeo" refframe="Env">
+			<Polytope file="Geometry/fence1" />
+		</Drawable>
+	</Frame>
+
+	<Frame name="conveyorBelt" refframe="WORLD">
+		<Drawable name="conveyorBeltgeo" refframe="Env">
+			<Polytope file="Geometry/conveyorBelt" />
+		</Drawable>
+	</Frame>
+
+	<Frame name="Table" refframe="WORLD">
+		<Drawable name="Tablegeo" refframe="Env">
+			<Polytope file="Geometry/table" />
+		</Drawable>
+	</Frame>
+
+	<CollisionSetup file="CollisionSetup.xml" />
+</WorkCell>
