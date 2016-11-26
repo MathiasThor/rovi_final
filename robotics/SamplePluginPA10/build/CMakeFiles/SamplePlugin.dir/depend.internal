@@ -10,6 +10,31 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
  /home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/ui_SamplePlugin.h
  /home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/src/SamplePlugin.cpp
  /home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/src/SamplePlugin.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/geev.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/gesvd.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/lapack.h
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/lapack_names.h
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/ptsv.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/syev.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/workspace.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/config.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/array.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/array_impl.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/generate_const.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/ublas_ordering.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/utils.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/fortran.h
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/matrix_raw.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/matrix_traits.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/symm_herm_raw.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/traits.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/type.h
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/type.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/type_traits.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/ublas_matrix.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/ublas_vector.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/vector_raw.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/vector_traits.hpp
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/Cholesky
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/Core
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/Dense
@@ -214,8 +239,238 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/src/plugins/MatrixCwiseBinaryOps.h
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/src/plugins/MatrixCwiseUnaryOps.h
  /home/mat/RobWork/RobWork/cmake/../src/RobWorkConfig.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Archive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Cache.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ConcatVectorIterator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Event.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Exception.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Extension.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ExtensionRegistry.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/IOUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/InputArchive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Log.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/LogBufferedChar.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/LogBufferedMsg.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/LogStreamWriter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/LogWriter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Message.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/OutputArchive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Plugin.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ProgramOptions.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Property.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/PropertyBase.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/PropertyMap.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/PropertyType.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Ptr.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Serializable.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/StringUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ThreadPool.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ThreadTask.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Timer.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/TimerUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/VectorIterator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/macros.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/os.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Box.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Cone.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Contour2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/ConvexHull2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/ConvexHull3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Covariance.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Cylinder.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Geometry.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/GeometryData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/GeometryUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/IndexedTriMesh.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/IndexedTriangle.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/IntersectUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Line.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/PlainTriMesh.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Plane.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/PointCloud.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Primitive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Pyramid.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/QHull3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Sphere.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/TriMesh.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Triangle.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/TriangleUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Tube.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/CCDSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/ClosedFormIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/IKMetaSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/InvKinSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/IterativeIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/IterativeMultiIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/JacobianIKSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/JacobianIKSolverM.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/ParallelIKSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/PieperSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FKRange.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FKTable.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FixedFrame.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/Frame.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FrameMap.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FramePairMap.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FrameType.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/Kinematics.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/MovableFrame.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/QState.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/State.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/StateData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/StateSetup.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/StateStructure.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/StatelessData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/TreeState.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/ImageLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/WorkCellLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/colsetup/CollisionSetupLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/image/PGMLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/image/RGBLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/path/PathLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/DependencyGraph.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/MultipleFileIterator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XML.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLErrorHandler.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLParser.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLParserUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLRWLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLRWParser.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLRWPreParser.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/tul/TULLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/tul/Tag.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLBasisTypes.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPathFormat.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPathLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPathSaver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPropertyLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPropertySaver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLTrajectoryLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLTrajectorySaver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XercesUtils.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/CameraMatrix.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Constants.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/EAA.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/InertiaMatrix.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Jacobian.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Line2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Line2DPolar.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/LinearAlgebra.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Math.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Metric.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/MetricFactory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/MetricUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/PerspectiveTransform2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Polynomial.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Pose2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Pose6D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/ProjectionMatrix.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Q.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Quaternion.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/RPY.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Rotation2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Rotation3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Rotation3DVector.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Statistics.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Transform2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Transform3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Vector2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Vector3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/VectorND.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/VelocityScrew6D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Wrench6D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/CompositeDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DHParameterSet.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DeformableObject.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DependentJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DependentPrismaticJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DependentRevoluteJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/Device.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/JacobianCalculator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/JacobianUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/Joint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/JointDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/JointDeviceJacobianCalculator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/MobileDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/Models.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/Object.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/ParallelDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/ParallelLeg.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/PrismaticJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/RevoluteJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/RigidBodyInfo.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/RigidObject.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/SerialDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/TreeDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/VirtualJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/WorkCell.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/PathPlanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/PlannerConstraint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/PlannerUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QConstraint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QEdgeConstraint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QIKSampler.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QNormalizer.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QSampler.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QToQPlanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QToQSamplerPlanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QToTPlanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/StateConstraint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/StopCriteria.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/CollisionDetector.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/CollisionSetup.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/CollisionStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/CollisionToleranceStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/DistanceCalculator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/DistanceMultiStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/DistanceStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityCache.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityFilterStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximitySetup.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximitySetupRule.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityStrategyData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Camera.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/CameraFirewire.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/CameraListener.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Contact3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Image.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/ImageUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Scanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Scanner1D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Scanner25D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Scanner2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Sensor.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/SensorData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/SensorModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/StereoCameraModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/TactileArray.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/TactileArrayModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Blend.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/BlendedTrajectory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/CircularInterpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/CubicSplineFactory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/CubicSplineInterpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Interpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/InterpolatorTrajectory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/InterpolatorUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/LinearInterpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/LloydHaywardBlend.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/ParabolicBlend.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Path.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/RampInterpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Timed.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/TimedUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Trajectory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/TrajectoryFactory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/TrajectoryIterator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/TrajectorySequence.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/RobWork.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/AnyPtr.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/Cache.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/ConcatVectorIterator.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Event.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Exception.hpp
@@ -223,25 +478,36 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/ExtensionPoint.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/ExtensionRegistry.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/IOUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/InputArchive.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Log.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/LogWriter.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Message.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/OutputArchive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/PairMap.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Property.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/PropertyBase.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/PropertyMap.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/common/PropertyType.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Ptr.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Serializable.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/StringUtil.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Timer.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/common/TimerUtil.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/macros.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/os.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/types.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/Contour2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/ConvexHullND.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/Geometry.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/GeometryData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/GeometryUtil.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/IndexedPolygon.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/IndexedTriMesh.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/IndexedTriangle.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/PlainTriMesh.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/PointCloud.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/Primitive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/QHullND.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/TriangleUtil.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/DrawableGeometryNode.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/DrawableNode.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/GroupNode.hpp
@@ -254,6 +520,31 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/SceneViewer.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/TextureData.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/WorkCellScene.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/ApproachMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/CMDistCCPMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/CompositeContactFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/CompositeGraspFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/ContactDistThresFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/ContactValidateFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/Contour2DInfoMap.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/CurvatureThresFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/DiceContactG3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/GWSMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/Grasp2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/Grasp3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/GraspQualityMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/GraspTable.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/GraspValidateFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/PlaneClearanceFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/QualityMeasure2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/SemiForceClosureFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/WrenchMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/invkin.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/invkin/IterativeIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/invkin/IterativeMultiIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/FKRange.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/FKTable.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/Frame.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/FrameMap.hpp
@@ -265,46 +556,61 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/Stateless.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/StatelessData.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/TreeState.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/loaders.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/GeometryFactory.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/ImageLoader.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/WorkCellFactory.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/WorkCellLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/model3d/STLFile.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Constants.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/EAA.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/EigenDecomposition.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Function.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/InertiaMatrix.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Jacobian.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/LinearAlgebra.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Math.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Metric.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/MetricUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Pose6D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/ProjectionMatrix.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Q.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Quaternion.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/RPY.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Rotation2D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Rotation3D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Rotation3DVector.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Transform2D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Transform3D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Vector2D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Vector3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/VectorND.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/VelocityScrew6D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math_fwd.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/models.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/ControllerModel.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/Device.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/JacobianCalculator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/models/Joint.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/Object.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/WorkCell.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/pathplanning.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/proximity.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/CollisionDetector.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/CollisionStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/DistanceMultiStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/DistanceStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityCache.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityFilter.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityFilterStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityModel.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximitySetup.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximitySetupRule.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityStrategyData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/CollisionSetup.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/rw.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/sensor.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/Contact2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/Contact3D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/Image.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/SensorModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/TactileArray.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory/Path.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory/Timed.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory/Trajectory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory/TrajectoryIterator.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rwlibs/opengl/RenderImage.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rwlibs/simulation/FrameGrabber.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rwlibs/simulation/GLFrameGrabber.hpp
@@ -600,6 +906,31 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
  /home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/src/moc_SamplePlugin.cxx
  /home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/build/ui_SamplePlugin.h
  /home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/src/SamplePlugin.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/geev.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/gesvd.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/lapack.h
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/lapack_names.h
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/ptsv.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/syev.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/lapack/workspace.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/config.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/array.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/array_impl.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/generate_const.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/ublas_ordering.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/detail/utils.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/fortran.h
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/matrix_raw.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/matrix_traits.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/symm_herm_raw.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/traits.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/type.h
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/type.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/type_traits.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/ublas_matrix.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/ublas_vector.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/vector_raw.hpp
+ /home/mat/RobWork/RobWork/cmake/../ext/boostbindings/boost/numeric/bindings/traits/vector_traits.hpp
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/Cholesky
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/Core
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/Dense
@@ -804,8 +1135,238 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/src/plugins/MatrixCwiseBinaryOps.h
  /home/mat/RobWork/RobWork/cmake/../ext/eigen3/Eigen/src/plugins/MatrixCwiseUnaryOps.h
  /home/mat/RobWork/RobWork/cmake/../src/RobWorkConfig.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Archive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Cache.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ConcatVectorIterator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Event.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Exception.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Extension.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ExtensionRegistry.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/IOUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/InputArchive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Log.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/LogBufferedChar.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/LogBufferedMsg.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/LogStreamWriter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/LogWriter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Message.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/OutputArchive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Plugin.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ProgramOptions.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Property.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/PropertyBase.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/PropertyMap.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/PropertyType.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Ptr.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Serializable.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/StringUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ThreadPool.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/ThreadTask.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/Timer.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/TimerUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/VectorIterator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/macros.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./common/os.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Box.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Cone.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Contour2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/ConvexHull2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/ConvexHull3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Covariance.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Cylinder.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Geometry.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/GeometryData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/GeometryUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/IndexedTriMesh.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/IndexedTriangle.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/IntersectUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Line.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/PlainTriMesh.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Plane.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/PointCloud.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Primitive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Pyramid.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/QHull3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Sphere.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/TriMesh.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Triangle.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/TriangleUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./geometry/Tube.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/CCDSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/ClosedFormIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/IKMetaSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/InvKinSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/IterativeIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/IterativeMultiIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/JacobianIKSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/JacobianIKSolverM.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/ParallelIKSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./invkin/PieperSolver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FKRange.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FKTable.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FixedFrame.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/Frame.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FrameMap.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FramePairMap.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/FrameType.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/Kinematics.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/MovableFrame.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/QState.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/State.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/StateData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/StateSetup.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/StateStructure.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/StatelessData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./kinematics/TreeState.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/ImageLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/WorkCellLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/colsetup/CollisionSetupLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/image/PGMLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/image/RGBLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/path/PathLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/DependencyGraph.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/MultipleFileIterator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XML.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLErrorHandler.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLParser.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLParserUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLRWLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLRWParser.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/rwxml/XMLRWPreParser.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/tul/TULLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/tul/Tag.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLBasisTypes.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPathFormat.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPathLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPathSaver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPropertyLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLPropertySaver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLTrajectoryLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XMLTrajectorySaver.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./loaders/xml/XercesUtils.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/CameraMatrix.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Constants.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/EAA.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/InertiaMatrix.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Jacobian.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Line2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Line2DPolar.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/LinearAlgebra.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Math.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Metric.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/MetricFactory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/MetricUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/PerspectiveTransform2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Polynomial.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Pose2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Pose6D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/ProjectionMatrix.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Q.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Quaternion.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/RPY.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Rotation2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Rotation3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Rotation3DVector.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Statistics.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Transform2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Transform3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Vector2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Vector3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/VectorND.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/VelocityScrew6D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./math/Wrench6D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/CompositeDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DHParameterSet.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DeformableObject.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DependentJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DependentPrismaticJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/DependentRevoluteJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/Device.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/JacobianCalculator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/JacobianUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/Joint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/JointDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/JointDeviceJacobianCalculator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/MobileDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/Models.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/Object.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/ParallelDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/ParallelLeg.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/PrismaticJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/RevoluteJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/RigidBodyInfo.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/RigidObject.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/SerialDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/TreeDevice.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/VirtualJoint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./models/WorkCell.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/PathPlanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/PlannerConstraint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/PlannerUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QConstraint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QEdgeConstraint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QIKSampler.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QNormalizer.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QSampler.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QToQPlanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QToQSamplerPlanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/QToTPlanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/StateConstraint.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./pathplanning/StopCriteria.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/CollisionDetector.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/CollisionSetup.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/CollisionStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/CollisionToleranceStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/DistanceCalculator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/DistanceMultiStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/DistanceStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityCache.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityFilterStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximitySetup.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximitySetupRule.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityStrategy.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./proximity/ProximityStrategyData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Camera.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/CameraFirewire.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/CameraListener.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Contact3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Image.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/ImageUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Scanner.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Scanner1D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Scanner25D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Scanner2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/Sensor.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/SensorData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/SensorModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/StereoCameraModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/TactileArray.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./sensor/TactileArrayModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Blend.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/BlendedTrajectory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/CircularInterpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/CubicSplineFactory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/CubicSplineInterpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Interpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/InterpolatorTrajectory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/InterpolatorUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/LinearInterpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/LloydHaywardBlend.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/ParabolicBlend.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Path.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/RampInterpolator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Timed.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/TimedUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/Trajectory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/TrajectoryFactory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/TrajectoryIterator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/./trajectory/TrajectorySequence.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/RobWork.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/AnyPtr.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/Cache.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/ConcatVectorIterator.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Event.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Exception.hpp
@@ -813,25 +1374,36 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/ExtensionPoint.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/ExtensionRegistry.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/IOUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/InputArchive.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Log.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/LogWriter.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Message.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/OutputArchive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/PairMap.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Property.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/PropertyBase.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/PropertyMap.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/common/PropertyType.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Ptr.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Serializable.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/StringUtil.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/Timer.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/common/TimerUtil.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/macros.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/common/os.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/common/types.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/Contour2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/ConvexHullND.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/Geometry.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/GeometryData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/GeometryUtil.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/IndexedPolygon.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/IndexedTriMesh.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/IndexedTriangle.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/PlainTriMesh.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/PointCloud.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/Primitive.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/QHullND.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/geometry/TriangleUtil.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/DrawableGeometryNode.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/DrawableNode.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/GroupNode.hpp
@@ -844,6 +1416,31 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/SceneViewer.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/TextureData.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/graphics/WorkCellScene.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/ApproachMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/CMDistCCPMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/CompositeContactFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/CompositeGraspFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/ContactDistThresFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/ContactValidateFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/Contour2DInfoMap.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/CurvatureThresFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/DiceContactG3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/GWSMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/Grasp2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/Grasp3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/GraspQualityMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/GraspTable.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/GraspValidateFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/PlaneClearanceFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/QualityMeasure2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/SemiForceClosureFilter.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/graspplanning/WrenchMeasure3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/invkin.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/invkin/IterativeIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/invkin/IterativeMultiIK.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/FKRange.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/FKTable.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/Frame.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/FrameMap.hpp
@@ -855,46 +1452,61 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/Stateless.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/StatelessData.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/kinematics/TreeState.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/loaders.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/GeometryFactory.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/ImageLoader.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/WorkCellFactory.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/WorkCellLoader.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/loaders/model3d/STLFile.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Constants.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/EAA.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/EigenDecomposition.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Function.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/InertiaMatrix.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Jacobian.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/LinearAlgebra.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Math.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Metric.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/MetricUtil.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Pose6D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/ProjectionMatrix.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Q.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Quaternion.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/RPY.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Rotation2D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Rotation3D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Rotation3DVector.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/Transform2D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Transform3D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Vector2D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/Vector3D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/math/VectorND.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math/VelocityScrew6D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/math_fwd.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/models.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/ControllerModel.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/Device.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/JacobianCalculator.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/models/Joint.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/Object.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/models/WorkCell.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/pathplanning.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/proximity.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/CollisionDetector.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/CollisionStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/DistanceMultiStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/DistanceStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityCache.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityFilter.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityFilterStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityModel.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximitySetup.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximitySetupRule.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityStrategy.hpp
- /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/ProximityStrategyData.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/proximity/CollisionSetup.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/rw.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/sensor.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/Contact2D.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/Contact3D.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/Image.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/SensorModel.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/sensor/TactileArray.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory/Path.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory/Timed.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory/Trajectory.hpp
+ /home/mat/RobWork/RobWork/cmake/../src/rw/trajectory/TrajectoryIterator.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rwlibs/opengl/RenderImage.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rwlibs/simulation/FrameGrabber.hpp
  /home/mat/RobWork/RobWork/cmake/../src/rwlibs/simulation/GLFrameGrabber.hpp

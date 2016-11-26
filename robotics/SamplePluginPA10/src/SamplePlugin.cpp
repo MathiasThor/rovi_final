@@ -1,30 +1,17 @@
 #include "SamplePlugin.hpp"
 
-using namespace rw::common;
-using namespace rw::graphics;
-using namespace rw::kinematics;
-using namespace rw::loaders;
-using namespace rw::models;
-using namespace rw::sensor;
-using namespace rwlibs::opengl;
-using namespace rwlibs::simulation;
-
-using namespace rws;
-
-using namespace cv;
-
 SamplePlugin::SamplePlugin():
     RobWorkStudioPlugin("SamplePluginUI", QIcon(":/pa_icon.png"))
 {
 	setupUi(this);
 
 	_timer = new QTimer(this);
-    connect(_timer, SIGNAL(timeout()), this, SLOT(timer()));
+  connect(_timer, SIGNAL(timeout()), this, SLOT(timer()));
 
 	// now connect stuff from the ui component
 	connect(_btn0    ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
 	connect(_btn1    ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
-	connect(_spinBox ,SIGNAL(valueChanged(int)), this, SLOT(btnPressed()) );
+	connect(_spinBox ,SIGNAL(valueChanged(int)), this, SLOT(testFunc()) );
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
 	_textureRender = new RenderImage(textureImage);
@@ -39,21 +26,52 @@ SamplePlugin::~SamplePlugin()
 	delete _bgRender;
 }
 
+void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
+  MovableFrame* marker_frame = static_cast<MovableFrame*>(_wc->findFrame("Marker"));
+  // cout << p_6D(3) << " : " <<	p_6D(4) << " : " <<	p_6D(5) << endl;
+  // cout << p_6D.angular() << endl;
+  // cout << p_6D.linear() << endl;
+  marker_frame->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
+  getRobWorkStudio()->setState(_state);
+}
+
+void SamplePlugin::testFunc() {
+  switch (_spinBox->value()) {
+    case 1:
+      cout << "\nNUMBER 1" << endl;
+      move_marker(VelocityScrew6D<> (0, -0.819, 1.649, 0,	0,	-1.571));
+      break;
+    case 2:
+      cout << "\nNUMBER 2" << endl;
+      move_marker(VelocityScrew6D<> (0.5, -0.819, 1.649, 0,	0,	-1.571));
+      break;
+    case 3:
+      cout << "\nNUMBER 3" << endl;
+      move_marker(VelocityScrew6D<> (-0.5, -0.819, 1.649, 0,	0,	-1.571));
+      break;
+    case 4:
+      cout << "\nNUMBER 4" << endl;
+      move_marker(VelocityScrew6D<> (0, -0.819, 0.5, 0,	0,	-1.571));
+      //load_motion("MarkerMotionFast.txt");
+      break;
+  }
+}
+
 void SamplePlugin::initialize() {
 	log().info() << "INITALIZE" << "\n";
 
 	getRobWorkStudio()->stateChangedEvent().add(boost::bind(&SamplePlugin::stateChangedListener, this, _1), this);
 
 	// Auto load workcell
-	WorkCell::Ptr wc = WorkCellLoader::Factory::load("./../../../PA10WorkCell/ScenePA10RoVi1.wc.xml");
+	WorkCell::Ptr wc = WorkCellLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/PA10WorkCell/ScenePA10RoVi1.wc.xml");
   if (wc == NULL) {
-    std::cerr << "WorkCell: not found!" << std::endl;
+    cerr << "WorkCell: not found!" << endl;
   }
 	getRobWorkStudio()->setWorkCell(wc);
 
 	// Load Lena image
 	Mat im, image;
-	im = imread("./../../src/lena.bmp", CV_LOAD_IMAGE_COLOR); // Read the file
+	im = imread("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/lena.bmp", CV_LOAD_IMAGE_COLOR); // Read the file
 	cvtColor(im, image, CV_BGR2RGB); // Switch the red and blue color channels
 	if(! image.data ) {
 		RW_THROW("Could not open or find the image: please modify the file path in the source code!");
@@ -89,8 +107,8 @@ void SamplePlugin::open(WorkCell* workcell)
 				// Read the dimensions and field of view
 				double fovy;
 				int width,height;
-				std::string camParam = cameraFrame->getPropertyMap().get<std::string>("Camera");
-				std::istringstream iss (camParam, std::istringstream::in);
+				string camParam = cameraFrame->getPropertyMap().get<string>("Camera");
+				istringstream iss (camParam, istringstream::in);
 				iss >> fovy >> width >> height;
 				// Create a frame grabber
 				_framegrabber = new GLFrameGrabber(width,height,fovy);
@@ -136,9 +154,9 @@ void SamplePlugin::btnPressed() {
 		log().info() << "Change Texture\n";
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
-		image = ImageLoader::Factory::load("./../../markers/Marker3.ppm");
+		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm");
 		_textureRender->setImage(*image);
-		image = ImageLoader::Factory::load("./../../backgrounds/color1.ppm");
+		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/backgrounds/color1.ppm");
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
 	} else if(obj==_btn1){
@@ -159,7 +177,7 @@ void SamplePlugin::timer() {
 		Frame* cameraFrame = _wc->findFrame("CameraSim");
 		_framegrabber->grab(cameraFrame, _state);
 		const Image& image = _framegrabber->getImage();
-    std::cout << "timer" << std::endl;
+
 		// Convert to OpenCV image
 		Mat im = toOpenCVImage(image);
 		Mat imflip;
@@ -177,5 +195,19 @@ void SamplePlugin::timer() {
 void SamplePlugin::stateChangedListener(const State& state) {
 	_state = state;
 }
+
+// void load_motion( string motion_type ){
+//
+//   ifstream motion_file("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/MarkerMotionFast.txt"); // the input file
+//   string input;
+//
+//   if (motion_file.is_open()) {
+//     while ( getline (motion_file, input,'\t') ) {
+//       cout << input << endl;
+//     }
+//     motion_file.close();
+//   }
+//
+// }
 
 Q_EXPORT_PLUGIN(SamplePlugin);
