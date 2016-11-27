@@ -706,15 +706,13 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtCore/qvec
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QAction
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QApplication
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QButtonGroup
-CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QCheckBox
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QDockWidget
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QHeaderView
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QLabel
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QMainWindow
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
-CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QProgressBar
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QPushButton
-CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QSlider
+CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QSpacerItem
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QSpinBox
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QVBoxLayout
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QWidget
@@ -730,7 +728,6 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qappl
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qboxlayout.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qbrush.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qbuttongroup.h
-CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qcheckbox.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qcolor.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qcursor.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qdesktopwidget.h
@@ -761,7 +758,6 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qpixm
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qplatformwindow_qpa.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qplatformwindowformat_qpa.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qpolygon.h
-CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qprogressbar.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qpushbutton.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qregion.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qrgb.h
@@ -1602,15 +1598,13 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtCore/
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QAction
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QApplication
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QButtonGroup
-CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QCheckBox
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QDockWidget
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QHeaderView
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QLabel
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QMainWindow
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QPlatformWindow
-CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QProgressBar
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QPushButton
-CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QSlider
+CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QSpacerItem
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QSpinBox
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QVBoxLayout
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QWidget
@@ -1626,7 +1620,6 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/q
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qboxlayout.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qbrush.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qbuttongroup.h
-CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qcheckbox.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qcolor.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qcursor.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qdesktopwidget.h
@@ -1657,7 +1650,6 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/q
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qplatformwindow_qpa.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qplatformwindowformat_qpa.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qpolygon.h
-CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qprogressbar.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qpushbutton.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qregion.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qrgb.h

@@ -24,7 +24,6 @@
 #include <fstream>
 #include <string>
 
-
 using namespace rw::math;
 using namespace rw::common;
 using namespace rw::graphics;
@@ -52,7 +51,7 @@ public:
 	virtual void initialize();
 
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
-	//void load_motion( std::string motion_type );
+	void load_motion( string move_file );
 	vector< rw::math::VelocityScrew6D<double> > marker_motion;
 
 private slots:

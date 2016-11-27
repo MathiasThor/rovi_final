@@ -27,40 +27,57 @@
       <item>
        <widget class="QPushButton" name="_btn1">
         <property name="text">
-         <string>Move marker</string>
+         <string>Timer / Update Video</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="_checkBox">
+       <widget class="QPushButton" name="_startStopMovement">
         <property name="text">
-         <string>CheckBox</string>
+         <string>Start / Stop movement</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="_spinBox"/>
-      </item>
-      <item>
-       <widget class="QProgressBar" name="progressBar">
-        <property name="value">
-         <number>24</number>
+       <widget class="QSpinBox" name="_spinBox">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <italic>true</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::UpDownArrows</enum>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>4</number>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QSlider" name="_slider">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
+      <item alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="_label">
         <property name="text">
          <string>Label</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>

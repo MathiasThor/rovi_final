@@ -13,13 +13,11 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
-#include <QtGui/QCheckBox>
 #include <QtGui/QDockWidget>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
-#include <QtGui/QProgressBar>
 #include <QtGui/QPushButton>
-#include <QtGui/QSlider>
+#include <QtGui/QSpacerItem>
 #include <QtGui/QSpinBox>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
@@ -34,11 +32,10 @@ public:
     QVBoxLayout *verticalLayout;
     QPushButton *_btn0;
     QPushButton *_btn1;
-    QCheckBox *_checkBox;
+    QPushButton *_startStopMovement;
     QSpinBox *_spinBox;
-    QProgressBar *progressBar;
-    QSlider *_slider;
     QLabel *_label;
+    QSpacerItem *verticalSpacer;
 
     void setupUi(QDockWidget *SamplePlugin)
     {
@@ -61,32 +58,33 @@ public:
 
         verticalLayout->addWidget(_btn1);
 
-        _checkBox = new QCheckBox(dockWidgetContents);
-        _checkBox->setObjectName(QString::fromUtf8("_checkBox"));
+        _startStopMovement = new QPushButton(dockWidgetContents);
+        _startStopMovement->setObjectName(QString::fromUtf8("_startStopMovement"));
 
-        verticalLayout->addWidget(_checkBox);
+        verticalLayout->addWidget(_startStopMovement);
 
         _spinBox = new QSpinBox(dockWidgetContents);
         _spinBox->setObjectName(QString::fromUtf8("_spinBox"));
+        QFont font;
+        font.setPointSize(10);
+        font.setBold(true);
+        font.setItalic(true);
+        font.setWeight(75);
+        _spinBox->setFont(font);
+        _spinBox->setButtonSymbols(QAbstractSpinBox::UpDownArrows);
+        _spinBox->setMinimum(1);
+        _spinBox->setMaximum(4);
 
         verticalLayout->addWidget(_spinBox);
-
-        progressBar = new QProgressBar(dockWidgetContents);
-        progressBar->setObjectName(QString::fromUtf8("progressBar"));
-        progressBar->setValue(24);
-
-        verticalLayout->addWidget(progressBar);
-
-        _slider = new QSlider(dockWidgetContents);
-        _slider->setObjectName(QString::fromUtf8("_slider"));
-        _slider->setOrientation(Qt::Horizontal);
-
-        verticalLayout->addWidget(_slider);
 
         _label = new QLabel(dockWidgetContents);
         _label->setObjectName(QString::fromUtf8("_label"));
 
-        verticalLayout->addWidget(_label);
+        verticalLayout->addWidget(_label, 0, Qt::AlignHCenter);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout->addItem(verticalSpacer);
 
 
         verticalLayout_2->addLayout(verticalLayout);
@@ -102,8 +100,8 @@ public:
     {
         SamplePlugin->setWindowTitle(QApplication::translate("SamplePlugin", "DockWidget", 0, QApplication::UnicodeUTF8));
         _btn0->setText(QApplication::translate("SamplePlugin", "Load textures", 0, QApplication::UnicodeUTF8));
-        _btn1->setText(QApplication::translate("SamplePlugin", "Move marker", 0, QApplication::UnicodeUTF8));
-        _checkBox->setText(QApplication::translate("SamplePlugin", "CheckBox", 0, QApplication::UnicodeUTF8));
+        _btn1->setText(QApplication::translate("SamplePlugin", "Timer / Update Video", 0, QApplication::UnicodeUTF8));
+        _startStopMovement->setText(QApplication::translate("SamplePlugin", "Start / Stop movement", 0, QApplication::UnicodeUTF8));
         _label->setText(QApplication::translate("SamplePlugin", "Label", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

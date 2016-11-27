@@ -38,21 +38,21 @@ void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
 void SamplePlugin::testFunc() {
   switch (_spinBox->value()) {
     case 1:
-      cout << "\nNUMBER 1" << endl;
+      cout << "NUMBER 1" << endl;
       move_marker(VelocityScrew6D<> (0, -0.819, 1.649, 0,	0,	-1.571));
       break;
     case 2:
-      cout << "\nNUMBER 2" << endl;
+      cout << "NUMBER 2" << endl;
       move_marker(VelocityScrew6D<> (0.5, -0.819, 1.649, 0,	0,	-1.571));
       break;
     case 3:
-      cout << "\nNUMBER 3" << endl;
+      cout << "NUMBER 3" << endl;
       move_marker(VelocityScrew6D<> (-0.5, -0.819, 1.649, 0,	0,	-1.571));
       break;
     case 4:
-      cout << "\nNUMBER 4" << endl;
+      cout << "NUMBER 4" << endl;
       move_marker(VelocityScrew6D<> (0, -0.819, 0.5, 0,	0,	-1.571));
-      //load_motion("MarkerMotionFast.txt");
+      load_motion("MarkerMotionFast.txt");
       break;
   }
 }
@@ -196,18 +196,46 @@ void SamplePlugin::stateChangedListener(const State& state) {
 	_state = state;
 }
 
-// void load_motion( string motion_type ){
-//
-//   ifstream motion_file("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/MarkerMotionFast.txt"); // the input file
-//   string input;
-//
-//   if (motion_file.is_open()) {
-//     while ( getline (motion_file, input,'\t') ) {
-//       cout << input << endl;
-//     }
-//     motion_file.close();
-//   }
-//
-// }
+void SamplePlugin::load_motion( string move_file ){
+
+  string move_file_path = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/" + move_file;
+  ifstream motion_file(move_file_path.c_str()); // the input file
+  string input;
+  VelocityScrew6D<> pos_6D;
+  int tabs = 1;
+
+  if (motion_file.is_open()) {
+    while ( getline (motion_file, input,'\t') ) {
+      switch (tabs) {
+        case 1:
+          pos_6D(0) = atof(input.c_str());
+          break;
+        case 2:
+          pos_6D(1) = atof(input.c_str());
+          break;
+        case 3:
+          pos_6D(2) = atof(input.c_str());
+          break;
+        case 4:
+          pos_6D(3) = atof(input.c_str());
+          break;
+        case 5:
+          pos_6D(4) = atof(input.c_str());
+          break;
+        case 6:
+          pos_6D(5) = atof(input.c_str());
+          tabs = 0;
+          marker_motion.push_back(pos_6D);
+          cout << pos_6D << endl;
+          break;
+      }
+      //cout << input << endl;
+      tabs ++;
+    }
+    motion_file.close();
+    cout << "Loaded: " << move_file << endl;
+  }
+
+}
 
 Q_EXPORT_PLUGIN(SamplePlugin);

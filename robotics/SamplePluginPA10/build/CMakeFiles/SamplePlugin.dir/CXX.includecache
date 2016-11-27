@@ -23,19 +23,15 @@ QtGui/QApplication
 -
 QtGui/QButtonGroup
 -
-QtGui/QCheckBox
--
 QtGui/QDockWidget
 -
 QtGui/QHeaderView
 -
 QtGui/QLabel
 -
-QtGui/QProgressBar
--
 QtGui/QPushButton
 -
-QtGui/QSlider
+QtGui/QSpacerItem
 -
 QtGui/QSpinBox
 -
@@ -5858,10 +5854,6 @@ qapplication.h
 qbuttongroup.h
 /usr/include/qt4/QtGui/qbuttongroup.h
 
-/usr/include/qt4/QtGui/QCheckBox
-qcheckbox.h
-/usr/include/qt4/QtGui/qcheckbox.h
-
 /usr/include/qt4/QtGui/QDockWidget
 qdockwidget.h
 /usr/include/qt4/QtGui/qdockwidget.h
@@ -5882,17 +5874,13 @@ qmainwindow.h
 qplatformwindow_qpa.h
 /usr/include/qt4/QtGui/qplatformwindow_qpa.h
 
-/usr/include/qt4/QtGui/QProgressBar
-qprogressbar.h
-/usr/include/qt4/QtGui/qprogressbar.h
-
 /usr/include/qt4/QtGui/QPushButton
 qpushbutton.h
 /usr/include/qt4/QtGui/qpushbutton.h
 
-/usr/include/qt4/QtGui/QSlider
-qslider.h
-/usr/include/qt4/QtGui/qslider.h
+/usr/include/qt4/QtGui/QSpacerItem
+qlayoutitem.h
+/usr/include/qt4/QtGui/qlayoutitem.h
 
 /usr/include/qt4/QtGui/QSpinBox
 qspinbox.h
@@ -6014,10 +6002,6 @@ QtGui/qpixmap.h
 
 /usr/include/qt4/QtGui/qbuttongroup.h
 QtCore/qobject.h
--
-
-/usr/include/qt4/QtGui/qcheckbox.h
-QtGui/qabstractbutton.h
 -
 
 /usr/include/qt4/QtGui/qcolor.h
@@ -6280,10 +6264,6 @@ QtCore/qvector.h
 QtCore/qpoint.h
 -
 QtCore/qrect.h
--
-
-/usr/include/qt4/QtGui/qprogressbar.h
-QtGui/qframe.h
 -
 
 /usr/include/qt4/QtGui/qpushbutton.h
