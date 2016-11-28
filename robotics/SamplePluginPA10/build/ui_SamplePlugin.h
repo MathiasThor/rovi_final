@@ -13,12 +13,12 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QComboBox>
 #include <QtGui/QDockWidget>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 #include <QtGui/QSpacerItem>
-#include <QtGui/QSpinBox>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QWidget>
 
@@ -31,9 +31,8 @@ public:
     QVBoxLayout *verticalLayout_2;
     QVBoxLayout *verticalLayout;
     QPushButton *_btn0;
-    QPushButton *_btn1;
     QPushButton *_startStopMovement;
-    QSpinBox *_spinBox;
+    QComboBox *_comboBox;
     QLabel *_label;
     QSpacerItem *verticalSpacer;
 
@@ -53,29 +52,23 @@ public:
 
         verticalLayout->addWidget(_btn0);
 
-        _btn1 = new QPushButton(dockWidgetContents);
-        _btn1->setObjectName(QString::fromUtf8("_btn1"));
-
-        verticalLayout->addWidget(_btn1);
-
         _startStopMovement = new QPushButton(dockWidgetContents);
         _startStopMovement->setObjectName(QString::fromUtf8("_startStopMovement"));
 
         verticalLayout->addWidget(_startStopMovement);
 
-        _spinBox = new QSpinBox(dockWidgetContents);
-        _spinBox->setObjectName(QString::fromUtf8("_spinBox"));
+        _comboBox = new QComboBox(dockWidgetContents);
+        _comboBox->setObjectName(QString::fromUtf8("_comboBox"));
+        _comboBox->setMinimumSize(QSize(0, 26));
         QFont font;
         font.setPointSize(10);
         font.setBold(true);
         font.setItalic(true);
         font.setWeight(75);
-        _spinBox->setFont(font);
-        _spinBox->setButtonSymbols(QAbstractSpinBox::UpDownArrows);
-        _spinBox->setMinimum(1);
-        _spinBox->setMaximum(4);
+        _comboBox->setFont(font);
+        _comboBox->setMaxVisibleItems(3);
 
-        verticalLayout->addWidget(_spinBox);
+        verticalLayout->addWidget(_comboBox, 0, Qt::AlignTop);
 
         _label = new QLabel(dockWidgetContents);
         _label->setObjectName(QString::fromUtf8("_label"));
@@ -100,8 +93,13 @@ public:
     {
         SamplePlugin->setWindowTitle(QApplication::translate("SamplePlugin", "DockWidget", 0, QApplication::UnicodeUTF8));
         _btn0->setText(QApplication::translate("SamplePlugin", "Load textures", 0, QApplication::UnicodeUTF8));
-        _btn1->setText(QApplication::translate("SamplePlugin", "Timer / Update Video", 0, QApplication::UnicodeUTF8));
         _startStopMovement->setText(QApplication::translate("SamplePlugin", "Start / Stop movement", 0, QApplication::UnicodeUTF8));
+        _comboBox->clear();
+        _comboBox->insertItems(0, QStringList()
+         << QApplication::translate("SamplePlugin", "MarkerMotionSlow.txt", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "MarkerMotionMedium.txt", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "MarkerMotionFast.txt", 0, QApplication::UnicodeUTF8)
+        );
         _label->setText(QApplication::translate("SamplePlugin", "Label", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

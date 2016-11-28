@@ -23,6 +23,8 @@ QtGui/QApplication
 -
 QtGui/QButtonGroup
 -
+QtGui/QComboBox
+-
 QtGui/QDockWidget
 -
 QtGui/QHeaderView
@@ -32,8 +34,6 @@ QtGui/QLabel
 QtGui/QPushButton
 -
 QtGui/QSpacerItem
--
-QtGui/QSpinBox
 -
 QtGui/QVBoxLayout
 -
@@ -5854,6 +5854,10 @@ qapplication.h
 qbuttongroup.h
 /usr/include/qt4/QtGui/qbuttongroup.h
 
+/usr/include/qt4/QtGui/QComboBox
+qcombobox.h
+/usr/include/qt4/QtGui/qcombobox.h
+
 /usr/include/qt4/QtGui/QDockWidget
 qdockwidget.h
 /usr/include/qt4/QtGui/qdockwidget.h
@@ -5881,10 +5885,6 @@ qpushbutton.h
 /usr/include/qt4/QtGui/QSpacerItem
 qlayoutitem.h
 /usr/include/qt4/QtGui/qlayoutitem.h
-
-/usr/include/qt4/QtGui/QSpinBox
-qspinbox.h
-/usr/include/qt4/QtGui/qspinbox.h
 
 /usr/include/qt4/QtGui/QVBoxLayout
 qboxlayout.h
@@ -6010,6 +6010,16 @@ QtGui/qrgb.h
 QtCore/qnamespace.h
 -
 QtCore/qstringlist.h
+-
+
+/usr/include/qt4/QtGui/qcombobox.h
+QtGui/qwidget.h
+-
+QtGui/qabstractitemdelegate.h
+-
+QtCore/qabstractitemmodel.h
+-
+QtCore/qvariant.h
 -
 
 /usr/include/qt4/QtGui/qcursor.h
@@ -6294,10 +6304,6 @@ QtCore/qobject.h
 
 /usr/include/qt4/QtGui/qslider.h
 QtGui/qabstractslider.h
--
-
-/usr/include/qt4/QtGui/qspinbox.h
-QtGui/qabstractspinbox.h
 -
 
 /usr/include/qt4/QtGui/qstyle.h

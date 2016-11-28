@@ -10,8 +10,8 @@ SamplePlugin::SamplePlugin():
 
 	// now connect stuff from the ui component
 	connect(_btn0    ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
-	connect(_btn1    ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
-	connect(_spinBox ,SIGNAL(valueChanged(int)), this, SLOT(testFunc()) );
+  connect(_startStopMovement ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
+  connect(_comboBox, SIGNAL(activated(int)), this, SLOT(testFunc()));
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
 	_textureRender = new RenderImage(textureImage);
@@ -26,37 +26,6 @@ SamplePlugin::~SamplePlugin()
 	delete _bgRender;
 }
 
-void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
-  MovableFrame* marker_frame = static_cast<MovableFrame*>(_wc->findFrame("Marker"));
-  // cout << p_6D(3) << " : " <<	p_6D(4) << " : " <<	p_6D(5) << endl;
-  // cout << p_6D.angular() << endl;
-  // cout << p_6D.linear() << endl;
-  marker_frame->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
-  getRobWorkStudio()->setState(_state);
-}
-
-void SamplePlugin::testFunc() {
-  switch (_spinBox->value()) {
-    case 1:
-      cout << "NUMBER 1" << endl;
-      move_marker(VelocityScrew6D<> (0, -0.819, 1.649, 0,	0,	-1.571));
-      break;
-    case 2:
-      cout << "NUMBER 2" << endl;
-      move_marker(VelocityScrew6D<> (0.5, -0.819, 1.649, 0,	0,	-1.571));
-      break;
-    case 3:
-      cout << "NUMBER 3" << endl;
-      move_marker(VelocityScrew6D<> (-0.5, -0.819, 1.649, 0,	0,	-1.571));
-      break;
-    case 4:
-      cout << "NUMBER 4" << endl;
-      move_marker(VelocityScrew6D<> (0, -0.819, 0.5, 0,	0,	-1.571));
-      load_motion("MarkerMotionFast.txt");
-      break;
-  }
-}
-
 void SamplePlugin::initialize() {
 	log().info() << "INITALIZE" << "\n";
 
@@ -68,16 +37,8 @@ void SamplePlugin::initialize() {
     cerr << "WorkCell: not found!" << endl;
   }
 	getRobWorkStudio()->setWorkCell(wc);
-
-	// Load Lena image
-	Mat im, image;
-	im = imread("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/lena.bmp", CV_LOAD_IMAGE_COLOR); // Read the file
-	cvtColor(im, image, CV_BGR2RGB); // Switch the red and blue color channels
-	if(! image.data ) {
-		RW_THROW("Could not open or find the image: please modify the file path in the source code!");
-	}
-	QImage img(image.data, image.cols, image.rows, image.step, QImage::Format_RGB888); // Create QImage from the OpenCV image
-	_label->setPixmap(QPixmap::fromImage(img)); // Show the image at the label in the plugin
+  load_motion("MarkerMotionSlow.txt");
+  timer();
 }
 
 void SamplePlugin::open(WorkCell* workcell)
@@ -159,15 +120,17 @@ void SamplePlugin::btnPressed() {
 		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/backgrounds/color1.ppm");
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
-	} else if(obj==_btn1){
-		log().info() << "Button 1\n";
-		// Toggle the timer on and off
-		if (!_timer->isActive())
-		    _timer->start(100); // run 10 Hz
-		else
-			_timer->stop();
-	} else if(obj==_spinBox){
-		log().info() << "spin value:" << _spinBox->value() << "\n";
+	}
+  else if(obj==_startStopMovement){
+    stop_start_motion = !stop_start_motion;
+    if (stop_start_motion){
+      _timer->start(100); // run 10 Hz
+      log().info() << "Start Motion\n";
+    }
+    else{
+      _timer->stop();
+      log().info() << "Stop Motion\n";
+    }
 	}
 }
 
@@ -190,50 +153,59 @@ void SamplePlugin::timer() {
 		unsigned int maxH = 800;
 		_label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
 	}
+
+  if ( stop_start_motion && !marker_motion.empty() ) {
+    move_marker(marker_motion[current_motion_position]);
+    if (current_motion_position == marker_motion.size())
+      current_motion_position = 0;
+    else
+      current_motion_position++;
+  }
 }
 
 void SamplePlugin::stateChangedListener(const State& state) {
 	_state = state;
 }
 
+void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
+  MovableFrame* marker_frame = static_cast<MovableFrame*>(_wc->findFrame("Marker"));
+  marker_frame->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
+  getRobWorkStudio()->setState(_state);
+}
+
+void SamplePlugin::testFunc() {
+  current_motion_position = 0;
+  switch (_comboBox->currentIndex()) {
+    case 0:
+      load_motion("MarkerMotionSlow.txt");
+      break;
+    case 1:
+      load_motion("MarkerMotionMedium.txt");
+      break;
+    case 2:
+      load_motion("MarkerMotionFast.txt");
+      break;
+  }
+}
+
 void SamplePlugin::load_motion( string move_file ){
 
+  marker_motion.clear();
   string move_file_path = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/" + move_file;
-  ifstream motion_file(move_file_path.c_str()); // the input file
-  string input;
+  ifstream motion_file(move_file_path.c_str());
   VelocityScrew6D<> pos_6D;
-  int tabs = 1;
+  string input;
+  //double X,Y,Z,R,P,Y;
 
+  // Inspired by http://stackoverflow.com/questions/14516915/read-numeric-data-from-a-text-file-in-c
   if (motion_file.is_open()) {
-    while ( getline (motion_file, input,'\t') ) {
-      switch (tabs) {
-        case 1:
-          pos_6D(0) = atof(input.c_str());
-          break;
-        case 2:
-          pos_6D(1) = atof(input.c_str());
-          break;
-        case 3:
-          pos_6D(2) = atof(input.c_str());
-          break;
-        case 4:
-          pos_6D(3) = atof(input.c_str());
-          break;
-        case 5:
-          pos_6D(4) = atof(input.c_str());
-          break;
-        case 6:
-          pos_6D(5) = atof(input.c_str());
-          tabs = 0;
-          marker_motion.push_back(pos_6D);
-          cout << pos_6D << endl;
-          break;
-      }
-      //cout << input << endl;
-      tabs ++;
+    while ( getline (motion_file, input,'\n') ) {
+      //motion_file >> X >> Y >> Z >> R >> P >> Y;
+      motion_file >> pos_6D(0) >> pos_6D(1) >> pos_6D(2) >> pos_6D(3) >> pos_6D(4) >> pos_6D(5);
+      marker_motion.push_back(pos_6D);
     }
     motion_file.close();
-    cout << "Loaded: " << move_file << endl;
+    log().info() << "Loaded: " << move_file << "\n";
   }
 
 }

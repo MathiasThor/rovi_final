@@ -25,21 +25,20 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="_btn1">
-        <property name="text">
-         <string>Timer / Update Video</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="_startStopMovement">
         <property name="text">
          <string>Start / Stop movement</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QSpinBox" name="_spinBox">
+      <item alignment="Qt::AlignTop">
+       <widget class="QComboBox" name="_comboBox">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>26</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -48,15 +47,24 @@
           <bold>true</bold>
          </font>
         </property>
-        <property name="buttonSymbols">
-         <enum>QAbstractSpinBox::UpDownArrows</enum>
+        <property name="maxVisibleItems">
+         <number>3</number>
         </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>4</number>
-        </property>
+        <item>
+         <property name="text">
+          <string>MarkerMotionSlow.txt</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>MarkerMotionMedium.txt</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>MarkerMotionFast.txt</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item alignment="Qt::AlignHCenter">

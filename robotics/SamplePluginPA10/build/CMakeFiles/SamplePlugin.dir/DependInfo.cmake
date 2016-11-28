@@ -31,7 +31,6 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/home/mat/RobWork/RobWork/cmake/../ext/lua/src"
   "/home/mat/RobWork/RobWork/cmake/../ext/qhull/src"
   "/home/mat/RobWork/RobWork/cmake/../ext/csgjs/src"
-  "/home/mat/RobWork/RobWork/cmake/../ext/zlib"
   "/home/mat/RobWork/RobWork/cmake/../ext/unzip"
   "/home/mat/RobWork/RobWork/cmake/../ext/assimp/include"
   "/usr/include/qt4"

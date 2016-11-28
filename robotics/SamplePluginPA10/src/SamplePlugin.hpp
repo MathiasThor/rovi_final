@@ -53,6 +53,8 @@ public:
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
 	void load_motion( string move_file );
 	vector< rw::math::VelocityScrew6D<double> > marker_motion;
+	int current_motion_position = 0;
+	bool stop_start_motion = false;
 
 private slots:
 	void btnPressed();
