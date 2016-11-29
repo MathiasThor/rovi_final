@@ -9,9 +9,11 @@ SamplePlugin::SamplePlugin():
   connect(_timer, SIGNAL(timeout()), this, SLOT(timer()));
 
 	// now connect stuff from the ui component
-	connect(_btn0    ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
-  connect(_startStopMovement ,SIGNAL(pressed()), this, SLOT(btnPressed()) );
-  connect(_comboBox, SIGNAL(activated(int)), this, SLOT(testFunc()));
+	connect(_btn0,              SIGNAL(pressed()),      this, SLOT(btnPressed()) );
+  connect(_startStopMovement, SIGNAL(pressed()),      this, SLOT(btnPressed()) );
+  connect(_comboBox,          SIGNAL(activated(int)), this, SLOT(testFunc())   );
+  connect(_followMarker,      SIGNAL(pressed()),      this, SLOT(btnPressed()) );
+
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
 	_textureRender = new RenderImage(textureImage);
@@ -46,6 +48,11 @@ void SamplePlugin::open(WorkCell* workcell)
 	log().info() << "OPEN" << "\n";
 	_wc = workcell;
 	_state = _wc->getDefaultState();
+  _PA10 = _wc->findDevice("PA10");
+
+  if (_PA10 == NULL) {
+    cerr << "Device: PA10 not found!" << endl;
+  }
 
 	log().info() << workcell->getFilename() << "\n";
 
@@ -132,6 +139,18 @@ void SamplePlugin::btnPressed() {
       log().info() << "Stop Motion\n";
     }
 	}
+  else if(obj==_followMarker){
+    /// TMP
+    move_marker(marker_motion[current_motion_position]);
+    if (current_motion_position == marker_motion.size())
+      current_motion_position = 0;
+    else
+      current_motion_position++;
+    /// TMP
+
+    follow_marker();
+    log().info() << "Follow Marker\n";
+  }
 }
 
 void SamplePlugin::timer() {
@@ -189,24 +208,107 @@ void SamplePlugin::testFunc() {
 }
 
 void SamplePlugin::load_motion( string move_file ){
-
   marker_motion.clear();
   string move_file_path = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/" + move_file;
   ifstream motion_file(move_file_path.c_str());
   VelocityScrew6D<> pos_6D;
   string input;
-  //double X,Y,Z,R,P,Y;
 
   // Inspired by http://stackoverflow.com/questions/14516915/read-numeric-data-from-a-text-file-in-c
   if (motion_file.is_open()) {
     while ( getline (motion_file, input,'\n') ) {
-      //motion_file >> X >> Y >> Z >> R >> P >> Y;
       motion_file >> pos_6D(0) >> pos_6D(1) >> pos_6D(2) >> pos_6D(3) >> pos_6D(4) >> pos_6D(5);
       marker_motion.push_back(pos_6D);
     }
     motion_file.close();
     log().info() << "Loaded: " << move_file << "\n";
   }
+}
+
+void SamplePlugin::follow_marker( ){
+  double focal_length = 823;
+  double z = 0.5;
+
+  //
+  // Get the transform of CAMARA frame relative to the MARKER frame. -OK
+  //
+  Transform3D<> camara_to_marker = _wc->findFrame("Marker")->fTf(_wc->findFrame("Camera"), _state);
+
+  //
+  // Calculate u, v, du and dv
+  //
+  Vector3D<> marker_midpoint = inverse(camara_to_marker) * Vector3D<>(0,0,0);
+  const double u = ( marker_midpoint(0) * focal_length ) / z;
+  const double v = ( marker_midpoint(1) * focal_length ) / z;
+
+  Jacobian d_uv(2,1);
+  d_uv(0,0) = u - u_old;
+  d_uv(1,0) = v - v_old;
+  u_old = u;
+  v_old = v;
+  log().info() << "v:\t" << v << "\n";
+  log().info() << "u:\t" << u << "\n";
+  log().info() << "d_uv:\n" << d_uv << "\n";
+
+  //
+  // Calculate the jacobian for PA10 -Ok
+  //
+	Jacobian J_PA10 = _PA10->baseJframe(_wc->findFrame("Camera"), _state);
+  //log().info() << "j_pa10:\n" << J_PA10 << "\n";
+
+  //
+  // Calculate the image jacobian
+  //
+  Jacobian J_image(2,6);   // Create 6*2 Jacobian
+
+  // Fill the jacobian
+  J_image(0, 0) = -(focal_length / z);
+  J_image(0, 1) = 0;
+  J_image(0, 2) = u/z;
+  J_image(0, 3) = u*v/focal_length;
+  J_image(0, 4) = -(((focal_length*focal_length)+(u*u))/(focal_length));
+  J_image(0, 5) = v;
+  J_image(1, 0) = 0;
+  J_image(1, 1) = -(focal_length / z);
+  J_image(1, 2) = (v/z);
+  J_image(1, 3) = (((focal_length*focal_length)+(v*v))/(focal_length));
+  J_image(1, 4) = -((u*v)/(focal_length));
+  J_image(1, 5) = -u;
+  //log().info() << "J_img:\n" << J_image << "\n";
+
+  //
+  // Calculate Sq
+  //
+  Rotation3D<> cam_rotation = inverse(_PA10->baseTframe(_wc->findFrame("Camera"), _state)).R();
+  Jacobian J_sq = Jacobian(cam_rotation);
+
+  //
+  // Calculate Z_image
+  //
+  Jacobian z_image = J_image * J_sq * J_PA10;
+  //log().info() << "z:\n" << z_image << "\n";
+  Jacobian z_image_T(7,2);
+  for(int i=0; i < 7; i++){
+    for(int j=0; j < 2; j++){
+      z_image_T(i,j) = z_image(j,i);
+    }
+  }
+
+  //
+  // Calculate dq
+  // TODO: Is it the use of .e() that fucked us up?
+  Jacobian Y = (Jacobian)(z_image*z_image_T).e().inverse()*d_uv;
+  Jacobian J_dq = z_image_T*Y;
+  Q dq(7, J_dq(0,0) , J_dq(0,1) ,J_dq(0,2),J_dq(0,3),J_dq(0,4),J_dq(0,5),J_dq(0,6));
+
+  // auto ytt = z_image.e().inverse() * d_uv.e();
+  // Q dqqq(z_image.e().transpose()*ytt);
+  // log().info() << "q:\t" << dqqq << "\n";
+  // log().info() << "dq:\t" << dq << "\n";
+
+  Q new_q(_PA10->getQ(_state)+dq);
+  _PA10->setQ(new_q, _state);
+  getRobWorkStudio()->setState(_state);
 
 }
 

@@ -32,6 +32,7 @@ public:
     QVBoxLayout *verticalLayout;
     QPushButton *_btn0;
     QPushButton *_startStopMovement;
+    QPushButton *_followMarker;
     QComboBox *_comboBox;
     QLabel *_label;
     QSpacerItem *verticalSpacer;
@@ -56,6 +57,11 @@ public:
         _startStopMovement->setObjectName(QString::fromUtf8("_startStopMovement"));
 
         verticalLayout->addWidget(_startStopMovement);
+
+        _followMarker = new QPushButton(dockWidgetContents);
+        _followMarker->setObjectName(QString::fromUtf8("_followMarker"));
+
+        verticalLayout->addWidget(_followMarker);
 
         _comboBox = new QComboBox(dockWidgetContents);
         _comboBox->setObjectName(QString::fromUtf8("_comboBox"));
@@ -94,6 +100,7 @@ public:
         SamplePlugin->setWindowTitle(QApplication::translate("SamplePlugin", "DockWidget", 0, QApplication::UnicodeUTF8));
         _btn0->setText(QApplication::translate("SamplePlugin", "Load textures", 0, QApplication::UnicodeUTF8));
         _startStopMovement->setText(QApplication::translate("SamplePlugin", "Start / Stop movement", 0, QApplication::UnicodeUTF8));
+        _followMarker->setText(QApplication::translate("SamplePlugin", "Follow marker", 0, QApplication::UnicodeUTF8));
         _comboBox->clear();
         _comboBox->insertItems(0, QStringList()
          << QApplication::translate("SamplePlugin", "MarkerMotionSlow.txt", 0, QApplication::UnicodeUTF8)

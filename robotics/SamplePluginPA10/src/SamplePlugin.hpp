@@ -50,12 +50,6 @@ public:
 	virtual void close();
 	virtual void initialize();
 
-	void move_marker( rw::math::VelocityScrew6D<> v6D );
-	void load_motion( string move_file );
-	vector< rw::math::VelocityScrew6D<double> > marker_motion;
-	int current_motion_position = 0;
-	bool stop_start_motion = false;
-
 private slots:
 	void btnPressed();
 	void testFunc();
@@ -63,7 +57,19 @@ private slots:
 	void stateChangedListener(const rw::kinematics::State& state);
 
 private:
+
+	// Private funcs
+	void move_marker( rw::math::VelocityScrew6D<> v6D );
+	void load_motion( string move_file );
+	void follow_marker( );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
+
+	// Global variables
+	vector< rw::math::VelocityScrew6D<double> > marker_motion;
+	int current_motion_position = 0;
+	bool stop_start_motion = false;
+	double u_old=5.761, v_old=74.0487;
+	Device::Ptr _PA10;
 	QTimer* _timer;
 	rw::models::WorkCell::Ptr _wc;
 	rw::kinematics::State _state;

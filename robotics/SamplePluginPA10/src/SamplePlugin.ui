@@ -31,6 +31,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="_followMarker">
+        <property name="text">
+         <string>Follow marker</string>
+        </property>
+       </widget>
+      </item>
       <item alignment="Qt::AlignTop">
        <widget class="QComboBox" name="_comboBox">
         <property name="minimumSize">
