@@ -175,10 +175,15 @@ void SamplePlugin::timer() {
 
   if ( stop_start_motion && !marker_motion.empty() ) {
     move_marker(marker_motion[current_motion_position]);
-    if (current_motion_position == marker_motion.size())
+    if (current_motion_position == marker_motion.size()){
       current_motion_position = 0;
+      u_old=5.761
+      v_old=74.0487;
+    }
     else
       current_motion_position++;
+
+    follow_marker();
   }
 }
 
@@ -246,8 +251,7 @@ void SamplePlugin::follow_marker( ){
   d_uv(1,0) = v - v_old;
   u_old = u;
   v_old = v;
-  log().info() << "v:\t" << v << "\n";
-  log().info() << "u:\t" << u << "\n";
+  log().info() << "uv:\n" << u << "\n" << v << "\n";
   log().info() << "d_uv:\n" << d_uv << "\n";
 
   //
@@ -281,6 +285,7 @@ void SamplePlugin::follow_marker( ){
   //
   Rotation3D<> cam_rotation = inverse(_PA10->baseTframe(_wc->findFrame("Camera"), _state)).R();
   Jacobian J_sq = Jacobian(cam_rotation);
+  //log().info() << "z:\n" << J_sq << "\n";
 
   //
   // Calculate Z_image
@@ -296,15 +301,10 @@ void SamplePlugin::follow_marker( ){
 
   //
   // Calculate dq
-  // TODO: Is it the use of .e() that fucked us up?
-  Jacobian Y = (Jacobian)(z_image*z_image_T).e().inverse()*d_uv;
+  //
+  Jacobian Y ((z_image*z_image_T).e().inverse()*d_uv.e());
   Jacobian J_dq = z_image_T*Y;
-  Q dq(7, J_dq(0,0) , J_dq(0,1) ,J_dq(0,2),J_dq(0,3),J_dq(0,4),J_dq(0,5),J_dq(0,6));
-
-  // auto ytt = z_image.e().inverse() * d_uv.e();
-  // Q dqqq(z_image.e().transpose()*ytt);
-  // log().info() << "q:\t" << dqqq << "\n";
-  // log().info() << "dq:\t" << dq << "\n";
+  Q dq(J_dq.e());
 
   Q new_q(_PA10->getQ(_state)+dq);
   _PA10->setQ(new_q, _state);
