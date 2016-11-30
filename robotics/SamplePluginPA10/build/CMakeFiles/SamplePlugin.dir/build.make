@@ -215,7 +215,7 @@ SamplePlugin_EXTERNAL_OBJECTS =
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_qhull.a
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_csgjs.a
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_unzip.a
-../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_zlib.a
+../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libz.so
 ../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libdl.so
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_lua_s.a
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/liblua51.a
@@ -252,7 +252,7 @@ SamplePlugin_EXTERNAL_OBJECTS =
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_qhull.a
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_csgjs.a
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_unzip.a
-../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_zlib.a
+../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libz.so
 ../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libdl.so
 ../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libQtOpenGL.so
 ../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libQtDesigner.so
@@ -312,7 +312,7 @@ SamplePlugin_EXTERNAL_OBJECTS =
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_qhull.a
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_csgjs.a
 ../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_unzip.a
-../libs/release/libSamplePlugin.so: /home/mat/RobWork/RobWork/libs/release/librw_zlib.a
+../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libz.so
 ../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libdl.so
 ../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libQtOpenGL.so
 ../libs/release/libSamplePlugin.so: /usr/lib/x86_64-linux-gnu/libQtDesigner.so

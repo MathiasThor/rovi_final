@@ -177,7 +177,7 @@ void SamplePlugin::timer() {
     move_marker(marker_motion[current_motion_position]);
     if (current_motion_position == marker_motion.size()){
       current_motion_position = 0;
-      u_old=5.761
+      u_old=5.761;
       v_old=74.0487;
     }
     else
@@ -231,8 +231,10 @@ void SamplePlugin::load_motion( string move_file ){
 }
 
 void SamplePlugin::follow_marker( ){
-  double focal_length = 823;
-  double z = 0.5;
+  float f = 823;
+  float z = 0.5;
+
+  // TODO Check calculations of DU DV
 
   //
   // Get the transform of CAMARA frame relative to the MARKER frame. -OK
@@ -243,8 +245,8 @@ void SamplePlugin::follow_marker( ){
   // Calculate u, v, du and dv
   //
   Vector3D<> marker_midpoint = inverse(camara_to_marker) * Vector3D<>(0,0,0);
-  const double u = ( marker_midpoint(0) * focal_length ) / z;
-  const double v = ( marker_midpoint(1) * focal_length ) / z;
+  const float u = ( marker_midpoint(0) * f ) / z;
+  const float v = ( marker_midpoint(1) * f ) / z;
 
   Jacobian d_uv(2,1);
   d_uv(0,0) = u - u_old;
@@ -264,19 +266,18 @@ void SamplePlugin::follow_marker( ){
   // Calculate the image jacobian
   //
   Jacobian J_image(2,6);   // Create 6*2 Jacobian
-
   // Fill the jacobian
-  J_image(0, 0) = -(focal_length / z);
+  J_image(0, 0) = -(f / z);
   J_image(0, 1) = 0;
   J_image(0, 2) = u/z;
-  J_image(0, 3) = u*v/focal_length;
-  J_image(0, 4) = -(((focal_length*focal_length)+(u*u))/(focal_length));
+  J_image(0, 3) = u*v/f;
+  J_image(0, 4) = -(((f*f)+(u*u))/(f));
   J_image(0, 5) = v;
   J_image(1, 0) = 0;
-  J_image(1, 1) = -(focal_length / z);
+  J_image(1, 1) = -(f / z);
   J_image(1, 2) = (v/z);
-  J_image(1, 3) = (((focal_length*focal_length)+(v*v))/(focal_length));
-  J_image(1, 4) = -((u*v)/(focal_length));
+  J_image(1, 3) = (((f*f)+(v*v))/(f));
+  J_image(1, 4) = -((u*v)/(f));
   J_image(1, 5) = -u;
   //log().info() << "J_img:\n" << J_image << "\n";
 
@@ -302,10 +303,9 @@ void SamplePlugin::follow_marker( ){
   //
   // Calculate dq
   //
-  Jacobian Y ((z_image*z_image_T).e().inverse()*d_uv.e());
-  Jacobian J_dq = z_image_T*Y;
+  Jacobian z_zT = z_image*z_image_T;
+  Jacobian J_dq(z_image_T.e()*(z_zT.e().inverse()*d_uv.e()));
   Q dq(J_dq.e());
-
   Q new_q(_PA10->getQ(_state)+dq);
   _PA10->setQ(new_q, _state);
   getRobWorkStudio()->setState(_state);
