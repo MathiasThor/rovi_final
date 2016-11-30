@@ -68,8 +68,15 @@ private:
 	vector< rw::math::VelocityScrew6D<double> > marker_motion;
 	int current_motion_position = 0;
 	bool stop_start_motion = false;
-	double u_old=5.761, v_old=74.0487;
+	double u_old=0, v_old=0;
+
+	Q init_position;
+
 	Device::Ptr _PA10;
+	Frame* _Marker;
+	Frame* _Camera;
+
+
 	QTimer* _timer;
 	rw::models::WorkCell::Ptr _wc;
 	rw::kinematics::State _state;

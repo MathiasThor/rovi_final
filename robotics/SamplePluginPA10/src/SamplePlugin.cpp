@@ -49,10 +49,14 @@ void SamplePlugin::open(WorkCell* workcell)
 	_wc = workcell;
 	_state = _wc->getDefaultState();
   _PA10 = _wc->findDevice("PA10");
+  _Marker = _wc->findFrame("Marker");
+  _Camera = _wc->findFrame("Camera");
 
-  if (_PA10 == NULL) {
+  if (_PA10 == NULL)
     cerr << "Device: PA10 not found!" << endl;
-  }
+  else
+    init_position = _PA10->getQ(_state);
+
 
 	log().info() << workcell->getFilename() << "\n";
 
@@ -177,13 +181,15 @@ void SamplePlugin::timer() {
     move_marker(marker_motion[current_motion_position]);
     if (current_motion_position == marker_motion.size()){
       current_motion_position = 0;
-      u_old=5.761;
-      v_old=74.0487;
+      _PA10->setQ(init_position, _state);
+      getRobWorkStudio()->setState(_state);
+      u_old=0;
+      v_old=0;
     }
-    else
+    else {
       current_motion_position++;
-
-    follow_marker();
+      follow_marker();
+    }
   }
 }
 
@@ -192,7 +198,7 @@ void SamplePlugin::stateChangedListener(const State& state) {
 }
 
 void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
-  MovableFrame* marker_frame = static_cast<MovableFrame*>(_wc->findFrame("Marker"));
+  MovableFrame* marker_frame = static_cast<MovableFrame*>(_Marker);
   marker_frame->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
   getRobWorkStudio()->setState(_state);
 }
@@ -239,7 +245,7 @@ void SamplePlugin::follow_marker( ){
   //
   // Get the transform of CAMARA frame relative to the MARKER frame. -OK
   //
-  Transform3D<> camara_to_marker = _wc->findFrame("Marker")->fTf(_wc->findFrame("Camera"), _state);
+  Transform3D<> camara_to_marker = _Marker->fTf(_Camera, _state);
 
   //
   // Calculate u, v, du and dv
@@ -247,19 +253,18 @@ void SamplePlugin::follow_marker( ){
   Vector3D<> marker_midpoint = inverse(camara_to_marker) * Vector3D<>(0,0,0);
   const float u = ( marker_midpoint(0) * f ) / z;
   const float v = ( marker_midpoint(1) * f ) / z;
-
   Jacobian d_uv(2,1);
   d_uv(0,0) = u - u_old;
   d_uv(1,0) = v - v_old;
-  u_old = u;
-  v_old = v;
   log().info() << "uv:\n" << u << "\n" << v << "\n";
   log().info() << "d_uv:\n" << d_uv << "\n";
+  u_old = u;
+  v_old = v;
 
   //
   // Calculate the jacobian for PA10 -Ok
   //
-	Jacobian J_PA10 = _PA10->baseJframe(_wc->findFrame("Camera"), _state);
+	Jacobian J_PA10 = _PA10->baseJframe(_Camera, _state);
   //log().info() << "j_pa10:\n" << J_PA10 << "\n";
 
   //
@@ -284,9 +289,11 @@ void SamplePlugin::follow_marker( ){
   //
   // Calculate Sq
   //
-  Rotation3D<> cam_rotation = inverse(_PA10->baseTframe(_wc->findFrame("Camera"), _state)).R();
-  Jacobian J_sq = Jacobian(cam_rotation);
-  //log().info() << "z:\n" << J_sq << "\n";
+  Transform3D<> base2cam = inverse(_PA10->baseTframe(_Camera, _state));
+  Jacobian J_sq = Jacobian(base2cam.R());
+
+  log().info() << "R:\n" << base2cam.R() << "\n";
+  log().info() << "sq:\n" << J_sq << "\n";
 
   //
   // Calculate Z_image
