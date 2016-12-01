@@ -36,6 +36,7 @@ public:
     QComboBox *_comboBox;
     QLabel *_label;
     QSpacerItem *verticalSpacer;
+    QPushButton *_resetSim;
 
     void setupUi(QDockWidget *SamplePlugin)
     {
@@ -85,6 +86,11 @@ public:
 
         verticalLayout->addItem(verticalSpacer);
 
+        _resetSim = new QPushButton(dockWidgetContents);
+        _resetSim->setObjectName(QString::fromUtf8("_resetSim"));
+
+        verticalLayout->addWidget(_resetSim);
+
 
         verticalLayout_2->addLayout(verticalLayout);
 
@@ -108,6 +114,7 @@ public:
          << QApplication::translate("SamplePlugin", "MarkerMotionFast.txt", 0, QApplication::UnicodeUTF8)
         );
         _label->setText(QApplication::translate("SamplePlugin", "Label", 0, QApplication::UnicodeUTF8));
+        _resetSim->setText(QApplication::translate("SamplePlugin", "Reset", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

@@ -13,6 +13,7 @@ SamplePlugin::SamplePlugin():
   connect(_startStopMovement, SIGNAL(pressed()),      this, SLOT(btnPressed()) );
   connect(_comboBox,          SIGNAL(activated(int)), this, SLOT(testFunc())   );
   connect(_followMarker,      SIGNAL(pressed()),      this, SLOT(btnPressed()) );
+  connect(_resetSim,          SIGNAL(pressed()),      this, SLOT(resetSim()) );
 
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
@@ -54,9 +55,11 @@ void SamplePlugin::open(WorkCell* workcell)
 
   if (_PA10 == NULL)
     cerr << "Device: PA10 not found!" << endl;
-  else
-    init_position = _PA10->getQ(_state);
 
+  resetSim();
+  vel_limits = _PA10->getVelocityLimits();
+  jointPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
+  toolPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
 
 	log().info() << workcell->getFilename() << "\n";
 
@@ -114,6 +117,24 @@ void SamplePlugin::close() {
 	_wc = NULL;
 }
 
+void SamplePlugin::resetSim(){
+  current_motion_position = 0;
+  move_marker(marker_motion[current_motion_position]);
+  Q init_position(7, 0, -0.65, 0, 1.80, 0, 0.42, 0);
+  _PA10->setQ(init_position, _state);
+  getRobWorkStudio()->setState(_state);
+
+  uv.clear();
+  for (int row = 0; row < numOfPoints*2; row++)
+    uv.push_back(0);
+
+  Transform3D<> camara_to_marker = _Marker->fTf(_Camera, _state);
+  Vector3D<> marker_midpoint = inverse(camara_to_marker) * Vector3D<>(0,0,0);
+
+  timer();
+  getRobWorkStudio()->setState(_state);
+}
+
 Mat SamplePlugin::toOpenCVImage(const Image& img) {
 	Mat res(img.getHeight(),img.getWidth(), CV_8SC3);
 	res.data = (uchar*)img.getImageData();
@@ -135,61 +156,66 @@ void SamplePlugin::btnPressed() {
   else if(obj==_startStopMovement){
     stop_start_motion = !stop_start_motion;
     if (stop_start_motion){
-      _timer->start(100); // run 10 Hz
       log().info() << "Start Motion\n";
+      _timer->start(100); // run 10 Hz
     }
     else{
-      _timer->stop();
       log().info() << "Stop Motion\n";
+      _timer->stop();
     }
 	}
   else if(obj==_followMarker){
+    log().info() << "Follow Marker\n";
     /// TMP
     move_marker(marker_motion[current_motion_position]);
     if (current_motion_position == marker_motion.size())
-      current_motion_position = 0;
+      resetSim();
     else
       current_motion_position++;
     /// TMP
 
     follow_marker();
-    log().info() << "Follow Marker\n";
+    timer();
   }
 }
 
 void SamplePlugin::timer() {
-	if (_framegrabber != NULL) {
-		// Get the image as a RW image
-		Frame* cameraFrame = _wc->findFrame("CameraSim");
-		_framegrabber->grab(cameraFrame, _state);
-		const Image& image = _framegrabber->getImage();
-
-		// Convert to OpenCV image
-		Mat im = toOpenCVImage(image);
-		Mat imflip;
-		cv::flip(im, imflip, 0);
-
-		// Show in QLabel
-		QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
-		QPixmap p = QPixmap::fromImage(img);
-		unsigned int maxW = 400;
-		unsigned int maxH = 800;
-		_label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
-	}
-
   if ( stop_start_motion && !marker_motion.empty() ) {
     move_marker(marker_motion[current_motion_position]);
+
     if (current_motion_position == marker_motion.size()){
-      current_motion_position = 0;
-      _PA10->setQ(init_position, _state);
-      getRobWorkStudio()->setState(_state);
-      u_old=0;
-      v_old=0;
+      resetSim();
     }
     else {
       current_motion_position++;
       follow_marker();
+      //writeToFile();
     }
+  }
+
+  if (_framegrabber != NULL) {
+    // Get the image as a RW image
+    Frame* cameraFrame = _wc->findFrame("CameraSim");
+    _framegrabber->grab(cameraFrame, _state);
+    const Image& image = _framegrabber->getImage();
+
+    // Convert to OpenCV image
+    Mat im = toOpenCVImage(image);
+    Mat imflip;
+    cv::flip(im, imflip, 0);
+    // for (int i = 0; i < numOfPoints; i++) {
+    //   /* code */
+    // }
+    cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2), 15, cv::Scalar(0,255,0), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2-uv[0],imflip.rows/2-uv[1]), 10, cv::Scalar(255,0,0), -1);
+
+
+    // Show in QLabel
+    QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
+    QPixmap p = QPixmap::fromImage(img);
+    unsigned int maxW = 400;
+    unsigned int maxH = 800;
+    _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
   }
 }
 
@@ -204,7 +230,7 @@ void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
 }
 
 void SamplePlugin::testFunc() {
-  current_motion_position = 0;
+  resetSim();
   switch (_comboBox->currentIndex()) {
     case 0:
       load_motion("MarkerMotionSlow.txt");
@@ -237,29 +263,33 @@ void SamplePlugin::load_motion( string move_file ){
 }
 
 void SamplePlugin::follow_marker( ){
-  float f = 823;
-  float z = 0.5;
-
-  // TODO Check calculations of DU DV
-
   //
   // Get the transform of CAMARA frame relative to the MARKER frame. -OK
   //
   Transform3D<> camara_to_marker = _Marker->fTf(_Camera, _state);
 
   //
-  // Calculate u, v, du and dv
+  // Calculate u, uv[1], du and dv
   //
-  Vector3D<> marker_midpoint = inverse(camara_to_marker) * Vector3D<>(0,0,0);
-  const float u = ( marker_midpoint(0) * f ) / z;
-  const float v = ( marker_midpoint(1) * f ) / z;
-  Jacobian d_uv(2,1);
-  d_uv(0,0) = u - u_old;
-  d_uv(1,0) = v - v_old;
-  log().info() << "uv:\n" << u << "\n" << v << "\n";
-  log().info() << "d_uv:\n" << d_uv << "\n";
-  u_old = u;
-  v_old = v;
+  vector< Vector3D<> > points;
+  points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
+  points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
+  points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
+  vector< double > targets = { 0, 0, (( 0.1 * f ) / z), 0, 0, (( 0.1 * f ) / z)};
+
+  for (int i = 0; i < numOfPoints; i++) {
+    uv[i*2]   = -( points[i][0] * f ) / z;
+    uv[i*2+1] = -( points[i][1] * f ) / z;
+  }
+
+  Jacobian d_uv(numOfPoints*2,1);
+  for (int i = 0; i < numOfPoints; i++) {
+    d_uv(i*2,0)   = uv[i*2]   - targets[i*2];
+    d_uv(i*2+1,0) = uv[i*2+1] - targets[i*2+1];
+  }
+
+  log().info() << "uv:\n" << uv[0] << "\n" << uv[1] << "\n";
+  //log().info() << "d_uv:\n" << d_uv << "\n";
 
   //
   // Calculate the jacobian for PA10 -Ok
@@ -270,37 +300,37 @@ void SamplePlugin::follow_marker( ){
   //
   // Calculate the image jacobian
   //
-  Jacobian J_image(2,6);   // Create 6*2 Jacobian
+  Jacobian J_image(numOfPoints*2,6);   // Create 6*2 Jacobian
   // Fill the jacobian
-  J_image(0, 0) = -(f / z);
-  J_image(0, 1) = 0;
-  J_image(0, 2) = u/z;
-  J_image(0, 3) = u*v/f;
-  J_image(0, 4) = -(((f*f)+(u*u))/(f));
-  J_image(0, 5) = v;
-  J_image(1, 0) = 0;
-  J_image(1, 1) = -(f / z);
-  J_image(1, 2) = (v/z);
-  J_image(1, 3) = (((f*f)+(v*v))/(f));
-  J_image(1, 4) = -((u*v)/(f));
-  J_image(1, 5) = -u;
-  //log().info() << "J_img:\n" << J_image << "\n";
+  for (int i = 0; i < numOfPoints; i++) {
+    J_image(i*2, 0)   = -(f / z);
+    J_image(i*2, 1)   = 0;
+    J_image(i*2, 2)   = uv[i*2]/z;
+    J_image(i*2, 3)   = uv[i*2]*uv[i*2+1]/f;
+    J_image(i*2, 4)   = -(((f*f)+(uv[i*2]*uv[i*2]))/(f));
+    J_image(i*2, 5)   = uv[i*2+1];
+    J_image(i*2+1, 0) = 0;
+    J_image(i*2+1, 1) = -(f / z);
+    J_image(i*2+1, 2) = (uv[i*2+1]/z);
+    J_image(i*2+1, 3) = (((f*f)+(uv[i*2+1]*uv[i*2+1]))/(f));
+    J_image(i*2+1, 4) = -((uv[i*2]*uv[i*2+1])/(f));
+    J_image(i*2+1, 5) = -uv[i*2];
+  }
+  log().info() << "J_img:\n" << J_image << "\n";
 
   //
   // Calculate Sq
   //
   Transform3D<> base2cam = inverse(_PA10->baseTframe(_Camera, _state));
   Jacobian J_sq = Jacobian(base2cam.R());
-
-  log().info() << "R:\n" << base2cam.R() << "\n";
-  log().info() << "sq:\n" << J_sq << "\n";
+  //log().info() << "sq:\n" << J_sq << "\n";
 
   //
   // Calculate Z_image
   //
   Jacobian z_image = J_image * J_sq * J_PA10;
   //log().info() << "z:\n" << z_image << "\n";
-  Jacobian z_image_T(7,2);
+  Jacobian z_image_T(7,numOfPoints*2);
   for(int i=0; i < 7; i++){
     for(int j=0; j < 2; j++){
       z_image_T(i,j) = z_image(j,i);
@@ -310,13 +340,46 @@ void SamplePlugin::follow_marker( ){
   //
   // Calculate dq
   //
-  Jacobian z_zT = z_image*z_image_T;
-  Jacobian J_dq(z_image_T.e()*(z_zT.e().inverse()*d_uv.e()));
+  Jacobian J_dq(z_image_T.e()*((z_image*z_image_T).e().inverse()*d_uv.e()));
   Q dq(J_dq.e());
-  Q new_q(_PA10->getQ(_state)+dq);
+  Q new_q(_PA10->getQ(_state));
+  velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
   getRobWorkStudio()->setState(_state);
-
 }
+
+void SamplePlugin::velocityLimit( Q dq, Q &q ){
+  for (int i = 0; i < 7; i++) {
+    if (dq[i] > vel_limits[i] * DT){
+        dq[i] = vel_limits[i] * DT;
+        log().info() << "[Velocity limited]" << "\n";
+    }
+    else if (dq[i] < -vel_limits[i] * DT){
+        dq[i] = -vel_limits[i] * DT;
+        log().info() << "[Velocity limited]" << "\n";
+    }
+
+    q[i] += dq[i];
+  }
+}
+
+void SamplePlugin::writeToFile( ){
+  if (toolPos_file.is_open()){
+    Vector3D<> tmp_tool = _PA10->baseTframe(_Camera, _state).P();
+    for (int i = 0; i < tmp_tool.size(); i++) {
+      toolPos_file << tmp_tool[i] << "\t";
+    }
+    toolPos_file << "\n";
+  } else cout << "can't open tool position file" << endl;
+
+  if (jointPos_file.is_open()){
+    Q tmp_joint =_PA10->getQ(_state);
+    for (int i = 0; i < tmp_joint.size(); i++) {
+      jointPos_file << tmp_joint[i] << "\t";
+    }
+    jointPos_file << "\n";
+  } else cout << "can't open tool position file" << endl;
+}
+
 
 Q_EXPORT_PLUGIN(SamplePlugin);

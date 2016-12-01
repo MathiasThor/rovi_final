@@ -94,6 +94,13 @@
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QPushButton" name="_resetSim">
+        <property name="text">
+         <string>Reset</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
