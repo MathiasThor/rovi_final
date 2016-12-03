@@ -15,6 +15,7 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QComboBox>
 #include <QtGui/QDockWidget>
+#include <QtGui/QDoubleSpinBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
@@ -34,6 +35,7 @@ public:
     QPushButton *_startStopMovement;
     QPushButton *_followMarker;
     QComboBox *_comboBox;
+    QDoubleSpinBox *_DT;
     QLabel *_label;
     QSpacerItem *verticalSpacer;
     QPushButton *_resetSim;
@@ -76,6 +78,18 @@ public:
         _comboBox->setMaxVisibleItems(3);
 
         verticalLayout->addWidget(_comboBox, 0, Qt::AlignTop);
+
+        _DT = new QDoubleSpinBox(dockWidgetContents);
+        _DT->setObjectName(QString::fromUtf8("_DT"));
+        _DT->setButtonSymbols(QAbstractSpinBox::PlusMinus);
+        _DT->setAccelerated(true);
+        _DT->setDecimals(5);
+        _DT->setMinimum(0);
+        _DT->setMaximum(1);
+        _DT->setSingleStep(0.001);
+        _DT->setValue(1);
+
+        verticalLayout->addWidget(_DT);
 
         _label = new QLabel(dockWidgetContents);
         _label->setObjectName(QString::fromUtf8("_label"));

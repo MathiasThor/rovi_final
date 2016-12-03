@@ -9,11 +9,12 @@ SamplePlugin::SamplePlugin():
   connect(_timer, SIGNAL(timeout()), this, SLOT(timer()));
 
 	// now connect stuff from the ui component
-	connect(_btn0,              SIGNAL(pressed()),      this, SLOT(btnPressed()) );
-  connect(_startStopMovement, SIGNAL(pressed()),      this, SLOT(btnPressed()) );
-  connect(_comboBox,          SIGNAL(activated(int)), this, SLOT(testFunc())   );
-  connect(_followMarker,      SIGNAL(pressed()),      this, SLOT(btnPressed()) );
-  connect(_resetSim,          SIGNAL(pressed()),      this, SLOT(resetSim()) );
+	connect(_btn0,              SIGNAL(pressed()),            this, SLOT(btnPressed()) );
+  connect(_startStopMovement, SIGNAL(pressed()),            this, SLOT(btnPressed()) );
+  connect(_comboBox,          SIGNAL(activated(int)),       this, SLOT(testFunc())   );
+  connect(_followMarker,      SIGNAL(pressed()),            this, SLOT(btnPressed()) );
+  connect(_resetSim,          SIGNAL(pressed()),            this, SLOT(resetSim()) );
+  connect(_DT,                SIGNAL(valueChanged(double)), this, SLOT(set_dt()) );
 
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
@@ -27,6 +28,11 @@ SamplePlugin::~SamplePlugin()
 {
 	delete _textureRender;
 	delete _bgRender;
+}
+
+void SamplePlugin::set_dt(){
+  DT = _DT->value();
+  log().info() << "DT: " << _DT->value() << "\n";
 }
 
 void SamplePlugin::initialize() {
@@ -180,19 +186,6 @@ void SamplePlugin::btnPressed() {
 }
 
 void SamplePlugin::timer() {
-  if ( stop_start_motion && !marker_motion.empty() ) {
-    move_marker(marker_motion[current_motion_position]);
-
-    if (current_motion_position == marker_motion.size()){
-      resetSim();
-    }
-    else {
-      current_motion_position++;
-      follow_marker();
-      //writeToFile();
-    }
-  }
-
   if (_framegrabber != NULL) {
     // Get the image as a RW image
     Frame* cameraFrame = _wc->findFrame("CameraSim");
@@ -217,6 +210,20 @@ void SamplePlugin::timer() {
     unsigned int maxH = 800;
     _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
   }
+
+  if ( stop_start_motion && !marker_motion.empty() ) {
+    move_marker(marker_motion[current_motion_position]);
+
+    if (current_motion_position == marker_motion.size()){
+      resetSim();
+    }
+    else {
+      current_motion_position++;
+      follow_marker();
+      //writeToFile();
+    }
+  }
+
 }
 
 void SamplePlugin::stateChangedListener(const State& state) {
@@ -273,9 +280,13 @@ void SamplePlugin::follow_marker( ){
   //
   vector< Vector3D<> > points;
   points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
-  points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
-  points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
-  vector< double > targets = { 0, 0, (( 0.1 * f ) / z), 0, 0, (( 0.1 * f ) / z)};
+  if ( numOfPoints > 1) {
+    points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
+    points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
+  }
+  vector< double > targets = {  0,                  0,
+                                -( 0.1 * f ) / z,   0,
+                                0,                  -( 0.1 * f ) / z};
 
   for (int i = 0; i < numOfPoints; i++) {
     uv[i*2]   = -( points[i][0] * f ) / z;
@@ -288,8 +299,10 @@ void SamplePlugin::follow_marker( ){
     d_uv(i*2+1,0) = uv[i*2+1] - targets[i*2+1];
   }
 
-  log().info() << "uv:\n" << uv[0] << "\n" << uv[1] << "\n";
-  //log().info() << "d_uv:\n" << d_uv << "\n";
+  // log().info() << "uv:\n" << uv[0] << " " << uv[1] << "\n";
+  // if ( numOfPoints > 1)
+  //     log().info() << uv[2] << " " << uv[3] << "\n" << uv[4] << " " << uv[5] << "\n";;
+  // log().info() << "d_uv:\n" << d_uv << "\n";
 
   //
   // Calculate the jacobian for PA10 -Ok
@@ -316,7 +329,7 @@ void SamplePlugin::follow_marker( ){
     J_image(i*2+1, 4) = -((uv[i*2]*uv[i*2+1])/(f));
     J_image(i*2+1, 5) = -uv[i*2];
   }
-  log().info() << "J_img:\n" << J_image << "\n";
+  //log().info() << "J_img:\n" << J_image << "\n";
 
   //
   // Calculate Sq

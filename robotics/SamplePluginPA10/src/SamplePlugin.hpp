@@ -55,6 +55,7 @@ private slots:
 	void testFunc();
 	void resetSim();
 	void timer();
+	void set_dt( );
 	void stateChangedListener(const rw::kinematics::State& state);
 
 private:
@@ -74,7 +75,7 @@ private:
 	vector<float> uv;
 	float f = 823;
 	float z = 0.5;
-	float DT = 0.05;
+	float DT = 1;
 	int numOfPoints = 1;
 	Q vel_limits;
 	ofstream jointPos_file;
