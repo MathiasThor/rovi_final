@@ -708,6 +708,7 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QAppl
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QButtonGroup
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QComboBox
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QDockWidget
+CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QDoubleSpinBox
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QHeaderView
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QLabel
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QMainWindow
@@ -765,6 +766,7 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qrgb.
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qrubberband.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qsizepolicy.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qslider.h
+CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qspinbox.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qstyle.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qstyleoption.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qtabbar.h
@@ -1600,6 +1602,7 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/Q
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QButtonGroup
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QComboBox
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QDockWidget
+CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QDoubleSpinBox
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QHeaderView
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QLabel
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QMainWindow
@@ -1657,6 +1660,7 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/q
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qrubberband.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qsizepolicy.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qslider.h
+CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qspinbox.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qstyle.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qstyleoption.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qtabbar.h

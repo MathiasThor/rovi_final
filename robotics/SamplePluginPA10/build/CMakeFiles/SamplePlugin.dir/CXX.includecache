@@ -27,6 +27,8 @@ QtGui/QComboBox
 -
 QtGui/QDockWidget
 -
+QtGui/QDoubleSpinBox
+-
 QtGui/QHeaderView
 -
 QtGui/QLabel
@@ -5862,6 +5864,10 @@ qcombobox.h
 qdockwidget.h
 /usr/include/qt4/QtGui/qdockwidget.h
 
+/usr/include/qt4/QtGui/QDoubleSpinBox
+qspinbox.h
+/usr/include/qt4/QtGui/qspinbox.h
+
 /usr/include/qt4/QtGui/QHeaderView
 qheaderview.h
 /usr/include/qt4/QtGui/qheaderview.h
@@ -6304,6 +6310,10 @@ QtCore/qobject.h
 
 /usr/include/qt4/QtGui/qslider.h
 QtGui/qabstractslider.h
+-
+
+/usr/include/qt4/QtGui/qspinbox.h
+QtGui/qabstractspinbox.h
 -
 
 /usr/include/qt4/QtGui/qstyle.h
