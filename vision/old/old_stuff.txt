@@ -49,3 +49,55 @@ void CannyThreshold(int, void*)
   src_threshold.copyTo( dst, output_threshold);
   imshow( window_name, dst );
 }
+
+
+{
+    // 2D image points
+    std::vector<cv::Point2d> image_points;
+    image_points.push_back( cv::Point2d( (double)scene_center_point.x, (double)scene_center_point.y ) );    // MIDT
+    image_points.push_back( cv::Point2d( (double)scene_corners[0].x, (double)scene_corners[0].y ) );    // TOP-LEFT
+    image_points.push_back( cv::Point2d( (double)scene_corners[1].x, (double)scene_corners[1].y ) );    // TOP-RIGHT
+    image_points.push_back( cv::Point2d( (double)scene_corners[2].x, (double)scene_corners[2].y ) );    // BOT-LEFT
+    image_points.push_back( cv::Point2d( (double)scene_corners[3].x, (double)scene_corners[3].y ) );    // BOT-LEFT
+
+    // 3D model points.
+    std::vector<cv::Point3d> model_points;
+    model_points.push_back(cv::Point3d(   0.0f,    0.0f, 0.0f));     // MIDT
+    model_points.push_back(cv::Point3d( 200.0f, -200.0f, 0.0f));     // TOP-LEFT
+    model_points.push_back(cv::Point3d( 200.0f,  200.0f, 0.0f));     // TOP-RIGHT
+    model_points.push_back(cv::Point3d(-200.0f,  200.0f, 0.0f));     // BOT-RIGHT
+    model_points.push_back(cv::Point3d(-200.0f, -200.0f, 0.0f));     // BOT-LEFT
+
+    // Camera internals
+    double focal_length = scene.image.cols;//scene.image.cols*5; // Approximate focal length.
+    Point2d center = cv::Point2d(scene.image.cols/2,scene.image.rows/2);
+    cv::Mat camera_matrix = (cv::Mat_<double>(3,3) << focal_length, 0, center.x, 0 , focal_length, center.y, 0, 0, 1);
+    cv::Mat dist_coeffs = cv::Mat::zeros(4,1,cv::DataType<double>::type); // Assuming no lens distortion
+
+    cout << "Camera Matrix " << endl << camera_matrix << endl ;
+    // Output rotation and translation
+    cv::Mat rotation_vector; // Rotation in axis-angle form
+    cv::Mat translation_vector;
+
+    // Solve for pose
+    cv::solvePnP(model_points, image_points, camera_matrix, dist_coeffs, rotation_vector, translation_vector);
+
+    // Project a 3D point (0, 0, 1000.0) onto the image plane.
+    // We use this to draw a line sticking out of the nose
+    vector<Point3d> midpoint3D;
+    vector<Point2d> midpoint2D;
+    midpoint3D.push_back(Point3d(0,0,1000));
+
+    projectPoints(midpoint3D, rotation_vector, translation_vector, camera_matrix, dist_coeffs, midpoint2D);
+
+    cv::line(scene.image, image_points[0], midpoint2D[0], cv::Scalar(255,0,0), 2);
+
+    cout << "Rotation Vector " << endl << rotation_vector << endl;
+    cout << "Translation Vector" << endl << translation_vector << endl;
+
+    cout <<  midpoint2D << endl;
+
+    // Display image.
+    //cv::imshow("Output", scene.image);
+    //waitKey(0);
+}

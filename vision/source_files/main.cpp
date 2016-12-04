@@ -43,6 +43,9 @@ int main( int argc, char** argv)
           load_data(input_sequence, color_path, HSV);
 
           for(int i = 0; i < input_sequence.size(); i++){
+            // Start timer
+            clock_t start = clock();
+
             // Find marker points
             vector<Point> marker_points;
             color_detector(input_sequence[i], marker_points);
@@ -50,6 +53,11 @@ int main( int argc, char** argv)
             // Convert to RGB and draw circles
             cvtColor(input_sequence[i], input_sequence[i], CV_HSV2BGR);
             draw_circles(input_sequence[i], marker_points);
+
+            // End timer
+            clock_t end = clock();
+            double secs = double(end - start) / CLOCKS_PER_SEC;
+            cout << "Time for frame " << i << ": " << secs << " Seconds" << endl;
           }
         }
         break;
@@ -60,6 +68,9 @@ int main( int argc, char** argv)
           load_data(input_sequence, color_path, HSV);
 
           for(int i = 0; i < input_sequence.size(); i++){
+            // Start timer
+            clock_t start = clock();
+
             // Find marker points
             vector<Point> marker_points;
             color_detector(input_sequence[i], marker_points);
@@ -67,6 +78,11 @@ int main( int argc, char** argv)
             // Convert to RGB and draw circles
             cvtColor(input_sequence[i], input_sequence[i], CV_HSV2BGR);
             draw_circles(input_sequence[i], marker_points);
+
+            // End timer
+            clock_t end = clock();
+            double secs = double(end - start) / CLOCKS_PER_SEC;
+            cout << "Time for frame " << i << ": " << secs << " Seconds" << endl;
           }
         }
         break;
@@ -75,9 +91,19 @@ int main( int argc, char** argv)
           String color_path("./../sequences/marker_corny/*.png");
           load_data(input_sequence, color_path, GRAY);
 
+          SIFT_parameters marker;
+          init_corny(marker);
+
           for(int i = 0; i < input_sequence.size(); i++){
-            vector<Point> marker_points;
-            sift(input_sequence[i], marker_points);
+            clock_t start = clock();
+
+            vector<Point2f> marker_points;
+            corny_detector(input_sequence[i], marker_points, marker);
+            draw_object(input_sequence[i], marker_points);
+
+            clock_t end = clock();
+            double secs = double(end - start) / CLOCKS_PER_SEC;
+            cout << "Time for frame " << i << ": " << secs << " Seconds" << endl;
           }
         }
         break;
@@ -86,18 +112,41 @@ int main( int argc, char** argv)
           String color_path("./../sequences/marker_corny_hard/*.png");
           load_data(input_sequence, color_path, GRAY);
 
+          SIFT_parameters marker;
+          init_corny(marker);
+
           for(int i = 0; i < input_sequence.size(); i++){
-            vector<Point> marker_points;
-            sift(input_sequence[i], marker_points);
+            clock_t start = clock();
+
+            vector<Point2f> marker_points;
+            corny_detector(input_sequence[i], marker_points, marker);
+            draw_object(input_sequence[i], marker_points);
+
+            clock_t end = clock();
+            double secs = double(end - start) / CLOCKS_PER_SEC;
+            cout << "Time for frame " << i << ": " << secs << " Seconds" << endl;
           }
         }
         break;
     case TEST:
         {
-          String color_path("./../sequences/marker_corny/*.png");
+          String color_path("./../sequences/marker_corny_hard/*.png");
           load_data(input_sequence, color_path, GRAY);
-          vector<Point> marker_points;
-          sift(input_sequence[12], marker_points);
+
+          SIFT_parameters marker;
+          init_corny(marker);
+
+          for(int i = 0; i < input_sequence.size(); i++){
+            clock_t start = clock();
+
+            vector<Point2f> marker_points;
+            corny_detector(input_sequence[i], marker_points, marker);
+            draw_object(input_sequence[i], marker_points);
+
+            clock_t end = clock();
+            double secs = double(end - start) / CLOCKS_PER_SEC;
+            cout << "Time: " << secs << " S" << endl;
+          }
 
         }
         break;
@@ -111,11 +160,8 @@ int main( int argc, char** argv)
       i = 0;
     }
     imshow(window_name, input_sequence[i]);
-    //if(waitKey(250) >= 0) break; // Increase x of waitKey(x) to slow down the video
     waitKey(0);
   }
-
-  waitKey(0);
 
   return 0;
 }

@@ -1,143 +1,109 @@
 #include "corny_detector.h"
 
 // http://docs.opencv.org/3.1.0/d7/dff/tutorial_feature_homography.html
-void sift(Mat &input_image, vector<Point> &marker_points)
+void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_parameters &object)
 {
-  Mat img_object = imread( "./../sequences/marker_corny.png", IMREAD_GRAYSCALE );
+  // Generate SIFT class object and parameters needed for the scene
+  Ptr<SIFT> detector = SIFT::create( 500 ); // 500 - We want more points on the scene than on object image.
+  SIFT_parameters scene;
 
-  //-- Step 1: Detect the keypoints and extract descriptors using SIFT
-  int minHessian = 400;
-  Ptr<SIFT> detector = SIFT::create( minHessian );
-  std::vector<KeyPoint> keypoints_object, keypoints_scene;
-  Mat descriptors_object, descriptors_scene;
-  detector->detectAndCompute( img_object, Mat(), keypoints_object, descriptors_object );
-  detector->detectAndCompute( input_image, Mat(), keypoints_scene, descriptors_scene );
+  // Clone input image to scene, and detect and compute keypoints and descriptors.
+  scene.image = input_image.clone();
+  detector->detectAndCompute( scene.image, Mat(), scene.keypoints, scene.descriptors );
 
-  //-- Step 2: Matching descriptor vectors using FLANN matcher
+  // Generate Flann Based Matcher
   FlannBasedMatcher matcher;
-  std::vector< DMatch > matches;
-  matcher.match( descriptors_object, descriptors_scene, matches );
-  double max_dist = 0; double min_dist = 100;
 
-  //-- Quick calculation of max and min distances between keypoints
-  for( int i = 0; i < descriptors_object.rows; i++ )
-  { double dist = matches[i].distance;
-    if( dist < min_dist ) min_dist = dist;
-    if( dist > max_dist ) max_dist = dist;
-  }
-  //printf("-- Max dist : %f \n", max_dist );
-  //printf("-- Min dist : %f \n", min_dist );
+  // Match the scene with the corny marker.
+  matcher.match( object.descriptors, scene.descriptors, scene.matches );
+  double min_dist = 100;
 
-  //-- Draw only "good" matches (i.e. whose distance is less than 3*min_dist )
-  std::vector< DMatch > good_matches;
-  for( int i = 0; i < descriptors_object.rows; i++ )
-  { if( matches[i].distance < 3*min_dist )
-     { good_matches.push_back( matches[i]); }
+  // Calculate the smallest distance match
+  for( int i = 0; i < object.descriptors.rows; i++ )
+  {
+    double dist = scene.matches[i].distance;
+    if( dist < min_dist ){
+      min_dist = dist;
+    }
   }
 
-  Mat img_matches;
-  drawMatches( img_object, keypoints_object, input_image, keypoints_scene,
-               good_matches, img_matches, Scalar::all(-1), Scalar::all(1),
-               std::vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS | DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
+  // Collect the good matches (Those who are below 3 times the smallest distance)
+  vector< DMatch > good_matches;
+  for( int i = 0; i < object.descriptors.rows; i++ ){
+    if( scene.matches[i].distance < 3*min_dist ){
+      good_matches.push_back( scene.matches[i]);
+    }
+  }
+  scene.matches = good_matches;
 
-  //-- Localize the object
-  std::vector<Point2f> obj;
-  std::vector<Point2f> scene;
-  for( size_t i = 0; i < good_matches.size(); i++ )
+  // Find the keypoints of both the object and the scene, from all the matches.
+  vector<Point2f> obj_points;
+  vector<Point2f> scene_points;
+  for( size_t i = 0; i < scene.matches.size(); i++ )
   {
     //-- Get the keypoints from the good matches
-    obj.push_back( keypoints_object[ good_matches[i].queryIdx ].pt );
-    scene.push_back( keypoints_scene[ good_matches[i].trainIdx ].pt );
+    obj_points.push_back( object.keypoints[ scene.matches[i].queryIdx ].pt );
+    scene_points.push_back( scene.keypoints[ scene.matches[i].trainIdx ].pt );
   }
-  Mat H = findHomography( obj, scene, RANSAC );
 
-  //-- Get the corners from the image_1 ( the object to be "detected" )
-  std::vector<Point2f> obj_corners(4);
-  obj_corners[0] = cvPoint(0,0); obj_corners[1] = cvPoint( img_object.cols, 0 );
-  obj_corners[2] = cvPoint( img_object.cols, img_object.rows ); obj_corners[3] = cvPoint( 0, img_object.rows );
-  std::vector<Point2f> scene_corners(4);
+  // Find Homography based on the object points and scene points.
+  Mat H = findHomography( obj_points, scene_points, RANSAC );
+
+  // Find the corners of object.
+  vector<Point2f> object_corners(4);
+  object_corners[0] = cvPoint(0,0);
+  object_corners[1] = cvPoint( object.image.cols, 0 );
+  object_corners[2] = cvPoint( object.image.cols, object.image.rows );
+  object_corners[3] = cvPoint( 0, object.image.rows );
+
+  // Find the corners of the scene.
+  vector<Point2f> scene_corners(4);
   perspectiveTransform( obj_corners, scene_corners, H);
 
-  for (int i = 0; i < scene_corners.size(); i++) {
-    scene_corners[i] += Point2f( img_object.cols, 0);
+  // Generate center point and push back reference points (corners + center)
+  Point2f marker_center_point = (scene_corners[0] + scene_corners[1] + scene_corners[2] +scene_corners[3]) / 4;
+
+  marker_points.push_back(marker_center_point);
+  for(int i = 0; i < scene_corners.size(); i++) {
+    marker_points.push_back(scene_corners[i]);
   }
+}
 
-  Point2f scene_midt_point = (scene_corners[0] + scene_corners[1] + scene_corners[2] +scene_corners[3]) / 4;
+Mat draw_sift_matches(SIFT_parameters &object, SIFT_parameters &scene)
+{
+  Mat img_matches;
+  drawMatches( object.image, object.keypoints, scene.image, scene.keypoints,
+               scene.matches, img_matches, Scalar::all(-1), Scalar::all(1),
+               std::vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS | DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
+  return img_matches;
+}
 
-  cout << "SCENE CORNER  1: " << (scene_corners[0])-scene_midt_point << endl;
-  cout << "SCENE CORNER  2: " << (scene_corners[1])-scene_midt_point << endl;
-  cout << "SCENE CORNER  3: " << (scene_corners[2])-scene_midt_point << endl;
-  cout << "SCENE CORNER  4: " << (scene_corners[3])-scene_midt_point << endl;
-  cout << "SCENE MIDTPOINT: " << scene_midt_point-scene_midt_point << endl << endl;
-  // Draw centroid
-  cv::circle(img_matches, scene_midt_point, 5, cv::Scalar(0, 0, 255), 5);
+void draw_object(Mat &input, vector<Point2f> &marker_points)
+{
+  if(marker_points.size() == 5){
+    // Draw centroid
+    circle(input, marker_points[0], 5, cv::Scalar(255, 0, 0), 5);
 
-  //-- Draw lines between the corners (the mapped object in the scene - image_2 )
-  line( img_matches, scene_corners[0], scene_corners[1], Scalar(0, 0, 255), 2 );
-  line( img_matches, scene_corners[1], scene_corners[2], Scalar(0, 0, 255), 2 );
-  line( img_matches, scene_corners[2], scene_corners[3], Scalar(0, 0, 255), 2 );
-  line( img_matches, scene_corners[3], scene_corners[0], Scalar(0, 0, 255), 2 );
+    // Draw corners
+    for(int i = 1; i < marker_points.size() - 1; i++)
+    {
+        circle(input, marker_points[i], 3, Scalar(0,255,0), -1);
+    }
 
-  for(int i=0; i < scene_corners.size(); i++)
-  {
-      circle(img_matches, scene_corners[i], 3, Scalar(0,255,0), -1);
+    //-- Draw lines between the corners (the mapped object in the scene - image_2 )
+    line( input, marker_points[1], marker_points[2], Scalar(0, 0, 255), 2 );
+    line( input, marker_points[2], marker_points[3], Scalar(0, 0, 255), 2 );
+    line( input, marker_points[3], marker_points[4], Scalar(0, 0, 255), 2 );
+    line( input, marker_points[4], marker_points[1], Scalar(0, 0, 255), 2 );
   }
+}
 
-  //-- Show detected matches
-  //imshow( "Good Matches & Object detection", img_matches );
 
-  input_image = img_matches.clone();
+// **** INIT OBJECT ****
+void init_corny(SIFT_parameters &marker)
+{
+  marker.image = imread( "./../sequences/marker_corny.png", IMREAD_GRAYSCALE );
+  Ptr<SIFT> object_detector = SIFT::create( 300 ); // MinHessian = 400;
 
-  if (false) {
-
-    // 2D image points
-    std::vector<cv::Point2d> image_points;
-    image_points.push_back( cv::Point2d( (double)scene_midt_point.x, (double)scene_midt_point.y ) );    // MIDT
-    image_points.push_back( cv::Point2d( (double)scene_corners[0].x, (double)scene_corners[0].y ) );    // TOP-LEFT
-    image_points.push_back( cv::Point2d( (double)scene_corners[1].x, (double)scene_corners[1].y ) );    // TOP-RIGHT
-    image_points.push_back( cv::Point2d( (double)scene_corners[2].x, (double)scene_corners[2].y ) );    // BOT-LEFT
-    image_points.push_back( cv::Point2d( (double)scene_corners[3].x, (double)scene_corners[3].y ) );    // BOT-LEFT
-
-    // 3D model points.
-    std::vector<cv::Point3d> model_points;
-    model_points.push_back(cv::Point3d(   0.0f,    0.0f, 0.0f));     // MIDT
-    model_points.push_back(cv::Point3d( 200.0f, -200.0f, 0.0f));     // TOP-LEFT
-    model_points.push_back(cv::Point3d( 200.0f,  200.0f, 0.0f));     // TOP-RIGHT
-    model_points.push_back(cv::Point3d(-200.0f,  200.0f, 0.0f));     // BOT-RIGHT
-    model_points.push_back(cv::Point3d(-200.0f, -200.0f, 0.0f));     // BOT-LEFT
-
-    // Camera internals
-    double focal_length = input_image.cols;//input_image.cols*5; // Approximate focal length.
-    Point2d center = cv::Point2d(input_image.cols/2,input_image.rows/2);
-    cv::Mat camera_matrix = (cv::Mat_<double>(3,3) << focal_length, 0, center.x, 0 , focal_length, center.y, 0, 0, 1);
-    cv::Mat dist_coeffs = cv::Mat::zeros(4,1,cv::DataType<double>::type); // Assuming no lens distortion
-
-    cout << "Camera Matrix " << endl << camera_matrix << endl ;
-    // Output rotation and translation
-    cv::Mat rotation_vector; // Rotation in axis-angle form
-    cv::Mat translation_vector;
-
-    // Solve for pose
-    cv::solvePnP(model_points, image_points, camera_matrix, dist_coeffs, rotation_vector, translation_vector);
-
-    // Project a 3D point (0, 0, 1000.0) onto the image plane.
-    // We use this to draw a line sticking out of the nose
-    vector<Point3d> midpoint3D;
-    vector<Point2d> midpoint2D;
-    midpoint3D.push_back(Point3d(0,0,1000));
-
-    projectPoints(midpoint3D, rotation_vector, translation_vector, camera_matrix, dist_coeffs, midpoint2D);
-
-    cv::line(input_image, image_points[0], midpoint2D[0], cv::Scalar(255,0,0), 2);
-
-    cout << "Rotation Vector " << endl << rotation_vector << endl;
-    cout << "Translation Vector" << endl << translation_vector << endl;
-
-    cout <<  midpoint2D << endl;
-
-    // Display image.
-    //cv::imshow("Output", input_image);
-    //waitKey(0);
-
-  }
+  object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
 }

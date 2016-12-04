@@ -6,7 +6,9 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
+#include <ctime>
 #include "stdio.h"
+
 
 //____________________ NAME SPACES ____________________
 using namespace cv;
