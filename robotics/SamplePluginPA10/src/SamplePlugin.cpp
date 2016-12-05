@@ -311,7 +311,7 @@ void SamplePlugin::follow_marker( ){
     points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
   //}
   vector< double > targets = {  0,                  0,
-                                -( 0.1 * f ) / z,   0,
+                                ( 0.1 * f ) / z,   0,
                                 0,                  -( 0.1 * f ) / z};
 
   for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
