@@ -130,22 +130,33 @@ int main( int argc, char** argv)
         break;
     case TEST:
         {
-          String color_path("./../sequences/marker_corny_hard/*.png");
-          load_data(input_sequence, color_path, GRAY);
+          String color_path("./../sequences/marker_color_hard/*.png");
+          load_data(input_sequence, color_path, HSV);
 
-          SIFT_parameters marker;
-          init_corny(marker);
-
-          for(int i = 0; i < input_sequence.size(); i++){
-            clock_t start = clock();
-
-            vector<Point2f> marker_points;
-            corny_detector(input_sequence[i], marker_points, marker);
-            draw_object(input_sequence[i], marker_points);
-
-            clock_t end = clock();
-            double secs = double(end - start) / CLOCKS_PER_SEC;
-            cout << "Time: " << secs << " S" << endl;
+          for(int i = 0; i < 3; i++){
+            vector<Point> marker_points;
+            if(i == 0)
+            {
+              color_detector(input_sequence[0], marker_points);
+              cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
+              draw_circles(input_sequence[0], marker_points);
+              imshow("Test", input_sequence[0]);
+              waitKey(0);
+            }
+            if(i == 1){
+              color_detector(input_sequence[34], marker_points);
+              cvtColor(input_sequence[34], input_sequence[34], CV_HSV2BGR);
+              draw_circles(input_sequence[34], marker_points);
+              imshow("Test", input_sequence[34]);
+              waitKey(0);
+            }
+            if(i == 2){
+              color_detector(input_sequence[49], marker_points);
+              cvtColor(input_sequence[49], input_sequence[49], CV_HSV2BGR);
+              draw_circles(input_sequence[49], marker_points);
+              imshow("Test", input_sequence[49]);
+              waitKey(0);
+            }
           }
 
         }

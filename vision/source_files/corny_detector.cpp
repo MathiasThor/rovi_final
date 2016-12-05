@@ -58,7 +58,7 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
 
   // Find the corners of the scene.
   vector<Point2f> scene_corners(4);
-  perspectiveTransform( obj_corners, scene_corners, H);
+  perspectiveTransform( object_corners, scene_corners, H);
 
   // Generate center point and push back reference points (corners + center)
   Point2f marker_center_point = (scene_corners[0] + scene_corners[1] + scene_corners[2] +scene_corners[3]) / 4;
@@ -90,7 +90,7 @@ void draw_object(Mat &input, vector<Point2f> &marker_points)
         circle(input, marker_points[i], 3, Scalar(0,255,0), -1);
     }
 
-    //-- Draw lines between the corners (the mapped object in the scene - image_2 )
+    // Draw lines between the corners
     line( input, marker_points[1], marker_points[2], Scalar(0, 0, 255), 2 );
     line( input, marker_points[2], marker_points[3], Scalar(0, 0, 255), 2 );
     line( input, marker_points[3], marker_points[4], Scalar(0, 0, 255), 2 );
