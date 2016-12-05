@@ -195,7 +195,10 @@ void SamplePlugin::timer() {
     Mat imflip;
     cv::flip(im, imflip, 0);
     cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2), 15, cv::Scalar(0,255,0), 4);
-    for (int i = 0; i < numOfPoints; i++) {
+    cv::circle(imflip, cv::Point(imflip.cols/2-( 0.1 * f ) / z,imflip.rows/2), 15, cv::Scalar(0,0,255), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2+( 0.1 * f )/ z), 15, cv::Scalar(0,0,255), 4);
+
+    for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
       cv::circle(imflip, cv::Point(imflip.cols/2-uv[i*2],imflip.rows/2-uv[i*2+1]), 10, cv::Scalar(255,0,0), -1);
     }
 
@@ -303,15 +306,15 @@ void SamplePlugin::follow_marker( ){
   //
   vector< Vector3D<> > points;
   points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
-  if ( numOfPoints > 1) {
+  //if ( numOfPoints > 1) {
     points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
     points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
-  }
+  //}
   vector< double > targets = {  0,                  0,
-                                ( 0.1 * f ) / z,   0,
-                                0,                  ( 0.1 * f ) / z};
+                                -( 0.1 * f ) / z,   0,
+                                0,                  -( 0.1 * f ) / z};
 
-  for (int i = 0; i < numOfPoints; i++) {
+  for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
     uv[i*2]   = -( points[i][0] * f ) / z;
     uv[i*2+1] = -( points[i][1] * f ) / z;
   }
