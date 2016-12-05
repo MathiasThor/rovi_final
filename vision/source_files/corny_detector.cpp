@@ -4,7 +4,7 @@
 void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_parameters &object)
 {
   // Generate SIFT class object and parameters needed for the scene
-  Ptr<SIFT> detector = SIFT::create( 500 ); // 500 - We want more points on the scene than on object image.
+  Ptr<SURF> detector = SURF::create( 500 ); // 500 - We want more points on the scene than on object image.
   SIFT_parameters scene;
 
   // Clone input image to scene, and detect and compute keypoints and descriptors.
@@ -103,7 +103,7 @@ void draw_object(Mat &input, vector<Point2f> &marker_points)
 void init_corny(SIFT_parameters &marker)
 {
   marker.image = imread( "./../sequences/marker_corny.png", IMREAD_GRAYSCALE );
-  Ptr<SIFT> object_detector = SIFT::create( 300 ); // MinHessian = 400;
+  Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
 
   object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
 }

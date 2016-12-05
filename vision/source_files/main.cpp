@@ -137,24 +137,48 @@ int main( int argc, char** argv)
             vector<Point> marker_points;
             if(i == 0)
             {
-              color_detector(input_sequence[0], marker_points);
-              cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
-              draw_circles(input_sequence[0], marker_points);
-              imshow("Test", input_sequence[0]);
+              //color_detector(input_sequence[0], marker_points);
+              Mat test1 = color_segmentation(input_sequence[0], RED);
+              Mat test2 = color_segmentation(input_sequence[0], BLUE);
+
+              Mat test;
+              addWeighted(test1, 1, test2, 1, 1, test);
+              //cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
+              //draw_circles(input_sequence[0], marker_points);
+              imshow("Test", test);
+              waitKey(0);
               waitKey(0);
             }
             if(i == 1){
-              color_detector(input_sequence[34], marker_points);
-              cvtColor(input_sequence[34], input_sequence[34], CV_HSV2BGR);
-              draw_circles(input_sequence[34], marker_points);
-              imshow("Test", input_sequence[34]);
+              //color_detector(input_sequence[0], marker_points);
+              Mat test1 = color_segmentation(input_sequence[34], RED);
+              Mat test2 = color_segmentation(input_sequence[34], BLUE);
+
+              vector<vector<Point> > blue_circles = find_circle_contours(blue_output, 100, 0.7);
+              vector<vector<Point> > red_circles  = find_circle_contours(red_output, 100, 0.7);
+
+              for(int i = 0; i < blue_circles.size(); i++){
+                for(int j = 0; j < blue_circles[i].size(); j++){
+                  
+                }
+              }
+              //cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
+              //draw_circles(input_sequence[0], marker_points);
+              imshow("Test", test);
+              waitKey(0);
               waitKey(0);
             }
             if(i == 2){
-              color_detector(input_sequence[49], marker_points);
-              cvtColor(input_sequence[49], input_sequence[49], CV_HSV2BGR);
-              draw_circles(input_sequence[49], marker_points);
-              imshow("Test", input_sequence[49]);
+              //color_detector(input_sequence[0], marker_points);
+              Mat test1 = color_segmentation(input_sequence[49], RED);
+              Mat test2 = color_segmentation(input_sequence[49], BLUE);
+
+              Mat test;
+              addWeighted(test1, 1, test2, 1, 1, test);
+              //cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
+              //draw_circles(input_sequence[0], marker_points);
+              imshow("Test", test);
+              waitKey(0);
               waitKey(0);
             }
           }
