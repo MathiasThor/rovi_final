@@ -78,7 +78,7 @@ private:
 	float f = 823;
 	float z = 0.5;
 	float DT = 1;
-	int numOfPoints = 1;
+	int numOfPoints = 3;
 	Q vel_limits;
 	ofstream jointPos_file;
 	ofstream toolPos_file;
