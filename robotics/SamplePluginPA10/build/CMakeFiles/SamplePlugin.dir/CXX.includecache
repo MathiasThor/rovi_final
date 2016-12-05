@@ -29,6 +29,8 @@ QtGui/QDockWidget
 -
 QtGui/QDoubleSpinBox
 -
+QtGui/QFormLayout
+-
 QtGui/QHeaderView
 -
 QtGui/QLabel
@@ -5868,6 +5870,10 @@ qdockwidget.h
 qspinbox.h
 /usr/include/qt4/QtGui/qspinbox.h
 
+/usr/include/qt4/QtGui/QFormLayout
+qformlayout.h
+/usr/include/qt4/QtGui/qformlayout.h
+
 /usr/include/qt4/QtGui/QHeaderView
 qheaderview.h
 /usr/include/qt4/QtGui/qheaderview.h
@@ -5875,6 +5881,10 @@ qheaderview.h
 /usr/include/qt4/QtGui/QLabel
 qlabel.h
 /usr/include/qt4/QtGui/qlabel.h
+
+/usr/include/qt4/QtGui/QLayout
+qlayout.h
+/usr/include/qt4/QtGui/qlayout.h
 
 /usr/include/qt4/QtGui/QMainWindow
 qmainwindow.h
@@ -6094,6 +6104,10 @@ QtGui/qfont.h
 QtCore/qsharedpointer.h
 -
 QtCore/qrect.h
+-
+
+/usr/include/qt4/QtGui/qformlayout.h
+QtGui/QLayout
 -
 
 /usr/include/qt4/QtGui/qframe.h

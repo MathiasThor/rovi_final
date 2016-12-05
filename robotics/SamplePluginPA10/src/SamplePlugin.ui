@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>428</width>
-    <height>479</height>
+    <height>615</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,68 +38,83 @@
         </property>
        </widget>
       </item>
-      <item alignment="Qt::AlignTop">
-       <widget class="QComboBox" name="_comboBox">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>26</height>
-         </size>
+      <item>
+       <widget class="QPushButton" name="_resetSim">
+        <property name="text">
+         <string>Reset</string>
         </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>true</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="maxVisibleItems">
-         <number>3</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>MarkerMotionSlow.txt</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>MarkerMotionMedium.txt</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>MarkerMotionFast.txt</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="_DT">
-        <property name="buttonSymbols">
-         <enum>QAbstractSpinBox::PlusMinus</enum>
+       <layout class="QFormLayout" name="formLayout_2">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
-        <property name="accelerated">
-         <bool>true</bool>
-        </property>
-        <property name="decimals">
-         <number>5</number>
-        </property>
-        <property name="minimum">
-         <double>0.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>1.000000000000000</double>
-        </property>
-        <property name="singleStep">
-         <double>0.001000000000000</double>
-        </property>
-        <property name="value">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
+        <item row="1" column="0">
+         <widget class="QComboBox" name="_comboBox">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>26</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Waree</family>
+            <pointsize>11</pointsize>
+            <weight>50</weight>
+            <italic>true</italic>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="maxVisibleItems">
+           <number>3</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>MarkerMotionSlow.txt</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>MarkerMotionMedium.txt</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>MarkerMotionFast.txt</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="_DT">
+          <property name="buttonSymbols">
+           <enum>QAbstractSpinBox::PlusMinus</enum>
+          </property>
+          <property name="accelerated">
+           <bool>true</bool>
+          </property>
+          <property name="decimals">
+           <number>5</number>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.001000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item alignment="Qt::AlignHCenter">
+      <item>
        <widget class="QLabel" name="_label">
         <property name="text">
          <string>Label</string>
@@ -120,9 +135,9 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="_resetSim">
+       <widget class="QPushButton" name="_testRun">
         <property name="text">
-         <string>Reset</string>
+         <string>Test run</string>
         </property>
        </widget>
       </item>

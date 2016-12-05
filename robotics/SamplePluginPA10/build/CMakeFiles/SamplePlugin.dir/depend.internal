@@ -710,8 +710,10 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
  /usr/include/qt4/QtGui/QComboBox
  /usr/include/qt4/QtGui/QDockWidget
  /usr/include/qt4/QtGui/QDoubleSpinBox
+ /usr/include/qt4/QtGui/QFormLayout
  /usr/include/qt4/QtGui/QHeaderView
  /usr/include/qt4/QtGui/QLabel
+ /usr/include/qt4/QtGui/QLayout
  /usr/include/qt4/QtGui/QMainWindow
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPushButton
@@ -740,6 +742,7 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
  /usr/include/qt4/QtGui/qfont.h
  /usr/include/qt4/QtGui/qfontinfo.h
  /usr/include/qt4/QtGui/qfontmetrics.h
+ /usr/include/qt4/QtGui/qformlayout.h
  /usr/include/qt4/QtGui/qframe.h
  /usr/include/qt4/QtGui/qgridlayout.h
  /usr/include/qt4/QtGui/qheaderview.h
@@ -1604,8 +1607,10 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
  /usr/include/qt4/QtGui/QComboBox
  /usr/include/qt4/QtGui/QDockWidget
  /usr/include/qt4/QtGui/QDoubleSpinBox
+ /usr/include/qt4/QtGui/QFormLayout
  /usr/include/qt4/QtGui/QHeaderView
  /usr/include/qt4/QtGui/QLabel
+ /usr/include/qt4/QtGui/QLayout
  /usr/include/qt4/QtGui/QMainWindow
  /usr/include/qt4/QtGui/QPlatformWindow
  /usr/include/qt4/QtGui/QPushButton
@@ -1634,6 +1639,7 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
  /usr/include/qt4/QtGui/qfont.h
  /usr/include/qt4/QtGui/qfontinfo.h
  /usr/include/qt4/QtGui/qfontmetrics.h
+ /usr/include/qt4/QtGui/qformlayout.h
  /usr/include/qt4/QtGui/qframe.h
  /usr/include/qt4/QtGui/qgridlayout.h
  /usr/include/qt4/QtGui/qheaderview.h
