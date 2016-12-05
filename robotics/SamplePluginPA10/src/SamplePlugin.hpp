@@ -54,6 +54,7 @@ private slots:
 	void btnPressed();
 	void testFunc();
 	void resetSim();
+	void testRun();
 	void timer();
 	void set_dt( );
 	void stateChangedListener(const rw::kinematics::State& state);
@@ -72,6 +73,7 @@ private:
 	vector< rw::math::VelocityScrew6D<double> > marker_motion;
 	int current_motion_position = 0;
 	bool stop_start_motion = false;
+	bool test_runner = false;
 	vector<float> uv;
 	float f = 823;
 	float z = 0.5;

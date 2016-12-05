@@ -15,7 +15,7 @@ SamplePlugin::SamplePlugin():
   connect(_followMarker,      SIGNAL(pressed()),            this, SLOT(btnPressed()) );
   connect(_resetSim,          SIGNAL(pressed()),            this, SLOT(resetSim()) );
   connect(_DT,                SIGNAL(valueChanged(double)), this, SLOT(set_dt()) );
-
+  connect(_testRun,           SIGNAL(pressed()),            this, SLOT(testRun()) );
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
 	_textureRender = new RenderImage(textureImage);
@@ -64,8 +64,6 @@ void SamplePlugin::open(WorkCell* workcell)
 
   resetSim();
   vel_limits = _PA10->getVelocityLimits();
-  jointPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
-  toolPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
 
 	log().info() << workcell->getFilename() << "\n";
 
@@ -196,12 +194,13 @@ void SamplePlugin::timer() {
     Mat im = toOpenCVImage(image);
     Mat imflip;
     cv::flip(im, imflip, 0);
-    // for (int i = 0; i < numOfPoints; i++) {
-    //   /* code */
-    // }
     cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2), 15, cv::Scalar(0,255,0), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2-uv[0],imflip.rows/2-uv[1]), 10, cv::Scalar(255,0,0), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2-( 0.1 * f ) / z,imflip.rows/2), 15, cv::Scalar(0,0,255), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2+( 0.1 * f )/ z), 15, cv::Scalar(0,0,255), 4);
 
+    for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
+      cv::circle(imflip, cv::Point(imflip.cols/2-uv[i*2],imflip.rows/2-uv[i*2+1]), 10, cv::Scalar(255,0,0), -1);
+    }
 
     // Show in QLabel
     QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
@@ -220,10 +219,37 @@ void SamplePlugin::timer() {
     else {
       current_motion_position++;
       follow_marker();
-      //writeToFile();
     }
   }
+  else if ( test_runner && !marker_motion.empty() ) {
+    move_marker(marker_motion[current_motion_position]);
 
+    if (current_motion_position == marker_motion.size()){
+      test_runner = false;
+      jointPos_file.close();
+      toolPos_file.close();
+      log().info() << "Closed the files" << "\n";
+    }
+    else {
+      current_motion_position++;
+      follow_marker();
+      writeToFile();
+    }
+  }
+}
+
+void SamplePlugin::testRun(){
+  jointPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
+  toolPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
+  log().info() << "Opened the files" << "\n";
+  jointPos_file << DT << "\n";
+  if (!test_runner) {
+    test_runner=true;
+    stop_start_motion = false;
+    resetSim();
+    _timer->start(100);
+    log().info() << "Collecting data..." << "\n";
+  }
 }
 
 void SamplePlugin::stateChangedListener(const State& state) {
@@ -280,15 +306,15 @@ void SamplePlugin::follow_marker( ){
   //
   vector< Vector3D<> > points;
   points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
-  if ( numOfPoints > 1) {
+  //if ( numOfPoints > 1) {
     points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
     points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
-  }
+  //}
   vector< double > targets = {  0,                  0,
                                 -( 0.1 * f ) / z,   0,
                                 0,                  -( 0.1 * f ) / z};
 
-  for (int i = 0; i < numOfPoints; i++) {
+  for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
     uv[i*2]   = -( points[i][0] * f ) / z;
     uv[i*2+1] = -( points[i][1] * f ) / z;
   }
@@ -299,10 +325,10 @@ void SamplePlugin::follow_marker( ){
     d_uv(i*2+1,0) = uv[i*2+1] - targets[i*2+1];
   }
 
-  // log().info() << "uv:\n" << uv[0] << " " << uv[1] << "\n";
-  // if ( numOfPoints > 1)
-  //     log().info() << uv[2] << " " << uv[3] << "\n" << uv[4] << " " << uv[5] << "\n";;
-  // log().info() << "d_uv:\n" << d_uv << "\n";
+  log().info() << "uv:\n" << uv[0] << " " << uv[1] << "\n";
+  if ( numOfPoints > 1)
+      log().info() << uv[2] << " " << uv[3] << "\n" << uv[4] << " " << uv[5] << "\n";;
+  log().info() << "d_uv:\n" << d_uv << "\n";
 
   //
   // Calculate the jacobian for PA10 -Ok
@@ -378,9 +404,15 @@ void SamplePlugin::velocityLimit( Q dq, Q &q ){
 
 void SamplePlugin::writeToFile( ){
   if (toolPos_file.is_open()){
-    Vector3D<> tmp_tool = _PA10->baseTframe(_Camera, _state).P();
-    for (int i = 0; i < tmp_tool.size(); i++) {
-      toolPos_file << tmp_tool[i] << "\t";
+    Rotation3D<> tmp_tool_rot = _PA10->baseTframe(_Camera, _state).R();
+    Vector3D<> tmp_tool_pos = _PA10->baseTframe(_Camera, _state).P();
+    for (int i = 0; i < tmp_tool_pos.size(); i++) {
+      toolPos_file << tmp_tool_pos[i] << "\t";
+    }
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        toolPos_file << tmp_tool_rot(j,i) << "\t";
+      }
     }
     toolPos_file << "\n";
   } else cout << "can't open tool position file" << endl;

@@ -16,6 +16,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QDockWidget>
 #include <QtGui/QDoubleSpinBox>
+#include <QtGui/QFormLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
@@ -34,17 +35,19 @@ public:
     QPushButton *_btn0;
     QPushButton *_startStopMovement;
     QPushButton *_followMarker;
+    QPushButton *_resetSim;
+    QFormLayout *formLayout_2;
     QComboBox *_comboBox;
     QDoubleSpinBox *_DT;
     QLabel *_label;
     QSpacerItem *verticalSpacer;
-    QPushButton *_resetSim;
+    QPushButton *_testRun;
 
     void setupUi(QDockWidget *SamplePlugin)
     {
         if (SamplePlugin->objectName().isEmpty())
             SamplePlugin->setObjectName(QString::fromUtf8("SamplePlugin"));
-        SamplePlugin->resize(428, 479);
+        SamplePlugin->resize(428, 615);
         dockWidgetContents = new QWidget();
         dockWidgetContents->setObjectName(QString::fromUtf8("dockWidgetContents"));
         verticalLayout_2 = new QVBoxLayout(dockWidgetContents);
@@ -66,18 +69,27 @@ public:
 
         verticalLayout->addWidget(_followMarker);
 
+        _resetSim = new QPushButton(dockWidgetContents);
+        _resetSim->setObjectName(QString::fromUtf8("_resetSim"));
+
+        verticalLayout->addWidget(_resetSim);
+
+        formLayout_2 = new QFormLayout();
+        formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
+        formLayout_2->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
         _comboBox = new QComboBox(dockWidgetContents);
         _comboBox->setObjectName(QString::fromUtf8("_comboBox"));
         _comboBox->setMinimumSize(QSize(0, 26));
         QFont font;
-        font.setPointSize(10);
-        font.setBold(true);
+        font.setFamily(QString::fromUtf8("Waree"));
+        font.setPointSize(11);
+        font.setBold(false);
         font.setItalic(true);
-        font.setWeight(75);
+        font.setWeight(50);
         _comboBox->setFont(font);
         _comboBox->setMaxVisibleItems(3);
 
-        verticalLayout->addWidget(_comboBox, 0, Qt::AlignTop);
+        formLayout_2->setWidget(1, QFormLayout::LabelRole, _comboBox);
 
         _DT = new QDoubleSpinBox(dockWidgetContents);
         _DT->setObjectName(QString::fromUtf8("_DT"));
@@ -89,21 +101,24 @@ public:
         _DT->setSingleStep(0.001);
         _DT->setValue(1);
 
-        verticalLayout->addWidget(_DT);
+        formLayout_2->setWidget(1, QFormLayout::FieldRole, _DT);
+
+
+        verticalLayout->addLayout(formLayout_2);
 
         _label = new QLabel(dockWidgetContents);
         _label->setObjectName(QString::fromUtf8("_label"));
 
-        verticalLayout->addWidget(_label, 0, Qt::AlignHCenter);
+        verticalLayout->addWidget(_label);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
 
-        _resetSim = new QPushButton(dockWidgetContents);
-        _resetSim->setObjectName(QString::fromUtf8("_resetSim"));
+        _testRun = new QPushButton(dockWidgetContents);
+        _testRun->setObjectName(QString::fromUtf8("_testRun"));
 
-        verticalLayout->addWidget(_resetSim);
+        verticalLayout->addWidget(_testRun);
 
 
         verticalLayout_2->addLayout(verticalLayout);
@@ -121,6 +136,7 @@ public:
         _btn0->setText(QApplication::translate("SamplePlugin", "Load textures", 0, QApplication::UnicodeUTF8));
         _startStopMovement->setText(QApplication::translate("SamplePlugin", "Start / Stop movement", 0, QApplication::UnicodeUTF8));
         _followMarker->setText(QApplication::translate("SamplePlugin", "Follow marker", 0, QApplication::UnicodeUTF8));
+        _resetSim->setText(QApplication::translate("SamplePlugin", "Reset", 0, QApplication::UnicodeUTF8));
         _comboBox->clear();
         _comboBox->insertItems(0, QStringList()
          << QApplication::translate("SamplePlugin", "MarkerMotionSlow.txt", 0, QApplication::UnicodeUTF8)
@@ -128,7 +144,7 @@ public:
          << QApplication::translate("SamplePlugin", "MarkerMotionFast.txt", 0, QApplication::UnicodeUTF8)
         );
         _label->setText(QApplication::translate("SamplePlugin", "Label", 0, QApplication::UnicodeUTF8));
-        _resetSim->setText(QApplication::translate("SamplePlugin", "Reset", 0, QApplication::UnicodeUTF8));
+        _testRun->setText(QApplication::translate("SamplePlugin", "Test run", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
