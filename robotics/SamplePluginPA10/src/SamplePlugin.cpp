@@ -204,9 +204,9 @@ void SamplePlugin::timer() {
 
     Mat imflip;
     cv::flip(im, imflip, 0);
-    cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2), 15, cv::Scalar(0,255,0), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+(0.1*f)/z, imflip.rows/2), 15, cv::Scalar(0,0,255), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2, imflip.rows/2+(0.1*f)/z), 15, cv::Scalar(50,50,50), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+(PT0[0]*f)/z, imflip.rows/2+(PT0[1]*f)/z), 15, cv::Scalar(0,255,0), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+(PT1[0]*f)/z, imflip.rows/2+(PT1[1]*f)/z), 15, cv::Scalar(0,0,255), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+(PT2[0]*f)/z, imflip.rows/2+(PT2[1]*f)/z), 15, cv::Scalar(50,50,50), 4);
 
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 10, cv::Scalar(0,255,0),   -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 10, cv::Scalar(0,0,255),   -1);
@@ -240,6 +240,11 @@ void SamplePlugin::timer() {
   }
   else {
     current_motion_position++;
+
+    // TODO TESTER
+    //if (current_motion_position == 30)
+    //  current_motion_position = 39;
+
     follow_marker( reference_points, false );
     if (test_runner)
       writeToFile();
@@ -323,10 +328,10 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   }
   else{
     vector< Vector3D<> > points;
-    points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
+    points.push_back(inverse(camara_to_marker) * Vector3D<>(PT0[0],PT0[1],PT0[2]));
     //if ( numOfPoints > 1) {
-      points.push_back(inverse(camara_to_marker) * Vector3D<>(-0.1,0,0));
-      points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
+      points.push_back(inverse(camara_to_marker) * Vector3D<>(-PT1[0],PT1[1],PT1[2]));
+      points.push_back(inverse(camara_to_marker) * Vector3D<>(-PT2[0],PT2[1],PT2[2]));
     //
 
     for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
@@ -337,15 +342,16 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
     //cout << endl;
   }
 
-  vector< double > targets = {  0,              0,
-                                (0.1*f)/z,      0,
-                                0,              (0.1*f)/z};
+  vector< double > targets = {  (PT0[0]*f)/z, (PT0[1]*f)/z,
+                                (PT1[0]*f)/z, (PT1[1]*f)/z,
+                                (PT2[0]*f)/z, (PT2[1]*f)/z};
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
     d_uv(i*2,0)   = targets[i*2]   -uv[i*2];
     d_uv(i*2+1,0) = targets[i*2+1] -uv[i*2+1];
   }
+  log().info() << "Frame:\t" << current_motion_position << "\n";
 
   log().info() << "uv:\t" << uv[0] << "\t" << uv[1] << "\t";
   if ( numOfPoints > 1)
