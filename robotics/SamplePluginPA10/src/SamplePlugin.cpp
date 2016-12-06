@@ -1,4 +1,7 @@
 #include "SamplePlugin.hpp"
+#include "./vision_header_files/setup.h"
+#include "./vision_source_files/color_detector.cpp"
+
 
 SamplePlugin::SamplePlugin():
     RobWorkStudioPlugin("SamplePluginUI", QIcon(":/pa_icon.png"))
@@ -192,6 +195,9 @@ void SamplePlugin::timer() {
 
     // Convert to OpenCV image
     Mat im = toOpenCVImage(image);
+    vector<Point> reference_points;
+    color_detector(im, reference_points);
+
     Mat imflip;
     cv::flip(im, imflip, 0);
     cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2), 15, cv::Scalar(0,255,0), 4);
@@ -223,7 +229,7 @@ void SamplePlugin::timer() {
     }
     else {
       current_motion_position++;
-      follow_marker();
+      follow_marker( reference_points );
     }
   }
   else if ( test_runner && !marker_motion.empty() ) {
