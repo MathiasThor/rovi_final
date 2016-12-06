@@ -174,11 +174,11 @@ void SamplePlugin::btnPressed() {
   else if(obj==_followMarker){
     log().info() << "Follow Marker\n";
     /// TMP
-    //move_marker(marker_motion[current_motion_position]);
+    move_marker(marker_motion[current_motion_position]);
     if (current_motion_position == marker_motion.size())
       resetSim();
     else
-      //current_motion_position++;
+      current_motion_position++;
     /// TMP
 
     follow_marker();
@@ -323,19 +323,19 @@ void SamplePlugin::follow_marker( ){
   //
 
   vector< double > targets = {  0,              0,
-                                -(0.1*f)/z,      0,
-                                0,              (0.1*f)/z};
+                                (0.1*f)/points[1][2],      0,
+                                0,              (0.1*f)/points[2][2]};
 
   for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
     //cout << points[i][0] << "\t" << points[i][1] << endl;
-    uv[i*2]   = ( points[i][0] * f ) / z;
-    uv[i*2+1] = ( points[i][1] * f ) / z;
+    uv[i*2]   = ( points[i][0] * f ) / points[i][2];
+    uv[i*2+1] = ( points[i][1] * f ) / points[i][2];
   }
   //cout << endl;
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
-    d_uv(i*2,0)   = targets[i*2]   -uv[i*2];
+    d_uv(i*2,0)   = -targets[i*2]  -uv[i*2];
     d_uv(i*2+1,0) = targets[i*2+1] -uv[i*2+1];
   }
 
@@ -396,6 +396,8 @@ void SamplePlugin::follow_marker( ){
   Jacobian J_dq(z_image_T.e()*((z_image*z_image_T).e().inverse()*d_uv.e()));
   Q dq(J_dq.e());
   Q new_q(_PA10->getQ(_state));
+  log().info() << "delta Q:\n" << new_q << "\n";
+  log().info() << "new Q:\n" << dq << "\n";
   velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
   getRobWorkStudio()->setState(_state);
