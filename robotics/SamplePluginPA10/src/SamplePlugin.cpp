@@ -171,11 +171,11 @@ void SamplePlugin::btnPressed() {
   else if(obj==_followMarker){
     log().info() << "Follow Marker\n";
     /// TMP
-    move_marker(marker_motion[current_motion_position]);
+    //move_marker(marker_motion[current_motion_position]);
     if (current_motion_position == marker_motion.size())
       resetSim();
     else
-      current_motion_position++;
+      //current_motion_position++;
     /// TMP
 
     follow_marker();
@@ -195,8 +195,8 @@ void SamplePlugin::timer() {
     Mat imflip;
     cv::flip(im, imflip, 0);
     cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2), 15, cv::Scalar(0,255,0), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+( 0.1 * f ) / z, imflip.rows/2), 15, cv::Scalar(0,0,255), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2, imflip.rows/2+( 0.1 * f )/ z), 15, cv::Scalar(50,50,50), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2-(0.1*f)/z, imflip.rows/2), 15, cv::Scalar(0,0,255), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2, imflip.rows/2+(0.1*f)/z), 15, cv::Scalar(50,50,50), 4);
 
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 10, cv::Scalar(0,255,0),   -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 10, cv::Scalar(0,0,255),   -1);
@@ -312,13 +312,13 @@ void SamplePlugin::follow_marker( ){
   vector< Vector3D<> > points;
   points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
   //if ( numOfPoints > 1) {
-    points.push_back(inverse(camara_to_marker) * Vector3D<>(-0.1,0,0));
+    points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
     points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
   //
 
   vector< double > targets = {  0,              0,
-                                -(0.1*f)/z,     0,
-                                0,              -(0.1*f)/z};
+                                -(0.1*f)/z,      0,
+                                0,              (0.1*f)/z};
 
   for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
     //cout << points[i][0] << "\t" << points[i][1] << endl;
@@ -329,8 +329,8 @@ void SamplePlugin::follow_marker( ){
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
-    d_uv(i*2,0)   = -uv[i*2]   - targets[i*2];
-    d_uv(i*2+1,0) = -uv[i*2+1] - targets[i*2+1];
+    d_uv(i*2,0)   = targets[i*2]   -uv[i*2];
+    d_uv(i*2+1,0) = targets[i*2+1] -uv[i*2+1];
   }
 
   log().info() << "uv:\n" << uv[0] << " " << uv[1] << "\n";
@@ -342,7 +342,7 @@ void SamplePlugin::follow_marker( ){
   // Calculate the jacobian for PA10 -Ok
   //
 	Jacobian J_PA10 = _PA10->baseJframe(_Camera, _state);
-  log().info() << "j_pa10:\n" << J_PA10 << "\n";
+  //log().info() << "j_pa10:\n" << J_PA10 << "\n";
 
   //
   // Calculate the image jacobian
@@ -370,13 +370,13 @@ void SamplePlugin::follow_marker( ){
   //
   Transform3D<> base2cam = inverse(_PA10->baseTframe(_Camera, _state));
   Jacobian J_sq = Jacobian(base2cam.R());
-  log().info() << "sq:\n" << J_sq << "\n";
+  //log().info() << "sq:\n" << J_sq << "\n";
 
   //
   // Calculate Z_image
   //
   Jacobian z_image = J_image * J_sq * J_PA10;
-  log().info() << "z:\n" << z_image << "\n";
+  //log().info() << "z:\n" << z_image << "\n";
   Jacobian z_image_T(7,numOfPoints*2);
   for(int i=0; i < 7; i++){
     for(int j=0; j < 2; j++){
