@@ -1,4 +1,4 @@
-FILE(REMOVE_RECURSE
+file(REMOVE_RECURSE
   "ui_SamplePlugin.h"
   "src/moc_SamplePlugin.cxx"
   "qrc_resources.cxx"
@@ -10,6 +10,6 @@ FILE(REMOVE_RECURSE
 )
 
 # Per-language clean rules from dependency scanning.
-FOREACH(lang CXX)
-  INCLUDE(CMakeFiles/SamplePlugin.dir/cmake_clean_${lang}.cmake OPTIONAL)
-ENDFOREACH(lang)
+foreach(lang CXX)
+  include(CMakeFiles/SamplePlugin.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

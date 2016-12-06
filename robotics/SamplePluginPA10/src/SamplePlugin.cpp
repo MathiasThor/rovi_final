@@ -50,7 +50,6 @@ void SamplePlugin::initialize() {
   }
 	getRobWorkStudio()->setWorkCell(wc);
   load_motion("MarkerMotionSlow.txt");
-  timer();
 }
 
 void SamplePlugin::open(WorkCell* workcell)
@@ -65,7 +64,6 @@ void SamplePlugin::open(WorkCell* workcell)
   if (_PA10 == NULL)
     cerr << "Device: PA10 not found!" << endl;
 
-  resetSim();
   vel_limits = _PA10->getVelocityLimits();
 
 	log().info() << workcell->getFilename() << "\n";
@@ -99,6 +97,7 @@ void SamplePlugin::open(WorkCell* workcell)
 			}
 		}
 	}
+  resetSim();
 }
 
 void SamplePlugin::close() {
@@ -125,8 +124,8 @@ void SamplePlugin::close() {
 }
 
 void SamplePlugin::resetSim(){
-  current_motion_position = 0;
-  move_marker(marker_motion[current_motion_position]);
+  _timer->stop();
+  move_marker(marker_motion[0]);
   Q init_position(7, 0, -0.65, 0, 1.80, 0, 0.42, 0);
   _PA10->setQ(init_position, _state);
   getRobWorkStudio()->setState(_state);
@@ -135,11 +134,9 @@ void SamplePlugin::resetSim(){
   for (int row = 0; row < numOfPoints*2; row++)
     uv.push_back(0);
 
-  Transform3D<> camara_to_marker = _Marker->fTf(_Camera, _state);
-  Vector3D<> marker_midpoint = inverse(camara_to_marker) * Vector3D<>(0,0,0);
-
-  timer();
-  getRobWorkStudio()->setState(_state);
+  stop_start_motion = false;
+  test_runner = false;
+  current_motion_position = 0;
 }
 
 Mat SamplePlugin::toOpenCVImage(const Image& img) {
@@ -154,7 +151,7 @@ void SamplePlugin::btnPressed() {
 		log().info() << "Change Texture\n";
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
-		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm");
+		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/Marker1.ppm");
 		_textureRender->setImage(*image);
 		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/backgrounds/color1.ppm");
 		_bgRender->setImage(*image);
@@ -173,17 +170,17 @@ void SamplePlugin::btnPressed() {
 	}
   else if(obj==_followMarker){
     log().info() << "Follow Marker\n";
-    /// TMP
-    //move_marker(marker_motion[current_motion_position]);
-    if (current_motion_position == marker_motion.size())
-      resetSim();
-    else{
-      vector<cv::Point> empty;
-      follow_marker(empty, false);
-    }
-      //current_motion_position++;
-    /// TMP
     timer();
+    // /// TMP
+    // //move_marker(marker_motion[current_motion_position]);
+    // if (current_motion_position == marker_motion.size())
+    //   resetSim();
+    // else{
+    //   vector<cv::Point> empty;
+    //   follow_marker(empty, false);
+    // }
+    //   //current_motion_position++;
+    // /// TMP
   }
 }
 
@@ -208,7 +205,7 @@ void SamplePlugin::timer() {
     Mat imflip;
     cv::flip(im, imflip, 0);
     cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2), 15, cv::Scalar(0,255,0), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2-(0.1*f)/z, imflip.rows/2), 15, cv::Scalar(0,0,255), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+(0.1*f)/z, imflip.rows/2), 15, cv::Scalar(0,0,255), 4);
     cv::circle(imflip, cv::Point(imflip.cols/2, imflip.rows/2+(0.1*f)/z), 15, cv::Scalar(50,50,50), 4);
 
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 10, cv::Scalar(0,255,0),   -1);
@@ -232,32 +229,24 @@ void SamplePlugin::timer() {
     _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
   }
 
-  if ( stop_start_motion && !marker_motion.empty() ) {
-    move_marker(marker_motion[current_motion_position]);
-
-    if (current_motion_position == marker_motion.size()){
-      resetSim();
-    }
-    else {
-      current_motion_position++;
-      follow_marker( reference_points, true );
-    }
-  }
-  else if ( test_runner && !marker_motion.empty() ) {
-    move_marker(marker_motion[current_motion_position]);
-
+  if (current_motion_position == marker_motion.size()){
+    resetSim();
     if (current_motion_position == marker_motion.size()){
       test_runner = false;
       jointPos_file.close();
       toolPos_file.close();
       log().info() << "Closed the files" << "\n";
     }
-    else {
-      current_motion_position++;
-      follow_marker( reference_points, true );
-      writeToFile();
-    }
   }
+  else {
+    current_motion_position++;
+    follow_marker( reference_points, false );
+    if (test_runner)
+      writeToFile();
+  }
+
+  move_marker(marker_motion[current_motion_position]);
+
 }
 
 void SamplePlugin::testRun(){
@@ -267,7 +256,6 @@ void SamplePlugin::testRun(){
   jointPos_file << DT << "\n";
   if (!test_runner) {
     test_runner=true;
-    stop_start_motion = false;
     resetSim();
     _timer->start(100);
     log().info() << "Collecting data..." << "\n";
@@ -337,7 +325,7 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
     vector< Vector3D<> > points;
     points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
     //if ( numOfPoints > 1) {
-      points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
+      points.push_back(inverse(camara_to_marker) * Vector3D<>(-0.1,0,0));
       points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
     //
 
@@ -359,10 +347,15 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
     d_uv(i*2+1,0) = targets[i*2+1] -uv[i*2+1];
   }
 
-  log().info() << "uv:\n" << uv[0] << " " << uv[1] << "\n";
+  log().info() << "uv:\t" << uv[0] << "\t" << uv[1] << "\t";
   if ( numOfPoints > 1)
-      log().info() << uv[2] << " " << uv[3] << "\n" << uv[4] << " " << uv[5] << "\n";;
-  log().info() << "d_uv:\n" << d_uv << "\n";
+      log().info() << uv[2] << "\t" << uv[3] << "\t" << uv[4] << "\t" << uv[5] << "\n";
+
+  //log().info() << "targ:\t" << targets[1] << " " << targets[1] << "\t" << targets[2] << " " << targets[3] << "\t" << targets[4] << " " << targets[5] << "\n";
+
+  log().info() << "d_uv:\t" << d_uv(0,0) << "\t" << d_uv(1,0) << "\t";
+  if ( numOfPoints > 1)
+      log().info() << d_uv(2,0) << "\t" << d_uv(3,0) << "\t" << d_uv(4,0) << "\t" << d_uv(5,0) << "\n";
 
   //
   // Calculate the jacobian for PA10 -Ok
@@ -405,7 +398,7 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   //log().info() << "z:\n" << z_image << "\n";
   Jacobian z_image_T(7,numOfPoints*2);
   for(int i=0; i < 7; i++){
-    for(int j=0; j < 2; j++){
+    for(int j=0; j < 2*numOfPoints; j++){
       z_image_T(i,j) = z_image(j,i);
     }
   }
@@ -415,10 +408,13 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   //
   Jacobian J_dq(z_image_T.e()*((z_image*z_image_T).e().inverse()*d_uv.e()));
   Q dq(J_dq.e());
+  log().info() << "dq:\t" << dq << "\n";
   Q new_q(_PA10->getQ(_state));
   velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
   getRobWorkStudio()->setState(_state);
+
+  log().info() << "===========================================================" << "\n";
 }
 
 void SamplePlugin::velocityLimit( Q dq, Q &q ){
