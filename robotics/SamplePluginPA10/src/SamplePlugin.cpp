@@ -174,19 +174,21 @@ void SamplePlugin::btnPressed() {
   else if(obj==_followMarker){
     log().info() << "Follow Marker\n";
     /// TMP
-    move_marker(marker_motion[current_motion_position]);
+    //move_marker(marker_motion[current_motion_position]);
     if (current_motion_position == marker_motion.size())
       resetSim();
-    else
-      current_motion_position++;
+    else{
+      vector<cv::Point> empty;
+      follow_marker(empty, false);
+    }
+      //current_motion_position++;
     /// TMP
-
-    follow_marker();
     timer();
   }
 }
 
 void SamplePlugin::timer() {
+  vector<cv::Point> reference_points;
   if (_framegrabber != NULL) {
     // Get the image as a RW image
     Frame* cameraFrame = _wc->findFrame("CameraSim");
@@ -195,8 +197,13 @@ void SamplePlugin::timer() {
 
     // Convert to OpenCV image
     Mat im = toOpenCVImage(image);
-    vector<Point> reference_points;
     color_detector(im, reference_points);
+    for(int i = 0; i < reference_points.size(); i++){
+      Point temp = reference_points[i];
+      temp.x = reference_points[i].x - (im.cols/2);
+      temp.y = reference_points[i].y - (im.rows/2);
+      reference_points[i] = temp;
+    }
 
     Mat imflip;
     cv::flip(im, imflip, 0);
@@ -207,6 +214,10 @@ void SamplePlugin::timer() {
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 10, cv::Scalar(0,255,0),   -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 10, cv::Scalar(0,0,255),   -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 10, cv::Scalar(50,50,50),  -1);
+
+    for(int i = 0; i < reference_points.size(); i++){
+      cv::circle(imflip, reference_points[i], 10, cv::Scalar(255,0,0), -1);
+    }
 
 
     // for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints....
@@ -229,7 +240,7 @@ void SamplePlugin::timer() {
     }
     else {
       current_motion_position++;
-      follow_marker( reference_points );
+      follow_marker( reference_points, true );
     }
   }
   else if ( test_runner && !marker_motion.empty() ) {
@@ -243,7 +254,7 @@ void SamplePlugin::timer() {
     }
     else {
       current_motion_position++;
-      follow_marker();
+      follow_marker( reference_points, true );
       writeToFile();
     }
   }
@@ -306,7 +317,7 @@ void SamplePlugin::load_motion( string move_file ){
   }
 }
 
-void SamplePlugin::follow_marker( ){
+void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   //
   // Get the transform of CAMARA frame relative to the MARKER frame. -OK
   //
@@ -315,27 +326,36 @@ void SamplePlugin::follow_marker( ){
   //
   // Calculate u, uv[1], du and dv
   //
-  vector< Vector3D<> > points;
-  points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
-  //if ( numOfPoints > 1) {
-    points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
-    points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
-  //
+  if(cv){
+    for (int i = 0; i < reference_points.size(); i++) { // TODO 3 = numOfPoints
+      //cout << points[i][0] << "\t" << points[i][1] << endl;
+      uv[i]   = ( reference_points[i].x * f ) / z;
+      uv[i+1] = ( reference_points[i].y * f ) / z;
+    }
+  }
+  else{
+    vector< Vector3D<> > points;
+    points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
+    //if ( numOfPoints > 1) {
+      points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
+      points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
+    //
+
+    for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
+      //cout << points[i][0] << "\t" << points[i][1] << endl;
+      uv[i*2]   = ( points[i][0] * f ) / z;
+      uv[i*2+1] = ( points[i][1] * f ) / z;
+    }
+    //cout << endl;
+  }
 
   vector< double > targets = {  0,              0,
-                                (0.1*f)/points[1][2],      0,
-                                0,              (0.1*f)/points[2][2]};
-
-  for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
-    //cout << points[i][0] << "\t" << points[i][1] << endl;
-    uv[i*2]   = ( points[i][0] * f ) / points[i][2];
-    uv[i*2+1] = ( points[i][1] * f ) / points[i][2];
-  }
-  //cout << endl;
+                                (0.1*f)/z,      0,
+                                0,              (0.1*f)/z};
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
-    d_uv(i*2,0)   = -targets[i*2]  -uv[i*2];
+    d_uv(i*2,0)   = targets[i*2]   -uv[i*2];
     d_uv(i*2+1,0) = targets[i*2+1] -uv[i*2+1];
   }
 
@@ -396,8 +416,6 @@ void SamplePlugin::follow_marker( ){
   Jacobian J_dq(z_image_T.e()*((z_image*z_image_T).e().inverse()*d_uv.e()));
   Q dq(J_dq.e());
   Q new_q(_PA10->getQ(_state));
-  log().info() << "delta Q:\n" << new_q << "\n";
-  log().info() << "new Q:\n" << dq << "\n";
   velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
   getRobWorkStudio()->setState(_state);
