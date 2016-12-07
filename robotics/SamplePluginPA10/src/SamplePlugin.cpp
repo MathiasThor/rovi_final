@@ -194,13 +194,24 @@ void SamplePlugin::timer() {
 
     Mat imflip;
     cv::flip(im, imflip, 0);
-    cv::circle(imflip, cv::Point(imflip.cols/2+target[0*2], imflip.rows/2+target[0*2+1]), 15, cv::Scalar(0,255,0), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+target[1*2], imflip.rows/2+target[1*2+1]), 15, cv::Scalar(0,0,255), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+target[2*2], imflip.rows/2+target[2*2+1]), 15, cv::Scalar(50,50,50), 4);
 
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 10, cv::Scalar(0,255,0),   -1);
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 10, cv::Scalar(0,0,255),   -1);
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 10, cv::Scalar(50,50,50),  -1);
+    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 15, cv::Scalar(255,40,40), -1);
+    // if(numOfPoints>1){
+    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 15, cv::Scalar(40,255,40), -1);
+    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 15, cv::Scalar(40,40,255), -1);
+    // }
+
+    cv::circle(imflip, cv::Point(imflip.cols/2+target[0*2], imflip.rows/2+target[0*2+1]), 15, cv::Scalar(255,0,0), 4);
+    if(numOfPoints>1){
+    cv::circle(imflip, cv::Point(imflip.cols/2+target[1*2], imflip.rows/2+target[1*2+1]), 15, cv::Scalar(0,255,0), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target[2*2], imflip.rows/2+target[2*2+1]), 15, cv::Scalar(0,0,255), 4);
+    }
+
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 10, cv::Scalar(255,0,0), -1);
+    if(numOfPoints>1){
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 10, cv::Scalar(0,255,0), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 10, cv::Scalar(0,0,255), -1);
+    }
 
     for(int i = 0; i < reference_points.size(); i++){
       cv::circle(imflip, reference_points[i], 10, cv::Scalar(255,0,0), -1);
@@ -228,8 +239,8 @@ void SamplePlugin::timer() {
     }
   }
   else {
-    follow_marker( reference_points, false );
     move_marker(marker_motion[current_motion_position]);
+    follow_marker( reference_points, false );
     current_motion_position++;
     if (test_runner)
       writeToFile();
@@ -297,7 +308,7 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   // Calculate u, uv[1], du and dv
   //
   if(cv){
-    for (int i = 0; i < reference_points.size(); i++) { // TODO 3 = numOfPoints
+    for (int i = 0; i < reference_points.size(); i++) {
       //cout << points[i][0] << "\t" << points[i][1] << endl;
       uv[i]   = ( reference_points[i].x * f ) / z;
       uv[i+1] = ( reference_points[i].y * f ) / z;
@@ -314,37 +325,40 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
          points.push_back(camara_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + camara_to_marker.P());
     }
 
-    for (int i = 0; i < points.size(); i++) { // TODO 3 = numOfPoints
+    for (int i = 0; i < points.size(); i++) {
       uv[i*2]   = ( points[i][0] * f ) / z;
       uv[i*2+1] = ( points[i][1] * f ) / z;
     }
 
     if (current_motion_position==0) {
       target=uv;
-      // for(double& element : target)
-      //   element = element - uv[1];
+      // for (int i = 0; i < numOfPoints; i++) {
+      //   target[i*2]   -= uv[0];
+      //   target[i*2+1] -= uv[1];
+      // }
     }
   }
 
-  vector<double> target2 = {(PT0[0]*f)/z,(PT0[1]*f)/z,(PT1[0]*f)/z,(PT1[1]*f)/z,(PT2[0]*f)/z,(PT2[1]*f)/z};
+  target2 = {(0.15*f)/z,(0.15*f)/z,-(0.15*f)/z,(0.15*f)/z,(0.15*f)/z,(-0.15*f)/z};
 
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
-    d_uv(i*2,0)   = target[i*2]-uv[i*2];
-    d_uv(i*2+1,0) = target[i*2+1]-uv[i*2+1];
+    d_uv(i*2,0)   = target[i*2]   -uv[i*2];
+    d_uv(i*2+1,0) = target[i*2+1] -uv[i*2+1];
   }
   log().info() << "Frame:\t" << current_motion_position << "\n";
 
   log().info() << "uv:\t" << uv[0] << "\t" << uv[1] << "\t";
   if ( numOfPoints > 1)
       log().info() << uv[2] << "\t" << uv[3] << "\t" << uv[4] << "\t" << uv[5] << "\n";
-  log().info() << "targ:\t" << target[1] << " " << target[1] << "\t" << target[2] << " " << target[3] << "\t" << target[4] << " " << target[5] << "\n";
-  log().info() << "targ2:\t" << target2[1] << " " << target2[1] << "\t" << target2[2] << " " << target2[3] << "\t" << target2[4] << " " << target2[5] << "\n";
+  else log().info() << "\n";
+  log().info() << "targ:\t" << target[0] << "\t" << target[1] << "\t" << target[2] << "\t" << target[3] << "\t" << target[4] << "\t" << target[5] << "\n";
+  log().info() << "targ2:\t" << target2[0] << "\t" << target2[1] << "\t" << target2[2] << "\t" << target2[3] << "\t" << target2[4] << "\t" << target2[5] << "\n";
   log().info() << "d_uv:\t" << d_uv(0,0) << "\t" << d_uv(1,0) << "\t";
   if ( numOfPoints > 1)
     log().info() << d_uv(2,0) << "\t" << d_uv(3,0) << "\t" << d_uv(4,0) << "\t" << d_uv(5,0) << "\n";
-
+  else log().info() << "\n";
 
   //
   // Calculate the jacobian for PA10 -Ok

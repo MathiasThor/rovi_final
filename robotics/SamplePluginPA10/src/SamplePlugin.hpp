@@ -70,6 +70,7 @@ private:
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
 
 	vector<double> target{74.0487, 74.0487,	170.361, 74.0487,	5.761, -90.5513};
+	vector<double> target2{0,0,0,0,0,0};
 
 	// Global variables
 	vector< rw::math::VelocityScrew6D<double> > marker_motion;
@@ -87,9 +88,14 @@ private:
 	ofstream toolPos_file;
 
 	int numOfPoints = 3;
-	vector<double> PT0{0,				0,		0};
-	vector<double> PT1{-0.1,		0,		0};
-	vector<double> PT2{0,			-0.1,		0};
+
+	// vector<double> PT0{0,				0,		0};
+	// vector<double> PT1{-0.1,		0,		0};
+	// vector<double> PT2{0,			-0.1,		0};
+
+	vector<double> PT0{0.15,		0.15,		0};
+	vector<double> PT1{-0.15,		0.15,		0};
+	vector<double> PT2{0.15,		-0.15,		0};
 
 	Device::Ptr _PA10;
 	MovableFrame* _Marker;
