@@ -194,9 +194,9 @@ void SamplePlugin::timer() {
 
     Mat imflip;
     cv::flip(im, imflip, 0);
-    cv::circle(imflip, cv::Point(imflip.cols/2+(PT0[0]*f)/z, imflip.rows/2+(PT0[1]*f)/z), 15, cv::Scalar(0,255,0), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+(PT1[0]*f)/z, imflip.rows/2+(PT1[1]*f)/z), 15, cv::Scalar(0,0,255), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+(PT2[0]*f)/z, imflip.rows/2+(PT2[1]*f)/z), 15, cv::Scalar(50,50,50), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target[0*2], imflip.rows/2+target[0*2+1]), 15, cv::Scalar(0,255,0), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target[1*2], imflip.rows/2+target[1*2+1]), 15, cv::Scalar(0,0,255), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target[2*2], imflip.rows/2+target[2*2+1]), 15, cv::Scalar(50,50,50), 4);
 
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 10, cv::Scalar(0,255,0),   -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 10, cv::Scalar(0,0,255),   -1);
@@ -229,8 +229,8 @@ void SamplePlugin::timer() {
   }
   else {
     follow_marker( reference_points, false );
-    current_motion_position++;
     move_marker(marker_motion[current_motion_position]);
+    current_motion_position++;
     if (test_runner)
       writeToFile();
   }
@@ -315,16 +315,19 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
     }
 
     for (int i = 0; i < points.size(); i++) { // TODO 3 = numOfPoints
-      cout << points[i][0] << "\t" << points[i][1] << endl;
       uv[i*2]   = ( points[i][0] * f ) / z;
       uv[i*2+1] = ( points[i][1] * f ) / z;
     }
 
     if (current_motion_position==0) {
       target=uv;
-    // target = {(PT0[0]*f)/z,(PT0[1]*f)/z,(PT1[0]*f)/z,(PT1[1]*f)/z,(PT2[0]*f)/z,(PT2[1]*f)/z};
+      // for(double& element : target)
+      //   element = element - uv[1];
     }
   }
+
+  vector<double> target2 = {(PT0[0]*f)/z,(PT0[1]*f)/z,(PT1[0]*f)/z,(PT1[1]*f)/z,(PT2[0]*f)/z,(PT2[1]*f)/z};
+
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
@@ -337,6 +340,7 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   if ( numOfPoints > 1)
       log().info() << uv[2] << "\t" << uv[3] << "\t" << uv[4] << "\t" << uv[5] << "\n";
   log().info() << "targ:\t" << target[1] << " " << target[1] << "\t" << target[2] << " " << target[3] << "\t" << target[4] << " " << target[5] << "\n";
+  log().info() << "targ2:\t" << target2[1] << " " << target2[1] << "\t" << target2[2] << " " << target2[3] << "\t" << target2[4] << " " << target2[5] << "\n";
   log().info() << "d_uv:\t" << d_uv(0,0) << "\t" << d_uv(1,0) << "\t";
   if ( numOfPoints > 1)
     log().info() << d_uv(2,0) << "\t" << d_uv(3,0) << "\t" << d_uv(4,0) << "\t" << d_uv(5,0) << "\n";
