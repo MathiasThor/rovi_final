@@ -58,7 +58,7 @@ void SamplePlugin::open(WorkCell* workcell)
 	_wc = workcell;
 	_state = _wc->getDefaultState();
   _PA10 = _wc->findDevice("PA10");
-  _Marker = _wc->findFrame("Marker");
+  _Marker = (MovableFrame*) _wc->findFrame("Marker");
   _Camera = _wc->findFrame("Camera");
 
   if (_PA10 == NULL)
@@ -171,16 +171,6 @@ void SamplePlugin::btnPressed() {
   else if(obj==_followMarker){
     log().info() << "Follow Marker\n";
     timer();
-    // /// TMP
-    // //move_marker(marker_motion[current_motion_position]);
-    // if (current_motion_position == marker_motion.size())
-    //   resetSim();
-    // else{
-    //   vector<cv::Point> empty;
-    //   follow_marker(empty, false);
-    // }
-    //   //current_motion_position++;
-    // /// TMP
   }
 }
 
@@ -216,7 +206,6 @@ void SamplePlugin::timer() {
       cv::circle(imflip, reference_points[i], 10, cv::Scalar(255,0,0), -1);
     }
 
-
     // for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints....
     //   cv::circle(imflip, cv::Point(imflip.cols/2+uv[i*2],imflip.rows/2+uv[i*2+1]), 10, cv::Scalar(255,0,0), -1);
     // }
@@ -239,18 +228,12 @@ void SamplePlugin::timer() {
     }
   }
   else {
-    current_motion_position++;
-
-    // TODO TESTER
-    //if (current_motion_position == 30)
-    //  current_motion_position = 39;
-
     follow_marker( reference_points, false );
+    current_motion_position++;
+    move_marker(marker_motion[current_motion_position]);
     if (test_runner)
       writeToFile();
   }
-
-  move_marker(marker_motion[current_motion_position]);
 
 }
 
@@ -272,8 +255,7 @@ void SamplePlugin::stateChangedListener(const State& state) {
 }
 
 void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
-  MovableFrame* marker_frame = static_cast<MovableFrame*>(_Marker);
-  marker_frame->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
+  _Marker->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
   getRobWorkStudio()->setState(_state);
 }
 
@@ -312,11 +294,6 @@ void SamplePlugin::load_motion( string move_file ){
 
 void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   //
-  // Get the transform of CAMARA frame relative to the MARKER frame. -OK
-  //
-  Transform3D<> camara_to_marker = _Marker->fTf(_Camera, _state);
-
-  //
   // Calculate u, uv[1], du and dv
   //
   if(cv){
@@ -327,41 +304,43 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
     }
   }
   else{
+    // Get the transform of CAMARA frame relative to the MARKER frame. -OK
+    Transform3D<> camara_to_marker = inverse(_Marker->fTf(_Camera, _state));
     vector< Vector3D<> > points;
-    points.push_back(inverse(camara_to_marker) * Vector3D<>(PT0[0],PT0[1],PT0[2]));
-    //if ( numOfPoints > 1) {
-      points.push_back(inverse(camara_to_marker) * Vector3D<>(-PT1[0],PT1[1],PT1[2]));
-      points.push_back(inverse(camara_to_marker) * Vector3D<>(-PT2[0],PT2[1],PT2[2]));
-    //
 
-    for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints
-      //cout << points[i][0] << "\t" << points[i][1] << endl;
+    points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
+    if ( numOfPoints > 1) {
+         points.push_back(camara_to_marker.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + camara_to_marker.P());
+         points.push_back(camara_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + camara_to_marker.P());
+    }
+
+    for (int i = 0; i < points.size(); i++) { // TODO 3 = numOfPoints
+      cout << points[i][0] << "\t" << points[i][1] << endl;
       uv[i*2]   = ( points[i][0] * f ) / z;
       uv[i*2+1] = ( points[i][1] * f ) / z;
     }
-    //cout << endl;
-  }
 
-  vector< double > targets = {  (PT0[0]*f)/z, (PT0[1]*f)/z,
-                                (PT1[0]*f)/z, (PT1[1]*f)/z,
-                                (PT2[0]*f)/z, (PT2[1]*f)/z};
+    if (current_motion_position==0) {
+      target=uv;
+    // target = {(PT0[0]*f)/z,(PT0[1]*f)/z,(PT1[0]*f)/z,(PT1[1]*f)/z,(PT2[0]*f)/z,(PT2[1]*f)/z};
+    }
+  }
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
-    d_uv(i*2,0)   = targets[i*2]   -uv[i*2];
-    d_uv(i*2+1,0) = targets[i*2+1] -uv[i*2+1];
+    d_uv(i*2,0)   = target[i*2]-uv[i*2];
+    d_uv(i*2+1,0) = target[i*2+1]-uv[i*2+1];
   }
   log().info() << "Frame:\t" << current_motion_position << "\n";
 
   log().info() << "uv:\t" << uv[0] << "\t" << uv[1] << "\t";
   if ( numOfPoints > 1)
       log().info() << uv[2] << "\t" << uv[3] << "\t" << uv[4] << "\t" << uv[5] << "\n";
-
-  //log().info() << "targ:\t" << targets[1] << " " << targets[1] << "\t" << targets[2] << " " << targets[3] << "\t" << targets[4] << " " << targets[5] << "\n";
-
+  log().info() << "targ:\t" << target[1] << " " << target[1] << "\t" << target[2] << " " << target[3] << "\t" << target[4] << " " << target[5] << "\n";
   log().info() << "d_uv:\t" << d_uv(0,0) << "\t" << d_uv(1,0) << "\t";
   if ( numOfPoints > 1)
-      log().info() << d_uv(2,0) << "\t" << d_uv(3,0) << "\t" << d_uv(4,0) << "\t" << d_uv(5,0) << "\n";
+    log().info() << d_uv(2,0) << "\t" << d_uv(3,0) << "\t" << d_uv(4,0) << "\t" << d_uv(5,0) << "\n";
+
 
   //
   // Calculate the jacobian for PA10 -Ok
@@ -373,7 +352,6 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   // Calculate the image jacobian
   //
   Jacobian J_image(numOfPoints*2,6);   // Create 6*2 Jacobian
-  // Fill the jacobian
   for (int i = 0; i < numOfPoints; i++) {
     J_image(i*2, 0)   = -(f / z);
     J_image(i*2, 1)   = 0;
@@ -414,12 +392,11 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   //
   Jacobian J_dq(z_image_T.e()*((z_image*z_image_T).e().inverse()*d_uv.e()));
   Q dq(J_dq.e());
-  log().info() << "dq:\t" << dq << "\n";
+  //log().info() << "dq:\t" << dq << "\n";
   Q new_q(_PA10->getQ(_state));
   velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
   getRobWorkStudio()->setState(_state);
-
   log().info() << "===========================================================" << "\n";
 }
 

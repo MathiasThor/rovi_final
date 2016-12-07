@@ -69,26 +69,30 @@ private:
 	void writeToFile( );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
 
+	vector<double> target;
+
 	// Global variables
 	vector< rw::math::VelocityScrew6D<double> > marker_motion;
 	int current_motion_position = 0;
 	bool stop_start_motion = false;
 	bool test_runner = false;
-	vector<float> uv;
+	bool test_bool = true;
+	vector<double> uv;
 	double f = 823;
 	double z = 0.5;
 	double DT = 1;
+
 	Q vel_limits;
 	ofstream jointPos_file;
 	ofstream toolPos_file;
 
 	int numOfPoints = 1;
-	vector<double> PT0{0,			0,		0};
-	vector<double> PT1{-0.15,	0,		0};
-	vector<double> PT2{0,			-0.15,	0};
+	vector<double> PT0{0,				0,		0};
+	vector<double> PT1{-0.1,		0,		0};
+	vector<double> PT2{0,			-0.1,		0};
 
 	Device::Ptr _PA10;
-	Frame* _Marker;
+	MovableFrame* _Marker;
 	Frame* _Camera;
 
 	QTimer* _timer;
