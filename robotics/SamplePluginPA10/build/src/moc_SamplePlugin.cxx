@@ -32,17 +32,17 @@ static const uint qt_meta_data_SamplePlugin[] = {
  // slots: signature, parameters, type, tag, flags
       14,   13,   13,   13, 0x08,
       27,   13,   13,   13, 0x08,
-      38,   13,   13,   13, 0x08,
-      49,   13,   13,   13, 0x08,
-      59,   13,   13,   13, 0x08,
-      67,   13,   13,   13, 0x08,
-      82,   76,   13,   13, 0x08,
+      41,   13,   13,   13, 0x08,
+      52,   13,   13,   13, 0x08,
+      62,   13,   13,   13, 0x08,
+      70,   13,   13,   13, 0x08,
+      85,   79,   13,   13, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_SamplePlugin[] = {
-    "SamplePlugin\0\0btnPressed()\0testFunc()\0"
+    "SamplePlugin\0\0btnPressed()\0load_motion()\0"
     "resetSim()\0testRun()\0timer()\0set_dt()\0"
     "state\0stateChangedListener(rw::kinematics::State)\0"
 };
@@ -54,7 +54,7 @@ void SamplePlugin::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         SamplePlugin *_t = static_cast<SamplePlugin *>(_o);
         switch (_id) {
         case 0: _t->btnPressed(); break;
-        case 1: _t->testFunc(); break;
+        case 1: _t->load_motion(); break;
         case 2: _t->resetSim(); break;
         case 3: _t->testRun(); break;
         case 4: _t->timer(); break;

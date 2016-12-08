@@ -14,7 +14,7 @@ SamplePlugin::SamplePlugin():
 	// now connect stuff from the ui component
 	connect(_btn0,              SIGNAL(pressed()),            this, SLOT(btnPressed()) );
   connect(_startStopMovement, SIGNAL(pressed()),            this, SLOT(btnPressed()) );
-  connect(_comboBox,          SIGNAL(activated(int)),       this, SLOT(testFunc())   );
+  connect(_comboBox,          SIGNAL(activated(int)),       this, SLOT(btnPressed()) );
   connect(_followMarker,      SIGNAL(pressed()),            this, SLOT(btnPressed()) );
   connect(_resetSim,          SIGNAL(pressed()),            this, SLOT(resetSim()) );
   connect(_DT,                SIGNAL(valueChanged(double)), this, SLOT(set_dt()) );
@@ -49,7 +49,7 @@ void SamplePlugin::initialize() {
     cerr << "WorkCell: not found!" << endl;
   }
 	getRobWorkStudio()->setWorkCell(wc);
-  load_motion("MarkerMotionSlow.txt");
+  load_motion();
 }
 
 void SamplePlugin::open(WorkCell* workcell)
@@ -127,6 +127,7 @@ void SamplePlugin::close() {
 
 void SamplePlugin::resetSim(){
   _timer->stop();
+  _startStopMovement->setText("Start movement");
   move_marker(marker_motion[0]);
   Q init_position(7, 0, -0.65, 0, 1.80, 0, 0.42, 0);
   _PA10->setQ(init_position, _state);
@@ -153,7 +154,6 @@ void SamplePlugin::btnPressed() {
 		log().info() << "Change Texture\n";
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
-    marker_motion.clear();
     string marker_type = _markTex->currentText().toUtf8().constData();
     string mk_file = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/" + marker_type;
 		image = ImageLoader::Factory::load(mk_file.c_str());
@@ -180,6 +180,10 @@ void SamplePlugin::btnPressed() {
   else if(obj==_followMarker){
     log().info() << "Follow Marker\n";
     timer();
+  } else if(obj==_comboBox){
+    log().info() << "load_motion\n";
+    load_motion();
+    resetSim();
   }
 }
 
@@ -276,24 +280,10 @@ void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
   getRobWorkStudio()->setState(_state);
 }
 
-void SamplePlugin::testFunc() {
-  resetSim();
-  switch (_comboBox->currentIndex()) {
-    case 0:
-      load_motion("MarkerMotionSlow.txt");
-      break;
-    case 1:
-      load_motion("MarkerMotionMedium.txt");
-      break;
-    case 2:
-      load_motion("MarkerMotionFast.txt");
-      break;
-  }
-}
-
-void SamplePlugin::load_motion( string move_file ){
+void SamplePlugin::load_motion( ){
   marker_motion.clear();
-  string move_file_path = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/" + move_file;
+  string motion_type = _comboBox->currentText().toUtf8().constData();
+  string move_file_path = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/" + motion_type;
   ifstream motion_file(move_file_path.c_str());
   VelocityScrew6D<> pos_6D;
   string input;
@@ -305,7 +295,7 @@ void SamplePlugin::load_motion( string move_file ){
       marker_motion.push_back(pos_6D);
     }
     motion_file.close();
-    log().info() << "Loaded: " << move_file << "\n";
+    log().info() << "Loaded: " << motion_type << "\n";
   }
 }
 

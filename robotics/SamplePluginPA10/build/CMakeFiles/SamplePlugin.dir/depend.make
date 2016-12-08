@@ -713,12 +713,10 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QButt
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QComboBox
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QDockWidget
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QDoubleSpinBox
-CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QFormLayout
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QFrame
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QHBoxLayout
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QHeaderView
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QLabel
-CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QLayout
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QMainWindow
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QPlatformWindow
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/QPushButton
@@ -747,7 +745,6 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qeven
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qfont.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qfontinfo.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qfontmetrics.h
-CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qformlayout.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qframe.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qgridlayout.h
 CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o: /usr/include/qt4/QtGui/qheaderview.h
@@ -1615,12 +1612,10 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/Q
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QComboBox
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QDockWidget
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QDoubleSpinBox
-CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QFormLayout
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QFrame
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QHBoxLayout
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QHeaderView
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QLabel
-CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QLayout
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QMainWindow
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QPlatformWindow
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/QPushButton
@@ -1649,7 +1644,6 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/q
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qfont.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qfontinfo.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qfontmetrics.h
-CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qformlayout.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qframe.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qgridlayout.h
 CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o: /usr/include/qt4/QtGui/qheaderview.h

@@ -16,7 +16,6 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QDockWidget>
 #include <QtGui/QDoubleSpinBox>
-#include <QtGui/QFormLayout>
 #include <QtGui/QFrame>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
@@ -46,10 +45,10 @@ public:
     QPushButton *_followMarker;
     QPushButton *_resetSim;
     QFrame *line_3;
-    QFormLayout *formLayout_2;
+    QLabel *label_3;
+    QHBoxLayout *horizontalLayout_3;
     QComboBox *_comboBox;
     QDoubleSpinBox *_DT;
-    QLabel *label_3;
     QFrame *line_4;
     QLabel *_label;
     QSpacerItem *verticalSpacer;
@@ -132,22 +131,17 @@ public:
 
         verticalLayout->addWidget(line_3);
 
-        formLayout_2 = new QFormLayout();
-        formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
-        formLayout_2->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+        label_3 = new QLabel(dockWidgetContents);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+
+        verticalLayout->addWidget(label_3);
+
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
         _comboBox = new QComboBox(dockWidgetContents);
         _comboBox->setObjectName(QString::fromUtf8("_comboBox"));
-        _comboBox->setMinimumSize(QSize(0, 26));
-        QFont font;
-        font.setFamily(QString::fromUtf8("Waree"));
-        font.setPointSize(11);
-        font.setBold(false);
-        font.setItalic(true);
-        font.setWeight(50);
-        _comboBox->setFont(font);
-        _comboBox->setMaxVisibleItems(3);
 
-        formLayout_2->setWidget(2, QFormLayout::LabelRole, _comboBox);
+        horizontalLayout_3->addWidget(_comboBox);
 
         _DT = new QDoubleSpinBox(dockWidgetContents);
         _DT->setObjectName(QString::fromUtf8("_DT"));
@@ -159,15 +153,10 @@ public:
         _DT->setSingleStep(0.001);
         _DT->setValue(1);
 
-        formLayout_2->setWidget(2, QFormLayout::FieldRole, _DT);
-
-        label_3 = new QLabel(dockWidgetContents);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-
-        formLayout_2->setWidget(1, QFormLayout::SpanningRole, label_3);
+        horizontalLayout_3->addWidget(_DT);
 
 
-        verticalLayout->addLayout(formLayout_2);
+        verticalLayout->addLayout(horizontalLayout_3);
 
         line_4 = new QFrame(dockWidgetContents);
         line_4->setObjectName(QString::fromUtf8("line_4"));
@@ -224,13 +213,13 @@ public:
         _startStopMovement->setText(QApplication::translate("SamplePlugin", "Start / Stop movement", 0, QApplication::UnicodeUTF8));
         _followMarker->setText(QApplication::translate("SamplePlugin", "Follow one frame", 0, QApplication::UnicodeUTF8));
         _resetSim->setText(QApplication::translate("SamplePlugin", "Reset", 0, QApplication::UnicodeUTF8));
+        label_3->setText(QApplication::translate("SamplePlugin", "<html><head/><body><p align=\"center\"><span style=\" font-size:8pt; color:#9a9a9a;\">MOTION &amp; DELTA T</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         _comboBox->clear();
         _comboBox->insertItems(0, QStringList()
          << QApplication::translate("SamplePlugin", "MarkerMotionSlow.txt", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("SamplePlugin", "MarkerMotionMedium.txt", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("SamplePlugin", "MarkerMotionFast.txt", 0, QApplication::UnicodeUTF8)
         );
-        label_3->setText(QApplication::translate("SamplePlugin", "<html><head/><body><p align=\"center\"><span style=\" font-size:8pt; color:#9a9a9a;\">MOTION &amp; DELTA T</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         _label->setText(QApplication::translate("SamplePlugin", "<html><head/><body><p align=\"center\"/><p align=\"center\"/><p align=\"center\"><span style=\" font-style:italic; color:#8a0000;\">Start movement to display robot camera</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         _testRun->setText(QApplication::translate("SamplePlugin", "Test run", 0, QApplication::UnicodeUTF8));
     } // retranslateUi

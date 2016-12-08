@@ -52,7 +52,7 @@ public:
 
 private slots:
 	void btnPressed();
-	void testFunc();
+	void load_motion( );
 	void resetSim();
 	void testRun();
 	void timer();
@@ -63,7 +63,6 @@ private:
 
 	// Private funcs
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
-	void load_motion( string move_file );
 	void follow_marker( vector<Point> &reference_points, bool cv );
 	void velocityLimit( Q dq, Q &q );
 	void writeToFile( );
