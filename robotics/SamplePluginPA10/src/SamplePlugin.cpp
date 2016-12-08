@@ -202,7 +202,7 @@ void SamplePlugin::timer() {
   }
   else {
     move_marker(marker_motion[current_motion_position]);
-    follow_marker( cam_update(), false );
+    follow_marker( cam_update(), true );
     current_motion_position++;
     if (test_runner)
       writeToFile();
@@ -251,15 +251,22 @@ void SamplePlugin::load_motion( ){
   }
 }
 
-void SamplePlugin::follow_marker( vector<double> &uv_points, bool cv){
+void SamplePlugin::follow_marker( vector<double> &uv_points, bool use_cv){
   //
   // Calculate u, uv[1], du and dv
   //
-  if(cv){
+  if( use_cv ){
     for (int i = 0; i < uv_points.size(); i++) {
-      //cout << points[i][0] << "\t" << points[i][1] << endl;
-      uv[i]   = ( uv_points[i*2] * f ) / z;
-      uv[i+1] = ( uv_points[i*2+1] * f ) / z;
+      uv[i*2]   = uv_points[(i+1)*2];
+      uv[i*2+1] = uv_points[(i+1)*2+1];
+    }
+
+    if (current_motion_position==0) {
+      target=uv;
+      for (int i = 0; i < numOfPoints; i++) {
+        target[i*2]   -= uv_points[0];
+        target[i*2+1] -= uv_points[1];
+      }
     }
   }
   else{
@@ -277,18 +284,6 @@ void SamplePlugin::follow_marker( vector<double> &uv_points, bool cv){
       uv[i*2]   = ( points[i][0] * f ) / z;
       uv[i*2+1] = ( points[i][1] * f ) / z;
     }
-
-    // if (current_motion_position==0) {
-    //   target=uv;
-    //   Vector3D<> midpoint = camara_to_marker.P();
-    //   vector<double> uv_midt;
-    //   uv_midt.push_back(( midpoint[0] * f ) / z);
-    //   uv_midt.push_back(( midpoint[1] * f ) / z);
-    //   for (int i = 0; i < numOfPoints; i++) {
-    //     target[i*2]   -= uv_midt[0];
-    //     target[i*2+1] -= uv_midt[1];
-    //   }
-    // }
   }
 
   Jacobian d_uv(numOfPoints*2,1);
@@ -448,14 +443,6 @@ vector<double>& SamplePlugin::cam_update( ){
       uv_points.push_back(reference_points[i].y - (imflip.rows/2));
     }
 
-
-    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 15, cv::Scalar(255,40,40), -1);
-    // if(numOfPoints>1){
-    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 15, cv::Scalar(40,255,40), -1);
-    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 15, cv::Scalar(40,40,255), -1);
-    // }
-
-    /*
     cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 20, cv::Scalar(255,60,60), 4);
     if(numOfPoints>1){
     cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 20, cv::Scalar(60,255,60), 4);
@@ -467,11 +454,6 @@ vector<double>& SamplePlugin::cam_update( ){
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 15, cv::Scalar(0,255,0), -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 15, cv::Scalar(0,0,255), -1);
     }
-
-    for(int i = 0; i < reference_points.size(); i++){
-      cv::circle(imflip, reference_points[i], 10, cv::Scalar(255,0,0), -1);
-    }
-    */
 
     // Show in QLabel
     QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
