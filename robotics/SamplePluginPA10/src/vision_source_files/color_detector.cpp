@@ -38,7 +38,7 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
     u_center = u_center/(blue_centers.size() + red_centers.size());
     v_center = v_center/(blue_centers.size() + red_centers.size());
 
-    marker_points.push_back(Point(floor(u_center), floor(v_center)));
+    marker_points.insert(marker_points.begin(), Point(floor(u_center), floor(v_center)));
 
 }
 
@@ -62,8 +62,8 @@ Mat color_segmentation(Mat &input, int type)
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
   else if(type == BLUE){
-    Hue_lower = 50;
-    Hue_upper = 200;
+    Hue_lower = 110;
+    Hue_upper = 170;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
