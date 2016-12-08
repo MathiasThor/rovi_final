@@ -152,7 +152,7 @@ void SamplePlugin::btnPressed() {
 		log().info() << "Change Texture\n";
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
-		image = ImageLoader::Factory::load(path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm");
+		image = ImageLoader::Factory::load(path + "rovi_final/robotics/SamplePluginPA10/markers/Marker1.ppm");
 		_textureRender->setImage(*image);
 		image = ImageLoader::Factory::load(path + "rovi_final/robotics/SamplePluginPA10/backgrounds/color1.ppm");
 		_bgRender->setImage(*image);
@@ -190,17 +190,17 @@ void SamplePlugin::timer() {
     cv::flip(im, imflip, 0);
 
     // COLOR
-    /*color_detector(imflip, reference_points);
+    color_detector(imflip, reference_points);
     draw_circles(imflip, reference_points);
     log().info() << "Size CV: " << reference_points.size() << "\n";
 
     Mat blue_output  = color_segmentation(imflip, BLUE);
     Mat red_output   = color_segmentation(imflip, RED);
 
-    imshow("Test", blue_output);*/
+    imshow("Test", blue_output);
 
     // Corny
-    Mat gray_im;
+    /*Mat gray_im;
     Mat marker_im = imread(path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm", IMREAD_GRAYSCALE);
     cvtColor(imflip, gray_im, CV_BGR2GRAY);
     log().info() << gray_im.type() << "\n";
@@ -211,7 +211,7 @@ void SamplePlugin::timer() {
     imshow("Test", marker_im);
     corny_detector(gray_im, reference_points, marker);
     draw_object(gray_im, reference_points);
-    log().info() << "corny done " << "\n";
+    log().info() << "corny done " << "\n";*/
 
     /*for(int i = 0; i < reference_points.size(); i++){
       Point temp = reference_points[i];

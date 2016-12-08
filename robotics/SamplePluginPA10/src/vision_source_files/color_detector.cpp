@@ -58,13 +58,12 @@ Mat color_segmentation(Mat &input, int type)
   if(type == RED){
     Hue_lower = 0;
     Hue_upper = 15;
-    Sat_lower = 150;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
   else if(type == BLUE){
-    Hue_lower = 150;
-    Hue_upper = 180;
+    Hue_lower = 50;
+    Hue_upper = 200;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
