@@ -96,6 +96,10 @@ private:
 	// vector<double> PT1{-0.1,		0.0,		0};
 	// vector<double> PT2{ 0.0,	 -0.1,		0};
 
+	// vector<double> PT0{0.05,		0.05,		0};
+	// vector<double> PT1{-0.05,		0.05,		0};
+	// vector<double> PT2{0.05,		-0.05,		0};
+
 	vector<double> PT0{0.15,		0.15,		0};
 	vector<double> PT1{-0.15,		0.15,		0};
 	vector<double> PT2{0.15,		-0.15,		0};

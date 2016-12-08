@@ -215,6 +215,7 @@ void SamplePlugin::testRun(){
   jointPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
   toolPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
   log().info() << "Opened the files" << "\n";
+
   jointPos_file << DT << "\n";
   if (!test_runner) {
     test_runner=true;
@@ -256,18 +257,17 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   //
   // Calculate u, uv[1], du and dv
   //
-  cout << uv_points.size() << endl;
   if( use_cv ){
     for (int i = 0; i < numOfPoints; i++) {
-      uv[i*2]   = uv_points[(i+1)*2];
-      uv[i*2+1] = uv_points[(i+1)*2+1];
+      uv[i*2]   = uv_points[i*2];
+      uv[i*2+1] = uv_points[i*2+1];
     }
 
     if (current_motion_position==0) {
-      target=uv;
+      target2=uv;
       for (int i = 0; i < numOfPoints; i++) {
-        target[i*2]   -= uv_points[0];
-        target[i*2+1] -= uv_points[1];
+        target2[i*2]   -= uv_points[6];
+        target2[i*2+1] -= uv_points[7];
       }
     }
   }
@@ -299,7 +299,7 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   if ( numOfPoints > 1)
       log().info() << uv[2] << "\t" << uv[3] << "\t" << uv[4] << "\t" << uv[5] << "\n";
   else log().info() << "\n";
-  log().info() << "targ:\t" << target[0] << "\t" << target[1] << "\t" << target[2] << "\t" << target[3] << "\t" << target[4] << "\t" << target[5] << "\n";
+  //log().info() << "targ:\t" << target[0] << "\t" << target[1] << "\t" << target[2] << "\t" << target[3] << "\t" << target[4] << "\t" << target[5] << "\n";
   log().info() << "targ2:\t" << target2[0] << "\t" << target2[1] << "\t" << target2[2] << "\t" << target2[3] << "\t" << target2[4] << "\t" << target2[5] << "\n";
   log().info() << "d_uv:\t" << d_uv(0,0) << "\t" << d_uv(1,0) << "\t";
   if ( numOfPoints > 1)

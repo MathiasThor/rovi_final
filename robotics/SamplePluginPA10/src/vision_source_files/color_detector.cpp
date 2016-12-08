@@ -24,9 +24,9 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
     float v_center = 0;
 
     for(int i = 0; i < blue_centers.size(); i++){
-      u_center += blue_centers[i].x;
-      v_center += blue_centers[i].y;
-      marker_points.push_back(blue_centers[i]);
+       u_center += blue_centers[i].x;
+       v_center += blue_centers[i].y;
+       //marker_points.push_back(blue_centers[i]);
     }
 
     for(int i = 0; i < red_centers.size(); i++){
@@ -38,8 +38,7 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
     u_center = u_center/(blue_centers.size() + red_centers.size());
     v_center = v_center/(blue_centers.size() + red_centers.size());
 
-    marker_points.insert(marker_points.begin(), Point(floor(u_center), floor(v_center)));
-
+    marker_points.push_back(Point(floor(u_center), floor(v_center)));
 }
 
 // *** Color segmentation ***
