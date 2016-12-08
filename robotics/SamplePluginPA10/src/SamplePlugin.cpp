@@ -165,6 +165,7 @@ void SamplePlugin::btnPressed() {
 		image = ImageLoader::Factory::load(bg_file.c_str());
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
+    cam_update();
 	}
   else if(obj==_startStopMovement){
     stop_start_motion = !stop_start_motion;
@@ -202,7 +203,7 @@ void SamplePlugin::timer() {
   }
   else {
     move_marker(marker_motion[current_motion_position]);
-    follow_marker( cam_update(), true );
+    follow_marker( cam_update(), false );
     current_motion_position++;
     if (test_runner)
       writeToFile();
@@ -251,12 +252,13 @@ void SamplePlugin::load_motion( ){
   }
 }
 
-void SamplePlugin::follow_marker( vector<double> &uv_points, bool use_cv){
+void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   //
   // Calculate u, uv[1], du and dv
   //
+  cout << uv_points.size() << endl;
   if( use_cv ){
-    for (int i = 0; i < uv_points.size(); i++) {
+    for (int i = 0; i < numOfPoints; i++) {
       uv[i*2]   = uv_points[(i+1)*2];
       uv[i*2+1] = uv_points[(i+1)*2+1];
     }
@@ -401,7 +403,7 @@ void SamplePlugin::writeToFile( ){
   } else cout << "can't open tool position file" << endl;
 }
 
-vector<double>& SamplePlugin::cam_update( ){
+vector<double> SamplePlugin::cam_update( ){
   vector<cv::Point2f> reference_points;
   vector<double> uv_points;
   if (_framegrabber != NULL) {

@@ -63,10 +63,10 @@ private:
 
 	// Private funcs
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
-	void follow_marker( vector<double> &uv_points, bool cv );
+	void follow_marker( vector<double> uv_points, bool cv );
 	void velocityLimit( Q dq, Q &q );
 	void writeToFile( );
-	vector<double>& cam_update( );
+	vector<double> cam_update( );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
 
 	vector<double> target{74.0487, 74.0487,	170.361, 74.0487,	5.761, -90.5513};
