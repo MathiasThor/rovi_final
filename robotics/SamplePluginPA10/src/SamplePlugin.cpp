@@ -141,6 +141,7 @@ void SamplePlugin::resetSim(){
   stop_start_motion = false;
   test_runner = false;
   current_motion_position = 0;
+  cam_update();
 }
 
 Mat SamplePlugin::toOpenCVImage(const Image& img) {
@@ -156,11 +157,11 @@ void SamplePlugin::btnPressed() {
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
     string marker_type = _markTex->currentText().toUtf8().constData();
-    string mk_file = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/" + marker_type;
+    string mk_file = path + "rovi_final/robotics/SamplePluginPA10/markers/" + marker_type;
 		image = ImageLoader::Factory::load(mk_file.c_str());
 		_textureRender->setImage(*image);
     string back_type = _backTex->currentText().toUtf8().constData();
-    string bg_file = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/backgrounds/" + back_type;
+    string bg_file = path + "rovi_final/robotics/SamplePluginPA10/backgrounds/" + back_type;
 		image = ImageLoader::Factory::load(bg_file.c_str());
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
@@ -189,82 +190,6 @@ void SamplePlugin::btnPressed() {
 }
 
 void SamplePlugin::timer() {
-  vector<cv::Point2f> reference_points;
-  if (_framegrabber != NULL) {
-    // Get the image as a RW image
-    Frame* cameraFrame = _wc->findFrame("CameraSim");
-    _framegrabber->grab(cameraFrame, _state);
-    const Image& image = _framegrabber->getImage();
-
-    // Convert to OpenCV image
-    Mat im = toOpenCVImage(image);
-
-    Mat imflip;
-    cv::flip(im, imflip, 0);
-
-    // COLOR
-    color_detector(imflip, reference_points);
-    draw_circles(imflip, reference_points);
-    log().info() << "Size CV: " << reference_points.size() << "\n";
-
-    Mat blue_output  = color_segmentation(imflip, BLUE);
-    Mat red_output   = color_segmentation(imflip, RED);
-
-    imshow("Test", blue_output);
-
-    // Corny
-    /*Mat gray_im;
-    Mat marker_im = imread(path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm", IMREAD_GRAYSCALE);
-    cvtColor(imflip, gray_im, CV_BGR2GRAY);
-    log().info() << gray_im.type() << "\n";
-    SIFT_parameters marker;
-    init_corny(marker, marker_im);
-    log().info() << "Marker loaded" << "\n";
-
-    imshow("Test", marker_im);
-    corny_detector(gray_im, reference_points, marker);
-    draw_object(gray_im, reference_points);
-    log().info() << "corny done " << "\n";*/
-
-    /*for(int i = 0; i < reference_points.size(); i++){
-      Point temp = reference_points[i];
-      temp.x = reference_points[i].x - (im.cols/2);
-      temp.y = reference_points[i].y - (im.rows/2);
-      reference_points[i] = temp;
-    }*/
-
-    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 15, cv::Scalar(255,40,40), -1);
-    // if(numOfPoints>1){
-    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 15, cv::Scalar(40,255,40), -1);
-    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 15, cv::Scalar(40,40,255), -1);
-    // }
-
-    /*
-    cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 20, cv::Scalar(255,60,60), 4);
-    if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 20, cv::Scalar(60,255,60), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 20, cv::Scalar(60,60,255), 4);
-    }
-
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 15, cv::Scalar(255,0,0), -1);
-    if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 15, cv::Scalar(0,255,0), -1);
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 15, cv::Scalar(0,0,255), -1);
-    }
-
-    for(int i = 0; i < reference_points.size(); i++){
-      cv::circle(imflip, reference_points[i], 10, cv::Scalar(255,0,0), -1);
-    }
-    */
-
-    // Show in QLabel
-    QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
-    QPixmap p = QPixmap::fromImage(img);
-    unsigned int maxW = 400;
-    unsigned int maxH = 800;
-    _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
-  }
-
   if (current_motion_position == marker_motion.size()){
     resetSim();
     _timer->start(100);
@@ -277,7 +202,7 @@ void SamplePlugin::timer() {
   }
   else {
     move_marker(marker_motion[current_motion_position]);
-    follow_marker( reference_points, false );
+    follow_marker( cam_update(), false );
     current_motion_position++;
     if (test_runner)
       writeToFile();
@@ -326,15 +251,15 @@ void SamplePlugin::load_motion( ){
   }
 }
 
-void SamplePlugin::follow_marker( vector<Point2f> &reference_points, bool cv){
+void SamplePlugin::follow_marker( vector<double> &uv_points, bool cv){
   //
   // Calculate u, uv[1], du and dv
   //
   if(cv){
-    for (int i = 0; i < reference_points.size(); i++) {
+    for (int i = 0; i < uv_points.size(); i++) {
       //cout << points[i][0] << "\t" << points[i][1] << endl;
-      uv[i]   = ( reference_points[i].x * f ) / z;
-      uv[i+1] = ( reference_points[i].y * f ) / z;
+      uv[i]   = ( uv_points[i*2] * f ) / z;
+      uv[i+1] = ( uv_points[i*2+1] * f ) / z;
     }
   }
   else{
@@ -481,8 +406,81 @@ void SamplePlugin::writeToFile( ){
   } else cout << "can't open tool position file" << endl;
 }
 
-void SamplePlugin::cam_update( ){
+vector<double>& SamplePlugin::cam_update( ){
+  vector<cv::Point2f> reference_points;
+  vector<double> uv_points;
+  if (_framegrabber != NULL) {
+    // Get the image as a RW image
+    Frame* cameraFrame = _wc->findFrame("CameraSim");
+    _framegrabber->grab(cameraFrame, _state);
+    const Image& image = _framegrabber->getImage();
 
+    // Convert to OpenCV image
+    Mat im = toOpenCVImage(image);
+
+    Mat imflip;
+    cv::flip(im, imflip, 0);
+
+    // COLOR
+    Mat color_temp;
+    cvtColor(imflip, color_temp, CV_BGR2HSV);
+    color_detector(color_temp, reference_points);
+    draw_circles(imflip, reference_points);
+    log().info() << "Size CV: " << reference_points.size() << "\n";
+
+
+    // Corny
+    /*Mat gray_im;
+    Mat marker_im = imread(path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm", IMREAD_GRAYSCALE);
+    cvtColor(imflip, gray_im, CV_BGR2GRAY);
+    log().info() << gray_im.type() << "\n";
+    SIFT_parameters marker;
+    init_corny(marker, marker_im);
+    log().info() << "Marker loaded" << "\n";
+
+    imshow("Test", marker_im);
+    corny_detector(gray_im, reference_points, marker);
+    draw_object(gray_im, reference_points);
+    log().info() << "corny done " << "\n";*/
+
+    for(int i = 0; i < reference_points.size(); i++){
+      uv_points.push_back(reference_points[i].x - (imflip.cols/2));
+      uv_points.push_back(reference_points[i].y - (imflip.rows/2));
+    }
+
+
+    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 15, cv::Scalar(255,40,40), -1);
+    // if(numOfPoints>1){
+    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 15, cv::Scalar(40,255,40), -1);
+    // cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 15, cv::Scalar(40,40,255), -1);
+    // }
+
+    /*
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 20, cv::Scalar(255,60,60), 4);
+    if(numOfPoints>1){
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 20, cv::Scalar(60,255,60), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 20, cv::Scalar(60,60,255), 4);
+    }
+
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 15, cv::Scalar(255,0,0), -1);
+    if(numOfPoints>1){
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 15, cv::Scalar(0,255,0), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 15, cv::Scalar(0,0,255), -1);
+    }
+
+    for(int i = 0; i < reference_points.size(); i++){
+      cv::circle(imflip, reference_points[i], 10, cv::Scalar(255,0,0), -1);
+    }
+    */
+
+    // Show in QLabel
+    QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
+    QPixmap p = QPixmap::fromImage(img);
+    unsigned int maxW = 400;
+    unsigned int maxH = 800;
+    _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
+  }
+  return uv_points;
 }
 
 Q_EXPORT_PLUGIN(SamplePlugin);
