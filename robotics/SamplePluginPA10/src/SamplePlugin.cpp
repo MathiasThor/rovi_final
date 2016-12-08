@@ -97,6 +97,8 @@ void SamplePlugin::open(WorkCell* workcell)
 			}
 		}
 	}
+  target2 = {-(PT0[0]*f)/z,(PT0[1]*f)/z,-(PT1[0]*f)/z,(PT1[1]*f)/z,-(PT2[0]*f)/z,(PT2[1]*f)/z};
+  _startStopMovement->setText("Start movement");
   resetSim();
 }
 
@@ -151,9 +153,14 @@ void SamplePlugin::btnPressed() {
 		log().info() << "Change Texture\n";
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
-		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/Marker1.ppm");
+    marker_motion.clear();
+    string marker_type = _markTex->currentText().toUtf8().constData();
+    string mk_file = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/" + marker_type;
+		image = ImageLoader::Factory::load(mk_file.c_str());
 		_textureRender->setImage(*image);
-		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/backgrounds/color1.ppm");
+    string back_type = _backTex->currentText().toUtf8().constData();
+    string bg_file = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/backgrounds/" + back_type;
+		image = ImageLoader::Factory::load(bg_file.c_str());
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
 	}
@@ -161,10 +168,12 @@ void SamplePlugin::btnPressed() {
     stop_start_motion = !stop_start_motion;
     if (stop_start_motion){
       log().info() << "Start Motion\n";
+      _startStopMovement->setText("Stop movement");
       _timer->start(100); // run 10 Hz
     }
     else{
       log().info() << "Stop Motion\n";
+      _startStopMovement->setText("Start movement");
       _timer->stop();
     }
 	}
@@ -201,25 +210,21 @@ void SamplePlugin::timer() {
     // cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 15, cv::Scalar(40,40,255), -1);
     // }
 
-    cv::circle(imflip, cv::Point(imflip.cols/2+target[0*2], imflip.rows/2+target[0*2+1]), 15, cv::Scalar(255,0,0), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 20, cv::Scalar(255,60,60), 4);
     if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+target[1*2], imflip.rows/2+target[1*2+1]), 15, cv::Scalar(0,255,0), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+target[2*2], imflip.rows/2+target[2*2+1]), 15, cv::Scalar(0,0,255), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 20, cv::Scalar(60,255,60), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 20, cv::Scalar(60,60,255), 4);
     }
 
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 10, cv::Scalar(255,0,0), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 15, cv::Scalar(255,0,0), -1);
     if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 10, cv::Scalar(0,255,0), -1);
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 10, cv::Scalar(0,0,255), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 15, cv::Scalar(0,255,0), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 15, cv::Scalar(0,0,255), -1);
     }
 
     for(int i = 0; i < reference_points.size(); i++){
       cv::circle(imflip, reference_points[i], 10, cv::Scalar(255,0,0), -1);
     }
-
-    // for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints....
-    //   cv::circle(imflip, cv::Point(imflip.cols/2+uv[i*2],imflip.rows/2+uv[i*2+1]), 10, cv::Scalar(255,0,0), -1);
-    // }
 
     // Show in QLabel
     QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
@@ -231,7 +236,8 @@ void SamplePlugin::timer() {
 
   if (current_motion_position == marker_motion.size()){
     resetSim();
-    if (current_motion_position == marker_motion.size()){
+    _timer->start(100);
+    if (test_runner){
       test_runner = false;
       jointPos_file.close();
       toolPos_file.close();
@@ -330,22 +336,23 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
       uv[i*2+1] = ( points[i][1] * f ) / z;
     }
 
-    if (current_motion_position==0) {
-      target=uv;
-      // for (int i = 0; i < numOfPoints; i++) {
-      //   target[i*2]   -= uv[0];
-      //   target[i*2+1] -= uv[1];
-      // }
-    }
+    // if (current_motion_position==0) {
+    //   target=uv;
+    //   Vector3D<> midpoint = camara_to_marker.P();
+    //   vector<double> uv_midt;
+    //   uv_midt.push_back(( midpoint[0] * f ) / z);
+    //   uv_midt.push_back(( midpoint[1] * f ) / z);
+    //   for (int i = 0; i < numOfPoints; i++) {
+    //     target[i*2]   -= uv_midt[0];
+    //     target[i*2+1] -= uv_midt[1];
+    //   }
+    // }
   }
-
-  target2 = {(0.15*f)/z,(0.15*f)/z,-(0.15*f)/z,(0.15*f)/z,(0.15*f)/z,(-0.15*f)/z};
-
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
-    d_uv(i*2,0)   = target[i*2]   -uv[i*2];
-    d_uv(i*2+1,0) = target[i*2+1] -uv[i*2+1];
+    d_uv(i*2,0)   = target2[i*2]   -uv[i*2];
+    d_uv(i*2+1,0) = target2[i*2+1] -uv[i*2+1];
   }
   log().info() << "Frame:\t" << current_motion_position << "\n";
 
@@ -415,7 +422,7 @@ void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
   velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
   getRobWorkStudio()->setState(_state);
-  log().info() << "===========================================================" << "\n";
+  log().info() << "========================================================================" << "\n";
 }
 
 void SamplePlugin::velocityLimit( Q dq, Q &q ){

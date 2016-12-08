@@ -17,6 +17,8 @@
 #include <QtGui/QDockWidget>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QFormLayout>
+#include <QtGui/QFrame>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
@@ -32,13 +34,23 @@ public:
     QWidget *dockWidgetContents;
     QVBoxLayout *verticalLayout_2;
     QVBoxLayout *verticalLayout;
+    QFrame *line_2;
+    QLabel *label;
+    QHBoxLayout *horizontalLayout_2;
+    QComboBox *_backTex;
+    QComboBox *_markTex;
     QPushButton *_btn0;
+    QFrame *line;
+    QLabel *label_2;
     QPushButton *_startStopMovement;
     QPushButton *_followMarker;
     QPushButton *_resetSim;
+    QFrame *line_3;
     QFormLayout *formLayout_2;
     QComboBox *_comboBox;
     QDoubleSpinBox *_DT;
+    QLabel *label_3;
+    QFrame *line_4;
     QLabel *_label;
     QSpacerItem *verticalSpacer;
     QPushButton *_testRun;
@@ -54,10 +66,49 @@ public:
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        line_2 = new QFrame(dockWidgetContents);
+        line_2->setObjectName(QString::fromUtf8("line_2"));
+        line_2->setFrameShape(QFrame::HLine);
+        line_2->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout->addWidget(line_2);
+
+        label = new QLabel(dockWidgetContents);
+        label->setObjectName(QString::fromUtf8("label"));
+
+        verticalLayout->addWidget(label);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        _backTex = new QComboBox(dockWidgetContents);
+        _backTex->setObjectName(QString::fromUtf8("_backTex"));
+
+        horizontalLayout_2->addWidget(_backTex);
+
+        _markTex = new QComboBox(dockWidgetContents);
+        _markTex->setObjectName(QString::fromUtf8("_markTex"));
+
+        horizontalLayout_2->addWidget(_markTex);
+
+
+        verticalLayout->addLayout(horizontalLayout_2);
+
         _btn0 = new QPushButton(dockWidgetContents);
         _btn0->setObjectName(QString::fromUtf8("_btn0"));
 
         verticalLayout->addWidget(_btn0);
+
+        line = new QFrame(dockWidgetContents);
+        line->setObjectName(QString::fromUtf8("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout->addWidget(line);
+
+        label_2 = new QLabel(dockWidgetContents);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        verticalLayout->addWidget(label_2);
 
         _startStopMovement = new QPushButton(dockWidgetContents);
         _startStopMovement->setObjectName(QString::fromUtf8("_startStopMovement"));
@@ -74,6 +125,13 @@ public:
 
         verticalLayout->addWidget(_resetSim);
 
+        line_3 = new QFrame(dockWidgetContents);
+        line_3->setObjectName(QString::fromUtf8("line_3"));
+        line_3->setFrameShape(QFrame::HLine);
+        line_3->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout->addWidget(line_3);
+
         formLayout_2 = new QFormLayout();
         formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
         formLayout_2->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
@@ -89,7 +147,7 @@ public:
         _comboBox->setFont(font);
         _comboBox->setMaxVisibleItems(3);
 
-        formLayout_2->setWidget(1, QFormLayout::LabelRole, _comboBox);
+        formLayout_2->setWidget(2, QFormLayout::LabelRole, _comboBox);
 
         _DT = new QDoubleSpinBox(dockWidgetContents);
         _DT->setObjectName(QString::fromUtf8("_DT"));
@@ -101,10 +159,22 @@ public:
         _DT->setSingleStep(0.001);
         _DT->setValue(1);
 
-        formLayout_2->setWidget(1, QFormLayout::FieldRole, _DT);
+        formLayout_2->setWidget(2, QFormLayout::FieldRole, _DT);
+
+        label_3 = new QLabel(dockWidgetContents);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+
+        formLayout_2->setWidget(1, QFormLayout::SpanningRole, label_3);
 
 
         verticalLayout->addLayout(formLayout_2);
+
+        line_4 = new QFrame(dockWidgetContents);
+        line_4->setObjectName(QString::fromUtf8("line_4"));
+        line_4->setFrameShape(QFrame::HLine);
+        line_4->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout->addWidget(line_4);
 
         _label = new QLabel(dockWidgetContents);
         _label->setObjectName(QString::fromUtf8("_label"));
@@ -133,9 +203,26 @@ public:
     void retranslateUi(QDockWidget *SamplePlugin)
     {
         SamplePlugin->setWindowTitle(QApplication::translate("SamplePlugin", "DockWidget", 0, QApplication::UnicodeUTF8));
+        label->setText(QApplication::translate("SamplePlugin", "<html><head/><body><p align=\"center\"><span style=\" font-size:8pt; color:#9a9a9a;\">TEXTURE LOADER</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+        _backTex->clear();
+        _backTex->insertItems(0, QStringList()
+         << QApplication::translate("SamplePlugin", "color1.ppm", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "color2.ppm", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "color3.ppm", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "lines1.ppm", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "texture1.ppm", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "texture2.ppm", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "texture3.ppm", 0, QApplication::UnicodeUTF8)
+        );
+        _markTex->clear();
+        _markTex->insertItems(0, QStringList()
+         << QApplication::translate("SamplePlugin", "Marker1.ppm", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("SamplePlugin", "Marker3.ppm", 0, QApplication::UnicodeUTF8)
+        );
         _btn0->setText(QApplication::translate("SamplePlugin", "Load textures", 0, QApplication::UnicodeUTF8));
+        label_2->setText(QApplication::translate("SamplePlugin", "<html><head/><body><p align=\"center\"><span style=\" font-size:8pt; color:#9a9a9a;\">ROBOT CONTROL</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         _startStopMovement->setText(QApplication::translate("SamplePlugin", "Start / Stop movement", 0, QApplication::UnicodeUTF8));
-        _followMarker->setText(QApplication::translate("SamplePlugin", "Follow marker", 0, QApplication::UnicodeUTF8));
+        _followMarker->setText(QApplication::translate("SamplePlugin", "Follow one frame", 0, QApplication::UnicodeUTF8));
         _resetSim->setText(QApplication::translate("SamplePlugin", "Reset", 0, QApplication::UnicodeUTF8));
         _comboBox->clear();
         _comboBox->insertItems(0, QStringList()
@@ -143,7 +230,8 @@ public:
          << QApplication::translate("SamplePlugin", "MarkerMotionMedium.txt", 0, QApplication::UnicodeUTF8)
          << QApplication::translate("SamplePlugin", "MarkerMotionFast.txt", 0, QApplication::UnicodeUTF8)
         );
-        _label->setText(QApplication::translate("SamplePlugin", "Label", 0, QApplication::UnicodeUTF8));
+        label_3->setText(QApplication::translate("SamplePlugin", "<html><head/><body><p align=\"center\"><span style=\" font-size:8pt; color:#9a9a9a;\">MOTION &amp; DELTA T</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+        _label->setText(QApplication::translate("SamplePlugin", "<html><head/><body><p align=\"center\"/><p align=\"center\"/><p align=\"center\"><span style=\" font-style:italic; color:#8a0000;\">Start movement to display robot camera</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         _testRun->setText(QApplication::translate("SamplePlugin", "Test run", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

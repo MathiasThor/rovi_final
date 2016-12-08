@@ -18,9 +18,94 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:8pt; color:#9a9a9a;&quot;&gt;TEXTURE LOADER&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QComboBox" name="_backTex">
+          <item>
+           <property name="text">
+            <string>color1.ppm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>color2.ppm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>color3.ppm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>lines1.ppm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>texture1.ppm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>texture2.ppm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>texture3.ppm</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="_markTex">
+          <item>
+           <property name="text">
+            <string>Marker1.ppm</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Marker3.ppm</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QPushButton" name="_btn0">
         <property name="text">
          <string>Load textures</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:8pt; color:#9a9a9a;&quot;&gt;ROBOT CONTROL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
@@ -34,7 +119,7 @@
       <item>
        <widget class="QPushButton" name="_followMarker">
         <property name="text">
-         <string>Follow marker</string>
+         <string>Follow one frame</string>
         </property>
        </widget>
       </item>
@@ -46,11 +131,18 @@
        </widget>
       </item>
       <item>
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QFormLayout" name="formLayout_2">
         <property name="fieldGrowthPolicy">
          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
         </property>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QComboBox" name="_comboBox">
           <property name="minimumSize">
            <size>
@@ -87,7 +179,7 @@
           </item>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="2" column="1">
          <widget class="QDoubleSpinBox" name="_DT">
           <property name="buttonSymbols">
            <enum>QAbstractSpinBox::PlusMinus</enum>
@@ -112,12 +204,26 @@
           </property>
          </widget>
         </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:8pt; color:#9a9a9a;&quot;&gt;MOTION &amp;amp; DELTA T&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
        </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="_label">
         <property name="text">
-         <string>Label</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;/&gt;&lt;p align=&quot;center&quot;/&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-style:italic; color:#8a0000;&quot;&gt;Start movement to display robot camera&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>

@@ -715,6 +715,8 @@ CMakeFiles/SamplePlugin.dir/src/SamplePlugin.cpp.o
  /usr/include/qt4/QtGui/QDockWidget
  /usr/include/qt4/QtGui/QDoubleSpinBox
  /usr/include/qt4/QtGui/QFormLayout
+ /usr/include/qt4/QtGui/QFrame
+ /usr/include/qt4/QtGui/QHBoxLayout
  /usr/include/qt4/QtGui/QHeaderView
  /usr/include/qt4/QtGui/QLabel
  /usr/include/qt4/QtGui/QLayout
@@ -1615,6 +1617,8 @@ CMakeFiles/SamplePlugin.dir/src/moc_SamplePlugin.cxx.o
  /usr/include/qt4/QtGui/QDockWidget
  /usr/include/qt4/QtGui/QDoubleSpinBox
  /usr/include/qt4/QtGui/QFormLayout
+ /usr/include/qt4/QtGui/QFrame
+ /usr/include/qt4/QtGui/QHBoxLayout
  /usr/include/qt4/QtGui/QHeaderView
  /usr/include/qt4/QtGui/QLabel
  /usr/include/qt4/QtGui/QLayout

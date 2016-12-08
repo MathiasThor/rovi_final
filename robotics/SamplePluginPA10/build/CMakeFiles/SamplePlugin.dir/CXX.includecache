@@ -31,6 +31,10 @@ QtGui/QDoubleSpinBox
 -
 QtGui/QFormLayout
 -
+QtGui/QFrame
+-
+QtGui/QHBoxLayout
+-
 QtGui/QHeaderView
 -
 QtGui/QLabel
@@ -5897,6 +5901,14 @@ qspinbox.h
 /usr/include/qt4/QtGui/QFormLayout
 qformlayout.h
 /usr/include/qt4/QtGui/qformlayout.h
+
+/usr/include/qt4/QtGui/QFrame
+qframe.h
+/usr/include/qt4/QtGui/qframe.h
+
+/usr/include/qt4/QtGui/QHBoxLayout
+qboxlayout.h
+/usr/include/qt4/QtGui/qboxlayout.h
 
 /usr/include/qt4/QtGui/QHeaderView
 qheaderview.h
