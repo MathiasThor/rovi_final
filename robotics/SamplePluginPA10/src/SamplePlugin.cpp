@@ -481,5 +481,8 @@ void SamplePlugin::writeToFile( ){
   } else cout << "can't open tool position file" << endl;
 }
 
+void SamplePlugin::cam_update( ){
+
+}
 
 Q_EXPORT_PLUGIN(SamplePlugin);

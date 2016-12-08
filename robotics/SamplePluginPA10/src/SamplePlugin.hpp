@@ -63,9 +63,10 @@ private:
 
 	// Private funcs
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
-	void follow_marker( vector<Point> &reference_points, bool cv );
+	void follow_marker( vector<Point2f> &reference_points, bool cv );
 	void velocityLimit( Q dq, Q &q );
 	void writeToFile( );
+	void cam_update( )
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
 
 	vector<double> target{74.0487, 74.0487,	170.361, 74.0487,	5.761, -90.5513};
@@ -86,8 +87,8 @@ private:
 	ofstream jointPos_file;
 	ofstream toolPos_file;
 
-	const string path = "/home/christian/Github_projects/";
-	//const string path = "/home/mat/7_semester_workspace/";
+	//const string path = "/home/christian/Github_projects/";
+	const string path = "/home/mat/7_semester_workspace/";
 
 	int numOfPoints = 3;
 
