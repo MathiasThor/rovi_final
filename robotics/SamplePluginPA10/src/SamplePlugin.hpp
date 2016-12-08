@@ -52,7 +52,7 @@ public:
 
 private slots:
 	void btnPressed();
-	void testFunc();
+	void load_motion( );
 	void resetSim();
 	void testRun();
 	void timer();
@@ -63,8 +63,7 @@ private:
 
 	// Private funcs
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
-	void load_motion( string move_file );
-	void follow_marker( vector<Point2f> &reference_points, bool cv );
+	void follow_marker( vector<Point> &reference_points, bool cv );
 	void velocityLimit( Q dq, Q &q );
 	void writeToFile( );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
@@ -92,9 +91,9 @@ private:
 
 	int numOfPoints = 3;
 
-	// vector<double> PT0{0,				0,		0};
-	// vector<double> PT1{-0.1,		0,		0};
-	// vector<double> PT2{0,			-0.1,		0};
+	// vector<double> PT0{ 0.0,		0.0,		0};
+	// vector<double> PT1{-0.1,		0.0,		0};
+	// vector<double> PT2{ 0.0,	 -0.1,		0};
 
 	vector<double> PT0{0.15,		0.15,		0};
 	vector<double> PT1{-0.15,		0.15,		0};

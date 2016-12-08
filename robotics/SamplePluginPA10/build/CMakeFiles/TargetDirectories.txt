@@ -1,1 +1,0 @@
-/home/christian/Github_projects/rovi_final/robotics/SamplePluginPA10/build/CMakeFiles/SamplePlugin.dir
