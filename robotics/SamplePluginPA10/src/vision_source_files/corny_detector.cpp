@@ -1,10 +1,10 @@
-#include "corny_detector.h"
 
+#include "../vision_header_files/corny_detector.h"
 // http://docs.opencv.org/3.1.0/d7/dff/tutorial_feature_homography.html
 void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_parameters &object)
 {
   // Generate SIFT class object and parameters needed for the scene
-  Ptr<SURF> detector = SURF::create( 500 ); // 500 - We want more points on the scene than on object image.
+  cv::Ptr<SIFT> detector = SIFT::create( 500 ); // 500 - We want more points on the scene than on object image.
   SIFT_parameters scene;
 
   // Clone input image to scene, and detect and compute keypoints and descriptors.
@@ -100,10 +100,11 @@ void draw_object(Mat &input, vector<Point2f> &marker_points)
 
 
 // **** INIT OBJECT ****
-void init_corny(SIFT_parameters &marker)
+void init_corny(SIFT_parameters &marker, Mat &marker_im)
 {
-  marker.image = imread( "./../sequences/marker_corny.png", IMREAD_GRAYSCALE );
-  Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
+
+  marker.image = marker_im.clone();
+  cv::Ptr<SIFT> object_detector = SIFT::create( 300 ); // MinHessian = 400;
 
   object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
 }

@@ -1,7 +1,8 @@
 #include "SamplePlugin.hpp"
 #include "./vision_header_files/setup.h"
 #include "./vision_source_files/color_detector.cpp"
-
+#include "./vision_source_files/general_functions.cpp"
+#include "./vision_source_files/corny_detector.cpp"
 
 SamplePlugin::SamplePlugin():
     RobWorkStudioPlugin("SamplePluginUI", QIcon(":/pa_icon.png"))
@@ -44,7 +45,7 @@ void SamplePlugin::initialize() {
 	getRobWorkStudio()->stateChangedEvent().add(boost::bind(&SamplePlugin::stateChangedListener, this, _1), this);
 
 	// Auto load workcell
-	WorkCell::Ptr wc = WorkCellLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/PA10WorkCell/ScenePA10RoVi1.wc.xml");
+	WorkCell::Ptr wc = WorkCellLoader::Factory::load(path + "rovi_final/robotics/PA10WorkCell/ScenePA10RoVi1.wc.xml");
   if (wc == NULL) {
     cerr << "WorkCell: not found!" << endl;
   }
@@ -140,7 +141,7 @@ void SamplePlugin::resetSim(){
 }
 
 Mat SamplePlugin::toOpenCVImage(const Image& img) {
-	Mat res(img.getHeight(),img.getWidth(), CV_8SC3);
+	Mat res(img.getHeight(),img.getWidth(), CV_8UC3);
 	res.data = (uchar*)img.getImageData();
 	return res;
 }
@@ -151,9 +152,9 @@ void SamplePlugin::btnPressed() {
 		log().info() << "Change Texture\n";
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
-		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/Marker1.ppm");
+		image = ImageLoader::Factory::load(path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm");
 		_textureRender->setImage(*image);
-		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/backgrounds/color1.ppm");
+		image = ImageLoader::Factory::load(path + "rovi_final/robotics/SamplePluginPA10/backgrounds/color1.ppm");
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
 	}
@@ -175,7 +176,7 @@ void SamplePlugin::btnPressed() {
 }
 
 void SamplePlugin::timer() {
-  vector<cv::Point> reference_points;
+  vector<cv::Point2f> reference_points;
   if (_framegrabber != NULL) {
     // Get the image as a RW image
     Frame* cameraFrame = _wc->findFrame("CameraSim");
@@ -184,16 +185,40 @@ void SamplePlugin::timer() {
 
     // Convert to OpenCV image
     Mat im = toOpenCVImage(image);
-    color_detector(im, reference_points);
-    for(int i = 0; i < reference_points.size(); i++){
+
+    Mat imflip;
+    cv::flip(im, imflip, 0);
+
+    // COLOR
+    /*color_detector(imflip, reference_points);
+    draw_circles(imflip, reference_points);
+    log().info() << "Size CV: " << reference_points.size() << "\n";
+
+    Mat blue_output  = color_segmentation(imflip, BLUE);
+    Mat red_output   = color_segmentation(imflip, RED);
+
+    imshow("Test", blue_output);*/
+
+    // Corny
+    Mat gray_im;
+    Mat marker_im = imread(path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm", IMREAD_GRAYSCALE);
+    cvtColor(imflip, gray_im, CV_BGR2GRAY);
+    log().info() << gray_im.type() << "\n";
+    SIFT_parameters marker;
+    init_corny(marker, marker_im);
+    log().info() << "Marker loaded" << "\n";
+
+    imshow("Test", marker_im);
+    corny_detector(gray_im, reference_points, marker);
+    draw_object(gray_im, reference_points);
+    log().info() << "corny done " << "\n";
+
+    /*for(int i = 0; i < reference_points.size(); i++){
       Point temp = reference_points[i];
       temp.x = reference_points[i].x - (im.cols/2);
       temp.y = reference_points[i].y - (im.rows/2);
       reference_points[i] = temp;
-    }
-
-    Mat imflip;
-    cv::flip(im, imflip, 0);
+    }*/
 
     // cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 15, cv::Scalar(255,40,40), -1);
     // if(numOfPoints>1){
@@ -201,7 +226,7 @@ void SamplePlugin::timer() {
     // cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 15, cv::Scalar(40,40,255), -1);
     // }
 
-    cv::circle(imflip, cv::Point(imflip.cols/2+target[0*2], imflip.rows/2+target[0*2+1]), 15, cv::Scalar(255,0,0), 4);
+    /*cv::circle(imflip, cv::Point(imflip.cols/2+target[0*2], imflip.rows/2+target[0*2+1]), 15, cv::Scalar(255,0,0), 4);
     if(numOfPoints>1){
     cv::circle(imflip, cv::Point(imflip.cols/2+target[1*2], imflip.rows/2+target[1*2+1]), 15, cv::Scalar(0,255,0), 4);
     cv::circle(imflip, cv::Point(imflip.cols/2+target[2*2], imflip.rows/2+target[2*2+1]), 15, cv::Scalar(0,0,255), 4);
@@ -211,11 +236,7 @@ void SamplePlugin::timer() {
     if(numOfPoints>1){
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 10, cv::Scalar(0,255,0), -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 10, cv::Scalar(0,0,255), -1);
-    }
-
-    for(int i = 0; i < reference_points.size(); i++){
-      cv::circle(imflip, reference_points[i], 10, cv::Scalar(255,0,0), -1);
-    }
+    }*/
 
     // for (int i = 0; i < 3; i++) { // TODO 3 = numOfPoints....
     //   cv::circle(imflip, cv::Point(imflip.cols/2+uv[i*2],imflip.rows/2+uv[i*2+1]), 10, cv::Scalar(255,0,0), -1);
@@ -249,8 +270,8 @@ void SamplePlugin::timer() {
 }
 
 void SamplePlugin::testRun(){
-  jointPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
-  toolPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
+  jointPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
+  toolPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
   log().info() << "Opened the files" << "\n";
   jointPos_file << DT << "\n";
   if (!test_runner) {
@@ -287,7 +308,7 @@ void SamplePlugin::testFunc() {
 
 void SamplePlugin::load_motion( string move_file ){
   marker_motion.clear();
-  string move_file_path = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/" + move_file;
+  string move_file_path = path + "rovi_final/robotics/SamplePluginPA10/motions/" + move_file;
   ifstream motion_file(move_file_path.c_str());
   VelocityScrew6D<> pos_6D;
   string input;
@@ -303,7 +324,7 @@ void SamplePlugin::load_motion( string move_file ){
   }
 }
 
-void SamplePlugin::follow_marker( vector<Point> &reference_points, bool cv){
+void SamplePlugin::follow_marker( vector<Point2f> &reference_points, bool cv){
   //
   // Calculate u, uv[1], du and dv
   //

@@ -27,6 +27,6 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
 Mat draw_sift_matches(SIFT_parameters &object, SIFT_parameters &scene);
 void draw_object(Mat &input, vector<Point2f> &marker_points);
 void pose_estimator(Mat &input_image, vector<Point2f> &marker_points);
-void init_corny(SIFT_parameters &marker);
+void init_corny(SIFT_parameters &marker, Mat &marker_im);
 
 #endif

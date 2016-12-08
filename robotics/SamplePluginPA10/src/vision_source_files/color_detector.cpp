@@ -6,7 +6,7 @@
 
 // *** Color segmentation ***
 // Example on syntax for function
-void color_detector(Mat &input_image, vector<Point> &marker_points)
+void color_detector(Mat &input_image, vector<Point2f> &marker_points)
 {
     // Segment the blue and red color in the images
     Mat blue_output  = color_segmentation(input_image, BLUE);
@@ -17,8 +17,8 @@ void color_detector(Mat &input_image, vector<Point> &marker_points)
     vector<vector<Point> > red_circles  = find_circle_contours(red_output, 100, 0.7);
 
     // Find the center of the contours
-    vector<Point> blue_centers = find_centers(blue_circles);
-    vector<Point> red_centers  = find_centers(red_circles);
+    vector<Point2f> blue_centers = find_centers(blue_circles);
+    vector<Point2f> red_centers  = find_centers(red_circles);
 
     float u_center = 0;
     float v_center = 0;
@@ -49,9 +49,9 @@ Mat color_segmentation(Mat &input, int type)
   Mat output;
 
   int Sat_lower = 30;
-  int Sat_upper = 220;
+  int Sat_upper = 255;
   int Val_lower = 30;
-  int Val_upper = 220;
+  int Val_upper = 255;
   int Hue_lower = 0;
   int Hue_upper = 255;
 
@@ -63,8 +63,8 @@ Mat color_segmentation(Mat &input, int type)
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
   else if(type == BLUE){
-    Hue_lower = 110;
-    Hue_upper = 120;
+    Hue_lower = 150;
+    Hue_upper = 180;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
@@ -107,9 +107,9 @@ vector<vector<Point> > find_circle_contours(Mat &input, int perimeter_thresh, in
 
 // *** Find Centers ***
 // Example on syntax for function
-vector<Point> find_centers(vector<vector<Point> > &input_contours)
+vector<Point2f> find_centers(vector<vector<Point> > &input_contours)
 {
-  vector<Point> circle_centers;
+  vector<Point2f> circle_centers;
 
   for(int i = 0; i < input_contours.size(); i++) // For every contour
   {
@@ -117,7 +117,7 @@ vector<Point> find_centers(vector<vector<Point> > &input_contours)
     int center_u = floor(circle_moments.m10/circle_moments.m00);
     int center_v = floor(circle_moments.m01/circle_moments.m00);
 
-    circle_centers.push_back(Point(center_u, center_v));
+    circle_centers.push_back(Point2f(center_u, center_v));
   }
 
   return circle_centers;
