@@ -52,7 +52,7 @@ Mat color_segmentation(Mat &input, int type)
   int Val_lower = 0;
   int Val_upper = 255;
   int Hue_lower = 0;
-  int Hue_upper = 255;
+  int Hue_upper = 10;
 
   if(type == RED){
     Hue_lower = 0;

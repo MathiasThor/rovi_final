@@ -191,6 +191,7 @@ void SamplePlugin::btnPressed() {
 }
 
 void SamplePlugin::timer() {
+  log().info() << "Stop Motion\n";
   if (current_motion_position == marker_motion.size()){
     resetSim();
     _timer->start(100);
@@ -203,7 +204,11 @@ void SamplePlugin::timer() {
   }
   else {
     move_marker(marker_motion[current_motion_position]);
-    follow_marker( cam_update(), false );
+    getRobWorkStudio()->setState(_state);
+    vector<double> tmp_points = cam_update();
+    getRobWorkStudio()->setState(_state);
+    follow_marker( tmp_points, cvOrFile );
+    getRobWorkStudio()->setState(_state);
     current_motion_position++;
     if (test_runner)
       writeToFile();
@@ -231,7 +236,6 @@ void SamplePlugin::stateChangedListener(const State& state) {
 
 void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
   _Marker->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
-  getRobWorkStudio()->setState(_state);
 }
 
 void SamplePlugin::load_motion( ){
@@ -257,7 +261,6 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   //
   // Calculate u, uv[1], du and dv
   //
-  vector<double> uv_cv;
   if( use_cv ){
     for (int i = 0; i < numOfPoints; i++) {
       uv[i*2]   = uv_points[i*2];
@@ -286,7 +289,6 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     for (int i = 0; i < points.size(); i++) {
       uv[i*2]   = ( points[i][0] * f ) / z;
       uv[i*2+1] = ( points[i][1] * f ) / z;
-
     }
   }
 
@@ -353,6 +355,16 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     }
   }
 
+  auto determinant1 = J_PA10.e().determinant();
+  auto determinant2 = J_image.e().determinant();
+  auto determinant3 = J_sq.e().determinant();
+  auto determinant4 = z_image.e().determinant();
+  cout << determinant1 << endl;
+  cout << determinant2 << endl;
+  cout << determinant3 << endl;
+  cout << determinant4 << endl;
+  cout << "=====================" << endl;
+
   //
   // Calculate dq
   //
@@ -362,7 +374,6 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   Q new_q(_PA10->getQ(_state));
   velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
-  getRobWorkStudio()->setState(_state);
   log().info() << "========================================================================" << "\n";
 }
 

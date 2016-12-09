@@ -100,10 +100,10 @@ void draw_object(Mat &input, vector<Point2f> &marker_points)
     }
 
     // Draw lines between the corners
-    line( input, marker_points[1], marker_points[2], Scalar(0, 0, 255), 2 );
-    line( input, marker_points[2], marker_points[3], Scalar(0, 0, 255), 2 );
-    line( input, marker_points[3], marker_points[4], Scalar(0, 0, 255), 2 );
-    line( input, marker_points[4], marker_points[1], Scalar(0, 0, 255), 2 );
+    line( input, marker_points[1], marker_points[2], Scalar(255, 0, 0), 10 );
+    line( input, marker_points[2], marker_points[3], Scalar(0, 255, 0), 10 );
+    line( input, marker_points[3], marker_points[4], Scalar(0, 0, 255), 10 );
+    line( input, marker_points[4], marker_points[1], Scalar(0, 255, 255), 10 );
   }
 }
 
