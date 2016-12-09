@@ -23,16 +23,16 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
     float u_center = 0;
     float v_center = 0;
 
-    for(int i = 0; i < blue_centers.size(); i++){
-       u_center += blue_centers[i].x;
-       v_center += blue_centers[i].y;
-       //marker_points.push_back(blue_centers[i]);
-    }
-
     for(int i = 0; i < red_centers.size(); i++){
       u_center += red_centers[i].x;
       v_center += red_centers[i].y;
       marker_points.push_back(red_centers[i]);
+    }
+
+    for(int i = 0; i < blue_centers.size(); i++){
+       u_center += blue_centers[i].x;
+       v_center += blue_centers[i].y;
+       marker_points.push_back(blue_centers[i]);
     }
 
     u_center = u_center/(blue_centers.size() + red_centers.size());
@@ -47,22 +47,22 @@ Mat color_segmentation(Mat &input, int type)
 {
   Mat output;
 
-  int Sat_lower = 30;
+  int Sat_lower = 100;
   int Sat_upper = 255;
-  int Val_lower = 30;
+  int Val_lower = 0;
   int Val_upper = 255;
   int Hue_lower = 0;
   int Hue_upper = 255;
 
   if(type == RED){
     Hue_lower = 0;
-    Hue_upper = 15;
+    Hue_upper = 5;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
   else if(type == BLUE){
     Hue_lower = 110;
-    Hue_upper = 170;
+    Hue_upper = 130;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }

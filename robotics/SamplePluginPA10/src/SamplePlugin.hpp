@@ -87,8 +87,8 @@ private:
 	ofstream jointPos_file;
 	ofstream toolPos_file;
 
-	//const string path = "/home/christian/Github_projects/";
-	const string path = "/home/mat/7_semester_workspace/";
+	const string path = "/home/christian/Github_projects/";
+	//const string path = "/home/mat/7_semester_workspace/";
 
 	int numOfPoints = 3;
 
@@ -96,9 +96,9 @@ private:
 	// vector<double> PT1{-0.1,		0.0,		0};
 	// vector<double> PT2{ 0.0,	 -0.1,		0};
 
-	// vector<double> PT0{0.05,		0.05,		0};
-	// vector<double> PT1{-0.05,		0.05,		0};
-	// vector<double> PT2{0.05,		-0.05,		0};
+	//vector<double> PT0{0.054,		0.054,		0};
+	//vector<double> PT1{-0.054,		0.054,		0};
+  //vector<double> PT2{0.054,		-0.054,		0};
 
 	vector<double> PT0{0.15,		0.15,		0};
 	vector<double> PT1{-0.15,		0.15,		0};

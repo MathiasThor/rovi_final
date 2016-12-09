@@ -257,6 +257,7 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   //
   // Calculate u, uv[1], du and dv
   //
+  vector<double> uv_cv;
   if( use_cv ){
     for (int i = 0; i < numOfPoints; i++) {
       uv[i*2]   = uv_points[i*2];
@@ -285,6 +286,7 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     for (int i = 0; i < points.size(); i++) {
       uv[i*2]   = ( points[i][0] * f ) / z;
       uv[i*2+1] = ( points[i][1] * f ) / z;
+
     }
   }
 
@@ -419,26 +421,94 @@ vector<double> SamplePlugin::cam_update( ){
     cv::flip(im, imflip, 0);
 
     // COLOR
-    Mat color_temp;
-    cvtColor(imflip, color_temp, CV_BGR2HSV);
-    color_detector(color_temp, reference_points);
+    /*Mat color_temp;
+    cvtColor(imflip, color_temp, CV_RGB2HSV);
+
+    //imshow("Blue", color_segmentation(color_temp, BLUE));
+    //imshow("Red", color_segmentation(color_temp, RED));
+
+    color_detector(imflip, reference_points);
     draw_circles(imflip, reference_points);
     log().info() << "Size CV: " << reference_points.size() << "\n";
 
+    vector<Point2f> ordered;
+
+    if(reference_points.size() == 5){
+      int index = 0;
+      float max_dist = 0;
+      for(int i = 1; i < 4; i++){
+        float current_dist = sqrt( powf(reference_points[0].x - reference_points[i].x, 2) + powf(reference_points[0].y - reference_points[i].y,2) );
+        if(current_dist > max_dist){
+          max_dist = current_dist;
+          index = i;
+        }
+      }
+
+      ordered.push_back(reference_points[index]);
+      reference_points.erase(reference_points.begin() + index);
+
+      if(reference_points[0].x > ordered[0].x){
+        if(reference_points[0].y > ordered[0].y){
+          if( (reference_points[1].x - reference_points[2].x) < 0 ){
+            ordered.push_back(reference_points[1]);
+            ordered.push_back(reference_points[2]);
+          }
+          else{
+            ordered.push_back(reference_points[2]);
+            ordered.push_back(reference_points[1]);
+          }
+        }
+        if(reference_points[0].y < ordered[0].y){
+          if( (reference_points[1].x - reference_points[2].x) > 0 ){
+            ordered.push_back(reference_points[1]);
+            ordered.push_back(reference_points[2]);
+          }
+          else{
+            ordered.push_back(reference_points[2]);
+            ordered.push_back(reference_points[1]);
+          }
+        }
+      }
+      if(reference_points[0].x < ordered[0].x){
+        if(reference_points[0].y > ordered[0].y){
+          if( (reference_points[1].x - reference_points[2].x) < 0 ){
+            ordered.push_back(reference_points[1]);
+            ordered.push_back(reference_points[2]);
+          }
+          else{
+            ordered.push_back(reference_points[2]);
+            ordered.push_back(reference_points[1]);
+          }
+        }
+        if(reference_points[0].y < ordered[0].y){
+          if( (reference_points[1].x - reference_points[2].x) > 0 ){
+            ordered.push_back(reference_points[1]);
+            ordered.push_back(reference_points[2]);
+          }
+          else{
+            ordered.push_back(reference_points[2]);
+            ordered.push_back(reference_points[1]);
+          }
+        }
+      }
+
+      ordered.push_back(reference_points[4]);
+    }
+
+    reference_points = ordered;
+
+    */
 
     // Corny
-    /*Mat gray_im;
-    Mat marker_im = imread(path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm", IMREAD_GRAYSCALE);
-    cvtColor(imflip, gray_im, CV_BGR2GRAY);
-    log().info() << gray_im.type() << "\n";
     SIFT_parameters marker;
-    init_corny(marker, marker_im);
-    log().info() << "Marker loaded" << "\n";
 
-    imshow("Test", marker_im);
-    corny_detector(gray_im, reference_points, marker);
-    draw_object(gray_im, reference_points);
-    log().info() << "corny done " << "\n";*/
+    marker.image = imread( path + "rovi_final/robotics/SamplePluginPA10/markers/corny_marker.png", IMREAD_GRAYSCALE );
+    cv::Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
+
+    object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
+
+    corny_detector(imflip, reference_points, marker);
+    draw_object(imflip, reference_points);
 
     for(int i = 0; i < reference_points.size(); i++){
       uv_points.push_back(reference_points[i].x - (imflip.cols/2));
