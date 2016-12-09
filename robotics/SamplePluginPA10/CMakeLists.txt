@@ -6,7 +6,7 @@ PROJECT(RoVi1PluginPA10)
 MESSAGE(${PROJECT_NAME} ":")
 
 #
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -w")
 
 # Used to resolve absolute path names
 SET(ROOT ${CMAKE_CURRENT_SOURCE_DIR})

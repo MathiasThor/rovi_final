@@ -47,22 +47,22 @@ Mat color_segmentation(Mat &input, int type)
 {
   Mat output;
 
-  int Sat_lower = 30;
-  int Sat_upper = 255;
-  int Val_lower = 30;
-  int Val_upper = 255;
+  int Sat_lower = 0;
+  int Sat_upper = 10;
+  int Val_lower = 0;
+  int Val_upper = 10;
   int Hue_lower = 0;
-  int Hue_upper = 255;
+  int Hue_upper = 10;
 
   if(type == RED){
-    Hue_lower = 0;
-    Hue_upper = 15;
+    Hue_lower = 240;
+    Hue_upper = 255;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
   else if(type == BLUE){
-    Hue_lower = 110;
-    Hue_upper = 170;
+    Val_lower = 240;
+    Val_upper = 255;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
