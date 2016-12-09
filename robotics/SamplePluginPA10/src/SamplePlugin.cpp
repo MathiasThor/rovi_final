@@ -417,7 +417,6 @@ void SamplePlugin::writeToFile( ){
 }
 
 vector<double> SamplePlugin::cam_update( ){
-  vector<cv::Point2f> reference_points;
   vector<double> uv_points;
   if (_framegrabber != NULL) {
     // Get the image as a RW image
@@ -431,100 +430,8 @@ vector<double> SamplePlugin::cam_update( ){
     Mat imflip;
     cv::flip(im, imflip, 0);
 
-    // COLOR
-    /*Mat color_temp;
-    cvtColor(imflip, color_temp, CV_RGB2HSV);
-
-    //imshow("Blue", color_segmentation(color_temp, BLUE));
-    //imshow("Red", color_segmentation(color_temp, RED));
-
-    color_detector(imflip, reference_points);
-    draw_circles(imflip, reference_points);
-    log().info() << "Size CV: " << reference_points.size() << "\n";
-
-    vector<Point2f> ordered;
-
-    if(reference_points.size() == 5){
-      int index = 0;
-      float max_dist = 0;
-      for(int i = 1; i < 4; i++){
-        float current_dist = sqrt( powf(reference_points[0].x - reference_points[i].x, 2) + powf(reference_points[0].y - reference_points[i].y,2) );
-        if(current_dist > max_dist){
-          max_dist = current_dist;
-          index = i;
-        }
-      }
-
-      ordered.push_back(reference_points[index]);
-      reference_points.erase(reference_points.begin() + index);
-
-      if(reference_points[0].x > ordered[0].x){
-        if(reference_points[0].y > ordered[0].y){
-          if( (reference_points[1].x - reference_points[2].x) < 0 ){
-            ordered.push_back(reference_points[1]);
-            ordered.push_back(reference_points[2]);
-          }
-          else{
-            ordered.push_back(reference_points[2]);
-            ordered.push_back(reference_points[1]);
-          }
-        }
-        if(reference_points[0].y < ordered[0].y){
-          if( (reference_points[1].x - reference_points[2].x) > 0 ){
-            ordered.push_back(reference_points[1]);
-            ordered.push_back(reference_points[2]);
-          }
-          else{
-            ordered.push_back(reference_points[2]);
-            ordered.push_back(reference_points[1]);
-          }
-        }
-      }
-      if(reference_points[0].x < ordered[0].x){
-        if(reference_points[0].y > ordered[0].y){
-          if( (reference_points[1].x - reference_points[2].x) < 0 ){
-            ordered.push_back(reference_points[1]);
-            ordered.push_back(reference_points[2]);
-          }
-          else{
-            ordered.push_back(reference_points[2]);
-            ordered.push_back(reference_points[1]);
-          }
-        }
-        if(reference_points[0].y < ordered[0].y){
-          if( (reference_points[1].x - reference_points[2].x) > 0 ){
-            ordered.push_back(reference_points[1]);
-            ordered.push_back(reference_points[2]);
-          }
-          else{
-            ordered.push_back(reference_points[2]);
-            ordered.push_back(reference_points[1]);
-          }
-        }
-      }
-
-      ordered.push_back(reference_points[4]);
-    }
-
-    reference_points = ordered;
-
-    */
-
-    // Corny
-    SIFT_parameters marker;
-
-    marker.image = imread( path + "rovi_final/robotics/SamplePluginPA10/markers/corny_marker.png", IMREAD_GRAYSCALE );
-    cv::Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
-
-    object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
-
-    corny_detector(imflip, reference_points, marker);
-    draw_object(imflip, reference_points);
-
-    for(int i = 0; i < reference_points.size(); i++){
-      uv_points.push_back(reference_points[i].x - (imflip.cols/2));
-      uv_points.push_back(reference_points[i].y - (imflip.rows/2));
-    }
+    uv_points = marker_detection(imflip);
+    log().info() << "Detected marker" << "\n";
 
     cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 20, cv::Scalar(255,60,60), 4);
     if(numOfPoints>1){
@@ -546,6 +453,80 @@ vector<double> SamplePlugin::cam_update( ){
     _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
   }
   return uv_points;
+}
+
+vector<double> SamplePlugin::marker_detection(Mat &input){
+
+  // Initiliaze point vector
+  vector<double> uv_points;
+  vector<Point2f> cv_points;
+
+  // *********** COLOR ****************
+  if(cv_choice == 1){
+    Mat color_temp;
+    vector<Point2f> temp_points;
+    cvtColor(input, color_temp, CV_RGB2HSV);
+
+    color_detector(color_temp, temp_points);
+
+    log().info() << "Found points: " << temp_points.size() << "\n";
+
+    if(temp_points.size() == 5){
+      int index = 0;
+      float max_dist = 0;
+      for(int i = 1; i < 4; i++){
+        float current_dist = sqrt( powf(temp_points[0].x - temp_points[i].x, 2) + powf(temp_points[0].y - temp_points[i].y,2) );
+        if(current_dist > max_dist){
+          max_dist = current_dist;
+          index = i;
+        }
+      }
+
+      Point2f red = temp_points[0];
+      Point2f blue_op = temp_points[index];
+
+      cv_points.push_back(red);
+      cv_points.push_back(blue_op);
+      temp_points.erase(temp_points.begin());
+      temp_points.erase(temp_points.begin() + index);
+
+      Eigen::Matrix3f A;
+      A << 1, red.x, red.y,  1, blue_op.x, blue_op.y,  1, temp_points[0].x, temp_points[0].y;
+
+      if(A.determinant() > 0){
+        cv_points.push_back(temp_points[1]);
+      }
+      else{
+        cv_points.push_back(temp_points[0]);
+      }
+    }
+    else{
+      cv_points = temp_points;
+    }
+
+  }
+  // ************** CORNY ****************
+  else if(cv_choice == 2){
+    SIFT_parameters marker;
+
+    marker.image = imread( path + "rovi_final/robotics/SamplePluginPA10/markers/corny_marker.png", IMREAD_GRAYSCALE );
+    cv::Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
+
+    object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
+
+    corny_detector(input, cv_points, marker);
+    draw_object(input, cv_points);
+  }
+
+  draw_circles(input, cv_points);
+
+  for(int i = 0; i < cv_points.size(); i++){
+    uv_points.push_back(cv_points[i].x - (input.cols/2));
+    uv_points.push_back(cv_points[i].y - (input.rows/2));
+  }
+
+  return uv_points;
+
 }
 
 Q_EXPORT_PLUGIN(SamplePlugin);

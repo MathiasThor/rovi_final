@@ -68,6 +68,7 @@ private:
 	void writeToFile( );
 	vector<double> cam_update( );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
+	vector<double> marker_detection(Mat &input);
 
 	vector<double> target{74.0487, 74.0487,	170.361, 74.0487,	5.761, -90.5513};
 	vector<double> target2{0,0,0,0,0,0};
@@ -89,6 +90,9 @@ private:
 
 	const string path = "/home/christian/Github_projects/";
 	//const string path = "/home/mat/7_semester_workspace/";
+
+	int cv_choice = 1; 	// COLOR
+	//int cv_choice = 2; 	// CORNY
 
 	int numOfPoints = 3;
 	bool cvOrFile = false;
