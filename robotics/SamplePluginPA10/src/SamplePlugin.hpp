@@ -52,8 +52,9 @@ public:
 
 private slots:
 	void btnPressed();
-	void testFunc();
+	void load_motion( );
 	void resetSim();
+	void testRun();
 	void timer();
 	void set_dt( );
 	void stateChangedListener(const rw::kinematics::State& state);
@@ -62,28 +63,54 @@ private:
 
 	// Private funcs
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
-	void load_motion( string move_file );
-	void follow_marker( );
+	void follow_marker( vector<double> uv_points, bool cv );
 	void velocityLimit( Q dq, Q &q );
 	void writeToFile( );
+	vector<double> cam_update( );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
+	vector<double> marker_detection(Mat &input);
+
+	vector<double> target{74.0487, 74.0487,	170.361, 74.0487,	5.761, -90.5513};
+	vector<double> target2{0,0,0,0,0,0};
 
 	// Global variables
 	vector< rw::math::VelocityScrew6D<double> > marker_motion;
 	int current_motion_position = 0;
 	bool stop_start_motion = false;
-	vector<float> uv;
-	float f = 823;
-	float z = 0.5;
-	float DT = 1;
-	int numOfPoints = 1;
+	bool test_runner = false;
+	bool test_bool = true;
+	vector<double> uv;
+	double f = 823;
+	double z = 0.5;
+	double DT = 1;
+
 	Q vel_limits;
 	ofstream jointPos_file;
 	ofstream toolPos_file;
 
+	const string path = "/home/christian/Github_projects/";
+	//const string path = "/home/mat/7_semester_workspace/";
+
+	int cv_choice = 1; 	// COLOR
+	//int cv_choice = 2; 	// CORNY
+
+	int numOfPoints = 3;
+	bool cvOrFile = false;
+
+	//vector<double> PT0{ 0.0,		0.0,		0};
+	//vector<double> PT1{-0.1,		0.0,		0};
+	//vector<double> PT2{ 0.0,	 -0.1,		0};
+
+	//vector<double> PT0{0.054,		0.054,		0};
+	//vector<double> PT1{-0.054,		0.054,		0};
+  //vector<double> PT2{0.054,		-0.054,		0};
+
+	vector<double> PT0{0.15,		0.15,		0};
+	vector<double> PT1{-0.15,		0.15,		0};
+	vector<double> PT2{0.15,		-0.15,		0};
 
 	Device::Ptr _PA10;
-	Frame* _Marker;
+	MovableFrame* _Marker;
 	Frame* _Camera;
 
 	QTimer* _timer;

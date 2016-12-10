@@ -1,4 +1,8 @@
 #include "SamplePlugin.hpp"
+#include "./vision_header_files/setup.h"
+#include "./vision_source_files/color_detector.cpp"
+#include "./vision_source_files/general_functions.cpp"
+#include "./vision_source_files/corny_detector.cpp"
 
 SamplePlugin::SamplePlugin():
     RobWorkStudioPlugin("SamplePluginUI", QIcon(":/pa_icon.png"))
@@ -11,11 +15,11 @@ SamplePlugin::SamplePlugin():
 	// now connect stuff from the ui component
 	connect(_btn0,              SIGNAL(pressed()),            this, SLOT(btnPressed()) );
   connect(_startStopMovement, SIGNAL(pressed()),            this, SLOT(btnPressed()) );
-  connect(_comboBox,          SIGNAL(activated(int)),       this, SLOT(testFunc())   );
+  connect(_comboBox,          SIGNAL(activated(int)),       this, SLOT(btnPressed()) );
   connect(_followMarker,      SIGNAL(pressed()),            this, SLOT(btnPressed()) );
   connect(_resetSim,          SIGNAL(pressed()),            this, SLOT(resetSim()) );
   connect(_DT,                SIGNAL(valueChanged(double)), this, SLOT(set_dt()) );
-
+  connect(_testRun,           SIGNAL(pressed()),            this, SLOT(testRun()) );
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
 	_textureRender = new RenderImage(textureImage);
@@ -41,13 +45,12 @@ void SamplePlugin::initialize() {
 	getRobWorkStudio()->stateChangedEvent().add(boost::bind(&SamplePlugin::stateChangedListener, this, _1), this);
 
 	// Auto load workcell
-	WorkCell::Ptr wc = WorkCellLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/PA10WorkCell/ScenePA10RoVi1.wc.xml");
+	WorkCell::Ptr wc = WorkCellLoader::Factory::load(path + "rovi_final/robotics/PA10WorkCell/ScenePA10RoVi1.wc.xml");
   if (wc == NULL) {
     cerr << "WorkCell: not found!" << endl;
   }
 	getRobWorkStudio()->setWorkCell(wc);
-  load_motion("MarkerMotionSlow.txt");
-  timer();
+  load_motion();
 }
 
 void SamplePlugin::open(WorkCell* workcell)
@@ -56,16 +59,13 @@ void SamplePlugin::open(WorkCell* workcell)
 	_wc = workcell;
 	_state = _wc->getDefaultState();
   _PA10 = _wc->findDevice("PA10");
-  _Marker = _wc->findFrame("Marker");
+  _Marker = (MovableFrame*) _wc->findFrame("Marker");
   _Camera = _wc->findFrame("Camera");
 
   if (_PA10 == NULL)
     cerr << "Device: PA10 not found!" << endl;
 
-  resetSim();
   vel_limits = _PA10->getVelocityLimits();
-  jointPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
-  toolPos_file.open ("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
 
 	log().info() << workcell->getFilename() << "\n";
 
@@ -98,6 +98,9 @@ void SamplePlugin::open(WorkCell* workcell)
 			}
 		}
 	}
+  target2 = {-(PT0[0]*f)/z,(PT0[1]*f)/z,-(PT1[0]*f)/z,(PT1[1]*f)/z,-(PT2[0]*f)/z,(PT2[1]*f)/z};
+  _startStopMovement->setText("Start movement");
+  resetSim();
 }
 
 void SamplePlugin::close() {
@@ -124,8 +127,9 @@ void SamplePlugin::close() {
 }
 
 void SamplePlugin::resetSim(){
-  current_motion_position = 0;
-  move_marker(marker_motion[current_motion_position]);
+  _timer->stop();
+  _startStopMovement->setText("Start movement");
+  move_marker(marker_motion[0]);
   Q init_position(7, 0, -0.65, 0, 1.80, 0, 0.42, 0);
   _PA10->setQ(init_position, _state);
   getRobWorkStudio()->setState(_state);
@@ -134,15 +138,14 @@ void SamplePlugin::resetSim(){
   for (int row = 0; row < numOfPoints*2; row++)
     uv.push_back(0);
 
-  Transform3D<> camara_to_marker = _Marker->fTf(_Camera, _state);
-  Vector3D<> marker_midpoint = inverse(camara_to_marker) * Vector3D<>(0,0,0);
-
-  timer();
-  getRobWorkStudio()->setState(_state);
+  stop_start_motion = false;
+  test_runner = false;
+  current_motion_position = 0;
+  cam_update();
 }
 
 Mat SamplePlugin::toOpenCVImage(const Image& img) {
-	Mat res(img.getHeight(),img.getWidth(), CV_8SC3);
+	Mat res(img.getHeight(),img.getWidth(), CV_8UC3);
 	res.data = (uchar*)img.getImageData();
 	return res;
 }
@@ -153,77 +156,78 @@ void SamplePlugin::btnPressed() {
 		log().info() << "Change Texture\n";
 		// Set a new texture (one pixel = 1 mm)
 		Image::Ptr image;
-		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm");
+    string marker_type = _markTex->currentText().toUtf8().constData();
+    string mk_file = path + "rovi_final/robotics/SamplePluginPA10/markers/" + marker_type;
+		image = ImageLoader::Factory::load(mk_file.c_str());
 		_textureRender->setImage(*image);
-		image = ImageLoader::Factory::load("/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/backgrounds/color1.ppm");
+    string back_type = _backTex->currentText().toUtf8().constData();
+    string bg_file = path + "rovi_final/robotics/SamplePluginPA10/backgrounds/" + back_type;
+		image = ImageLoader::Factory::load(bg_file.c_str());
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
+    cam_update();
 	}
   else if(obj==_startStopMovement){
     stop_start_motion = !stop_start_motion;
     if (stop_start_motion){
       log().info() << "Start Motion\n";
+      _startStopMovement->setText("Stop movement");
       _timer->start(100); // run 10 Hz
     }
     else{
       log().info() << "Stop Motion\n";
+      _startStopMovement->setText("Start movement");
       _timer->stop();
     }
 	}
   else if(obj==_followMarker){
     log().info() << "Follow Marker\n";
-    /// TMP
-    move_marker(marker_motion[current_motion_position]);
-    if (current_motion_position == marker_motion.size())
-      resetSim();
-    else
-      current_motion_position++;
-    /// TMP
-
-    follow_marker();
     timer();
+  } else if(obj==_comboBox){
+    log().info() << "load_motion\n";
+    load_motion();
+    resetSim();
   }
 }
 
 void SamplePlugin::timer() {
-  if (_framegrabber != NULL) {
-    // Get the image as a RW image
-    Frame* cameraFrame = _wc->findFrame("CameraSim");
-    _framegrabber->grab(cameraFrame, _state);
-    const Image& image = _framegrabber->getImage();
-
-    // Convert to OpenCV image
-    Mat im = toOpenCVImage(image);
-    Mat imflip;
-    cv::flip(im, imflip, 0);
-    // for (int i = 0; i < numOfPoints; i++) {
-    //   /* code */
-    // }
-    cv::circle(imflip, cv::Point(imflip.cols/2,imflip.rows/2), 15, cv::Scalar(0,255,0), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2-uv[0],imflip.rows/2-uv[1]), 10, cv::Scalar(255,0,0), -1);
-
-
-    // Show in QLabel
-    QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
-    QPixmap p = QPixmap::fromImage(img);
-    unsigned int maxW = 400;
-    unsigned int maxH = 800;
-    _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
+  log().info() << "Stop Motion\n";
+  if (current_motion_position == marker_motion.size()){
+    resetSim();
+    _timer->start(100);
+    if (test_runner){
+      test_runner = false;
+      jointPos_file.close();
+      toolPos_file.close();
+      log().info() << "Closed the files" << "\n";
+    }
   }
-
-  if ( stop_start_motion && !marker_motion.empty() ) {
+  else {
     move_marker(marker_motion[current_motion_position]);
-
-    if (current_motion_position == marker_motion.size()){
-      resetSim();
-    }
-    else {
-      current_motion_position++;
-      follow_marker();
-      //writeToFile();
-    }
+    getRobWorkStudio()->setState(_state);
+    vector<double> tmp_points = cam_update();
+    getRobWorkStudio()->setState(_state);
+    follow_marker( tmp_points, cvOrFile );
+    getRobWorkStudio()->setState(_state);
+    current_motion_position++;
+    if (test_runner)
+      writeToFile();
   }
 
+}
+
+void SamplePlugin::testRun(){
+  jointPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
+  toolPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
+  log().info() << "Opened the files" << "\n";
+
+  jointPos_file << DT << "\n";
+  if (!test_runner) {
+    test_runner=true;
+    resetSim();
+    _timer->start(100);
+    log().info() << "Collecting data..." << "\n";
+  }
 }
 
 void SamplePlugin::stateChangedListener(const State& state) {
@@ -231,29 +235,13 @@ void SamplePlugin::stateChangedListener(const State& state) {
 }
 
 void SamplePlugin::move_marker( rw::math::VelocityScrew6D<> p_6D ){
-  MovableFrame* marker_frame = static_cast<MovableFrame*>(_Marker);
-  marker_frame->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
-  getRobWorkStudio()->setState(_state);
+  _Marker->setTransform(Transform3D<double>( p_6D.linear(), RPY<double>(p_6D(3),	p_6D(4),	p_6D(5)).toRotation3D() ), _state);
 }
 
-void SamplePlugin::testFunc() {
-  resetSim();
-  switch (_comboBox->currentIndex()) {
-    case 0:
-      load_motion("MarkerMotionSlow.txt");
-      break;
-    case 1:
-      load_motion("MarkerMotionMedium.txt");
-      break;
-    case 2:
-      load_motion("MarkerMotionFast.txt");
-      break;
-  }
-}
-
-void SamplePlugin::load_motion( string move_file ){
+void SamplePlugin::load_motion( ){
   marker_motion.clear();
-  string move_file_path = "/home/mat/7_semester_workspace/rovi_final/robotics/SamplePluginPA10/motions/" + move_file;
+  string motion_type = _comboBox->currentText().toUtf8().constData();
+  string move_file_path = path + "rovi_final/robotics/SamplePluginPA10/motions/" + motion_type;
   ifstream motion_file(move_file_path.c_str());
   VelocityScrew6D<> pos_6D;
   string input;
@@ -265,44 +253,62 @@ void SamplePlugin::load_motion( string move_file ){
       marker_motion.push_back(pos_6D);
     }
     motion_file.close();
-    log().info() << "Loaded: " << move_file << "\n";
+    log().info() << "Loaded: " << motion_type << "\n";
   }
 }
 
-void SamplePlugin::follow_marker( ){
-  //
-  // Get the transform of CAMARA frame relative to the MARKER frame. -OK
-  //
-  Transform3D<> camara_to_marker = _Marker->fTf(_Camera, _state);
-
+void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   //
   // Calculate u, uv[1], du and dv
   //
-  vector< Vector3D<> > points;
-  points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0,0));
-  if ( numOfPoints > 1) {
-    points.push_back(inverse(camara_to_marker) * Vector3D<>(0.1,0,0));
-    points.push_back(inverse(camara_to_marker) * Vector3D<>(0,0.1,0));
-  }
-  vector< double > targets = {  0,                  0,
-                                -( 0.1 * f ) / z,   0,
-                                0,                  -( 0.1 * f ) / z};
+  if( use_cv ){
+    for (int i = 0; i < numOfPoints; i++) {
+      uv[i*2]   = uv_points[i*2];
+      uv[i*2+1] = uv_points[i*2+1];
+    }
 
-  for (int i = 0; i < numOfPoints; i++) {
-    uv[i*2]   = -( points[i][0] * f ) / z;
-    uv[i*2+1] = -( points[i][1] * f ) / z;
+    if (current_motion_position==0) {
+      target2=uv;
+      /*for (int i = 0; i < numOfPoints; i++) {
+        target2[i*2]   -= uv_points[uv_points.size() - 2];
+        target2[i*2+1] -= uv_points[uv_points.size() - 1];
+      }*/
+    }
+  }
+  else{
+    // Get the transform of CAMARA frame relative to the MARKER frame. -OK
+    Transform3D<> camara_to_marker = inverse(_Marker->fTf(_Camera, _state));
+    vector< Vector3D<> > points;
+
+    points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
+    if ( numOfPoints > 1) {
+         points.push_back(camara_to_marker.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + camara_to_marker.P());
+         points.push_back(camara_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + camara_to_marker.P());
+    }
+
+    for (int i = 0; i < points.size(); i++) {
+      uv[i*2]   = ( points[i][0] * f ) / z;
+      uv[i*2+1] = ( points[i][1] * f ) / z;
+    }
   }
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
-    d_uv(i*2,0)   = uv[i*2]   - targets[i*2];
-    d_uv(i*2+1,0) = uv[i*2+1] - targets[i*2+1];
+    d_uv(i*2,0)   = target2[i*2]   -uv[i*2];
+    d_uv(i*2+1,0) = target2[i*2+1] -uv[i*2+1];
   }
+  log().info() << "Frame:\t" << current_motion_position << "\n";
 
-  // log().info() << "uv:\n" << uv[0] << " " << uv[1] << "\n";
-  // if ( numOfPoints > 1)
-  //     log().info() << uv[2] << " " << uv[3] << "\n" << uv[4] << " " << uv[5] << "\n";;
-  // log().info() << "d_uv:\n" << d_uv << "\n";
+  log().info() << "uv:\t" << uv[0] << "\t" << uv[1] << "\t";
+  if ( numOfPoints > 1)
+      log().info() << uv[2] << "\t" << uv[3] << "\t" << uv[4] << "\t" << uv[5] << "\n";
+  else log().info() << "\n";
+  //log().info() << "targ:\t" << target[0] << "\t" << target[1] << "\t" << target[2] << "\t" << target[3] << "\t" << target[4] << "\t" << target[5] << "\n";
+  log().info() << "targ2:\t" << target2[0] << "\t" << target2[1] << "\t" << target2[2] << "\t" << target2[3] << "\t" << target2[4] << "\t" << target2[5] << "\n";
+  log().info() << "d_uv:\t" << d_uv(0,0) << "\t" << d_uv(1,0) << "\t";
+  if ( numOfPoints > 1)
+    log().info() << d_uv(2,0) << "\t" << d_uv(3,0) << "\t" << d_uv(4,0) << "\t" << d_uv(5,0) << "\n";
+  else log().info() << "\n";
 
   //
   // Calculate the jacobian for PA10 -Ok
@@ -314,7 +320,6 @@ void SamplePlugin::follow_marker( ){
   // Calculate the image jacobian
   //
   Jacobian J_image(numOfPoints*2,6);   // Create 6*2 Jacobian
-  // Fill the jacobian
   for (int i = 0; i < numOfPoints; i++) {
     J_image(i*2, 0)   = -(f / z);
     J_image(i*2, 1)   = 0;
@@ -345,20 +350,31 @@ void SamplePlugin::follow_marker( ){
   //log().info() << "z:\n" << z_image << "\n";
   Jacobian z_image_T(7,numOfPoints*2);
   for(int i=0; i < 7; i++){
-    for(int j=0; j < 2; j++){
+    for(int j=0; j < 2*numOfPoints; j++){
       z_image_T(i,j) = z_image(j,i);
     }
   }
+
+  auto determinant1 = J_PA10.e().determinant();
+  auto determinant2 = J_image.e().determinant();
+  auto determinant3 = J_sq.e().determinant();
+  auto determinant4 = z_image.e().determinant();
+  cout << determinant1 << endl;
+  cout << determinant2 << endl;
+  cout << determinant3 << endl;
+  cout << determinant4 << endl;
+  cout << "=====================" << endl;
 
   //
   // Calculate dq
   //
   Jacobian J_dq(z_image_T.e()*((z_image*z_image_T).e().inverse()*d_uv.e()));
   Q dq(J_dq.e());
+  //log().info() << "dq:\t" << dq << "\n";
   Q new_q(_PA10->getQ(_state));
   velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
-  getRobWorkStudio()->setState(_state);
+  log().info() << "========================================================================" << "\n";
 }
 
 void SamplePlugin::velocityLimit( Q dq, Q &q ){
@@ -378,9 +394,15 @@ void SamplePlugin::velocityLimit( Q dq, Q &q ){
 
 void SamplePlugin::writeToFile( ){
   if (toolPos_file.is_open()){
-    Vector3D<> tmp_tool = _PA10->baseTframe(_Camera, _state).P();
-    for (int i = 0; i < tmp_tool.size(); i++) {
-      toolPos_file << tmp_tool[i] << "\t";
+    Rotation3D<> tmp_tool_rot = _PA10->baseTframe(_Camera, _state).R();
+    Vector3D<> tmp_tool_pos = _PA10->baseTframe(_Camera, _state).P();
+    for (int i = 0; i < tmp_tool_pos.size(); i++) {
+      toolPos_file << tmp_tool_pos[i] << "\t";
+    }
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        toolPos_file << tmp_tool_rot(j,i) << "\t";
+      }
     }
     toolPos_file << "\n";
   } else cout << "can't open tool position file" << endl;
@@ -394,5 +416,142 @@ void SamplePlugin::writeToFile( ){
   } else cout << "can't open tool position file" << endl;
 }
 
+vector<double> SamplePlugin::cam_update( ){
+  vector<double> uv_points;
+  if (_framegrabber != NULL) {
+    // Get the image as a RW image
+    Frame* cameraFrame = _wc->findFrame("CameraSim");
+    _framegrabber->grab(cameraFrame, _state);
+    const Image& image = _framegrabber->getImage();
+
+    // Convert to OpenCV image
+    Mat im = toOpenCVImage(image);
+
+    Mat imflip;
+    cv::flip(im, imflip, 0);
+
+    uv_points = marker_detection(imflip);
+    log().info() << "Detected marker" << "\n";
+
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 20, cv::Scalar(255,60,60), 4);
+    if(numOfPoints>1){
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 20, cv::Scalar(60,255,60), 4);
+    cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 20, cv::Scalar(60,60,255), 4);
+    }
+
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 5, cv::Scalar(255,0,0), -1);
+    if(numOfPoints>1){
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 5, cv::Scalar(0,255,0), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 5, cv::Scalar(0,0,255), -1);
+    }
+
+    // Show in QLabel
+    QImage img(imflip.data, imflip.cols, imflip.rows, imflip.step, QImage::Format_RGB888);
+    QPixmap p = QPixmap::fromImage(img);
+    unsigned int maxW = 400;
+    unsigned int maxH = 800;
+    _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
+  }
+  return uv_points;
+}
+
+vector<double> SamplePlugin::marker_detection(Mat &input){
+
+  // Initiliaze point vector
+  vector<double> uv_points;
+  vector<Point2f> cv_points;
+
+  // *********** COLOR ****************
+  if(cv_choice == 1){
+    Mat color_temp;
+    vector<Point2f> temp_points;
+    cvtColor(input, color_temp, CV_RGB2HSV);
+
+    imshow("Blue", color_segmentation(color_temp, BLUE));
+    imshow("Red", color_segmentation(color_temp, RED));
+
+    color_detector(color_temp, temp_points);
+
+    log().info() << "Found points: " << temp_points.size() << "\n";
+
+    if(temp_points.size() == 5){
+      int index = 0;
+      float max_dist = 0;
+      for(int i = 1; i < 4; i++){
+        float current_dist = sqrt( powf(temp_points[0].x - temp_points[i].x, 2) + powf(temp_points[0].y - temp_points[i].y,2) );
+        if(current_dist > max_dist){
+          max_dist = current_dist;
+          index = i;
+        }
+      }
+
+      Point2f red = temp_points[0];
+      Point2f blue_op = temp_points[index];
+
+      cv_points.push_back(red);
+      cv_points.push_back(blue_op);
+      temp_points.erase(temp_points.begin());
+      temp_points.erase(temp_points.begin() + index);
+
+      /*float A = (blue_op.x * temp_points[0].y - blue_op.y * temp_points[0].x) - red.x * (temp_points[0].y - blue_op.y) + red.y * (temp_points[0].x - blue_op.x);
+      log().info() << "Det: " << A << "\n";
+
+      if(A >= 0){
+        cv_points.push_back(temp_points[1]);
+      }
+      else{
+        cv_points.push_back(temp_points[0]);
+      }*/
+
+      if(temp_points[0].x > temp_points[1].x){
+        cv_points.push_back(temp_points[0]);
+        cv_points.push_back(temp_points[1]);
+      }
+      else{
+        cv_points.push_back(temp_points[1]);
+        cv_points.push_back(temp_points[0]);
+      }
+
+      cv_points.push_back(temp_points[4]);
+
+      //HARD CODE
+      /*cv_points[0].x = cv_points[0].x - 100;
+      cv_points[0].y = cv_points[0].y - 100;
+
+      cv_points[1].x = cv_points[1].x + 100;
+      cv_points[1].y = cv_points[1].y + 100;
+
+      cv_points[2].x = cv_points[2].x + 100;
+      cv_points[2].y = cv_points[2].y - 100;*/
+
+    }
+    else{
+      cv_points = temp_points;
+    }
+
+  }
+  // ************** CORNY ****************
+  else if(cv_choice == 2){
+    SIFT_parameters marker;
+
+    marker.image = imread( path + "rovi_final/robotics/SamplePluginPA10/markers/corny_marker.png", IMREAD_GRAYSCALE );
+    cv::Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
+
+    object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
+
+    corny_detector(input, cv_points, marker);
+    draw_object(input, cv_points);
+  }
+
+  draw_circles(input, cv_points);
+
+  for(int i = 0; i < cv_points.size(); i++){
+    uv_points.push_back(cv_points[i].x - (input.cols/2));
+    uv_points.push_back(cv_points[i].y - (input.rows/2));
+  }
+
+  return uv_points;
+
+}
 
 Q_EXPORT_PLUGIN(SamplePlugin);

@@ -1,10 +1,11 @@
-#include "corny_detector.h"
+
+#include "../vision_header_files/corny_detector.h"
 
 // http://docs.opencv.org/3.1.0/d7/dff/tutorial_feature_homography.html
 void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_parameters &object)
 {
   // Generate SIFT class object and parameters needed for the scene
-  Ptr<SURF> detector = SURF::create( 500 ); // 500 - We want more points on the scene than on object image.
+  cv::Ptr<SURF> detector = SURF::create( 500 ); // 500 - We want more points on the scene than on object image.
   SIFT_parameters scene;
 
   // Clone input image to scene, and detect and compute keypoints and descriptors.
@@ -13,6 +14,14 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
 
   // Generate Flann Based Matcher
   FlannBasedMatcher matcher;
+
+  if(object.descriptors.type()!=CV_32F) {
+    object.descriptors.convertTo(object.descriptors, CV_32F);
+  }
+
+  if(scene.descriptors.type()!=CV_32F) {
+      scene.descriptors.convertTo(scene.descriptors, CV_32F);
+  }
 
   // Match the scene with the corny marker.
   matcher.match( object.descriptors, scene.descriptors, scene.matches );
@@ -30,7 +39,7 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
   // Collect the good matches (Those who are below 3 times the smallest distance)
   vector< DMatch > good_matches;
   for( int i = 0; i < object.descriptors.rows; i++ ){
-    if( scene.matches[i].distance < 3*min_dist ){
+    if( scene.matches[i].distance < 6*min_dist ){
       good_matches.push_back( scene.matches[i]);
     }
   }
@@ -67,7 +76,6 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
   for(int i = 0; i < scene_corners.size(); i++) {
     marker_points.push_back(scene_corners[i]);
   }
-
 }
 
 Mat draw_sift_matches(SIFT_parameters &object, SIFT_parameters &scene)
@@ -83,20 +91,19 @@ void draw_object(Mat &input, vector<Point2f> &marker_points)
 {
   if(marker_points.size() == 5){
     // Draw centroid
-    circle(input, marker_points[0], 5, cv::Scalar(255, 255, 255), -1);
-
-    // Draw lines between the corners
-    line( input, marker_points[1], marker_points[2], Scalar(0, 0, 255), 2 );
-    line( input, marker_points[2], marker_points[3], Scalar(0, 0, 255), 2 );
-    line( input, marker_points[3], marker_points[4], Scalar(0, 0, 255), 2 );
-    line( input, marker_points[4], marker_points[1], Scalar(0, 0, 255), 2 );
+    circle(input, marker_points[0], 5, cv::Scalar(255, 0, 0), 5);
 
     // Draw corners
-    for(int i = 1; i < marker_points.size(); i++)
+    for(int i = 1; i < marker_points.size() - 1; i++)
     {
-        circle(input, marker_points[i], 5, Scalar(255,255,255), -1);
+        circle(input, marker_points[i], 3, Scalar(0,255,0), -1);
     }
 
+    // Draw lines between the corners
+    line( input, marker_points[1], marker_points[2], Scalar(255, 0, 0), 10 );
+    line( input, marker_points[2], marker_points[3], Scalar(0, 255, 0), 10 );
+    line( input, marker_points[3], marker_points[4], Scalar(0, 0, 255), 10 );
+    line( input, marker_points[4], marker_points[1], Scalar(0, 255, 255), 10 );
   }
 }
 
@@ -104,8 +111,8 @@ void draw_object(Mat &input, vector<Point2f> &marker_points)
 // **** INIT OBJECT ****
 void init_corny(SIFT_parameters &marker)
 {
-  marker.image = imread( "./../sequences/marker_corny.png", IMREAD_GRAYSCALE );
-  Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
+  marker.image;
+  cv::Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
 
   object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
 }

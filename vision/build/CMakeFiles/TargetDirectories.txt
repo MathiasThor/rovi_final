@@ -1,5 +1,0 @@
-/home/christian/github_projects/rovi_final/vision/build/CMakeFiles/edit_cache.dir
-/home/christian/github_projects/rovi_final/vision/build/CMakeFiles/rebuild_cache.dir
-/home/christian/github_projects/rovi_final/vision/build/source_files/CMakeFiles/edit_cache.dir
-/home/christian/github_projects/rovi_final/vision/build/source_files/CMakeFiles/rebuild_cache.dir
-/home/christian/github_projects/rovi_final/vision/build/source_files/CMakeFiles/tracker.dir
