@@ -67,6 +67,7 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
   for(int i = 0; i < scene_corners.size(); i++) {
     marker_points.push_back(scene_corners[i]);
   }
+
 }
 
 Mat draw_sift_matches(SIFT_parameters &object, SIFT_parameters &scene)
@@ -82,19 +83,20 @@ void draw_object(Mat &input, vector<Point2f> &marker_points)
 {
   if(marker_points.size() == 5){
     // Draw centroid
-    circle(input, marker_points[0], 5, cv::Scalar(255, 0, 0), 5);
-
-    // Draw corners
-    for(int i = 1; i < marker_points.size() - 1; i++)
-    {
-        circle(input, marker_points[i], 3, Scalar(0,255,0), -1);
-    }
+    circle(input, marker_points[0], 5, cv::Scalar(255, 255, 255), -1);
 
     // Draw lines between the corners
     line( input, marker_points[1], marker_points[2], Scalar(0, 0, 255), 2 );
     line( input, marker_points[2], marker_points[3], Scalar(0, 0, 255), 2 );
     line( input, marker_points[3], marker_points[4], Scalar(0, 0, 255), 2 );
     line( input, marker_points[4], marker_points[1], Scalar(0, 0, 255), 2 );
+
+    // Draw corners
+    for(int i = 1; i < marker_points.size(); i++)
+    {
+        circle(input, marker_points[i], 5, Scalar(255,255,255), -1);
+    }
+
   }
 }
 

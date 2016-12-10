@@ -36,6 +36,6 @@ void load_data(vector<Mat> &input, String &path, int type)
 void draw_circles(Mat &input, vector<Point> &centers)
 {
   for(int i = 0; i < centers.size(); i++){
-    circle(input, centers[i], 5, Scalar(255, 255, 255));
+    circle(input, centers[i], 5, Scalar(255, 255, 255), -1);
   }
 }
