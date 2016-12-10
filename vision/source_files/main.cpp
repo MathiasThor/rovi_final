@@ -11,9 +11,19 @@
 #include "general_functions.h"
 #include "color_detector.h"
 #include "corny_detector.h"
+#include <time.h>
 
 // _____________ GLOBAL VARIABLES ____________________
 char* window_name = "Output Sequence";
+
+double getUnixTime(void)
+{
+    struct timespec tv;
+
+    if(clock_gettime(CLOCK_REALTIME, &tv) != 0) return 0;
+
+    return (tv.tv_sec + (tv.tv_nsec / 1000000000.0));
+}
 
 //____________________ MAIN PROGRAM ____________________
 int main( int argc, char** argv)
@@ -69,7 +79,8 @@ int main( int argc, char** argv)
 
           for(int i = 0; i < input_sequence.size(); i++){
             // Start timer
-            clock_t start = clock();
+            double start_time = getUnixTime();
+            double stop_time, difference;
 
             // Find marker points
             vector<Point> marker_points;
@@ -80,9 +91,9 @@ int main( int argc, char** argv)
             draw_circles(input_sequence[i], marker_points);
 
             // End timer
-            clock_t end = clock();
-            double secs = double(end - start) / CLOCKS_PER_SEC;
-            cout << "Time for frame " << i << ": " << secs << " Seconds" << endl;
+            stop_time = getUnixTime();
+            difference = stop_time - start_time;
+            cout << "Time for frame " << i << ": " << difference << " Seconds" << endl;
           }
         }
         break;
@@ -116,25 +127,28 @@ int main( int argc, char** argv)
           init_corny(marker);
 
           for(int i = 0; i < input_sequence.size(); i++){
-            clock_t start = clock();
+            double start_time = getUnixTime();
+            double stop_time, difference;
 
             vector<Point2f> marker_points;
             corny_detector(input_sequence[i], marker_points, marker);
             draw_object(input_sequence[i], marker_points);
 
-            clock_t end = clock();
-            double secs = double(end - start) / CLOCKS_PER_SEC;
-            cout << "Time for frame " << i << ": " << secs << " Seconds" << endl;
+            stop_time = getUnixTime();
+            difference = stop_time - start_time;
+            cout << "Time for frame " << i << ": " << difference << " Seconds" << endl;
           }
         }
         break;
     case TEST:
         {
-          String color_path("./../sequences/marker_color_hard/*.png");
-          load_data(input_sequence, color_path, HSV);
+          String color_path("./../sequences/marker_corny_hard/*.png");
+          load_data(input_sequence, color_path, GRAY);
 
           for(int i = 0; i < 3; i++){
-            vector<Point> marker_points;
+            vector<Point2f> marker_points;
+            SIFT_parameters marker;
+            init_corny(marker);
             if(i == 0)
             {
               //color_detector(input_sequence[0], marker_points);
@@ -159,12 +173,13 @@ int main( int argc, char** argv)
 
               for(int i = 0; i < blue_circles.size(); i++){
                 for(int j = 0; j < blue_circles[i].size(); j++){
-                  
+
                 }
               }
               //cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
               //draw_circles(input_sequence[0], marker_points);
               imshow("Test", test);
+
               waitKey(0);
               waitKey(0);
             }
