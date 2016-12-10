@@ -72,7 +72,6 @@ private:
 	void tracking_error_task_space();
 	void tracking_error_image_space();
 
-	vector<double> target{74.0487, 74.0487,	170.361, 74.0487,	5.761, -90.5513};
 	vector<double> target2{0,0,0,0,0,0};
 
 	// Global variables

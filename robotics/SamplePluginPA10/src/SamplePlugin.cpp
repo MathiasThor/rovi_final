@@ -262,6 +262,7 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   //
   // Calculate u, uv[1], du and dv
   //
+  // TODO - PLACE MIDTPOINT AS THE FIRST ONE
   if( use_cv ){
     for (int i = 0; i < numOfPoints; i++) {
       uv[i*2]   = uv_points[i*2];
@@ -270,10 +271,10 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
 
     if (current_motion_position==0) {
       target2=uv;
-      /*for (int i = 0; i < numOfPoints; i++) {
-        target2[i*2]   -= uv_points[uv_points.size() - 2];
-        target2[i*2+1] -= uv_points[uv_points.size() - 1];
-      }*/
+      // for (int i = 0; i < numOfPoints; i++) {
+      //   target2[i*2]   -= uv_points[0];
+      //   target2[i*2+1] -= uv_points[1];
+      // }
     }
   }
   else{
@@ -281,15 +282,30 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     Transform3D<> camara_to_marker = inverse(_Marker->fTf(_Camera, _state));
     vector< Vector3D<> > points;
 
-    points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
-    if ( numOfPoints > 1) {
+    if ( numOfPoints != 1) {
+         points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
          points.push_back(camara_to_marker.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + camara_to_marker.P());
          points.push_back(camara_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + camara_to_marker.P());
     }
+    points.push_back(camara_to_marker.P());
 
-    for (int i = 0; i < points.size(); i++) {
-      uv[i*2]   = ( points[i][0] * f ) / z;
-      uv[i*2+1] = ( points[i][1] * f ) / z;
+    if (numOfPoints == 1) {
+      uv[0] = ( points[0][0] * f ) / z;
+      uv[1] = ( points[0][1] * f ) / z;
+    }
+    else {
+      for (int i = 0; i < points.size()-1; i++) {
+        uv[i*2]   = ( points[i][0] * f ) / z;
+        uv[i*2+1] = ( points[i][1] * f ) / z;
+      }
+    }
+
+    if (current_motion_position==0) {
+      target2=uv;
+      for (int i = 0; i < numOfPoints; i++) {
+        target2[i*2]   -= (points[points.size()-1][0] *f) / z;
+        target2[i*2+1] -= (points[points.size()-1][1] *f) / z;
+      }
     }
   }
 
@@ -371,19 +387,26 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
 }
 
 void SamplePlugin::tracking_error_image_space(){
+  // TODO MAKE FOR CV AS WELL
   Transform3D<> camara_to_marker = inverse(_Marker->fTf(_Camera, _state));
   vector< Vector3D<> > points;
-  vector<double> current_uv;
+  vector< double > current_uv;
 
-  points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
-  if ( numOfPoints > 1) {
+  if ( numOfPoints != 1) {
+       points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
        points.push_back(camara_to_marker.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + camara_to_marker.P());
        points.push_back(camara_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + camara_to_marker.P());
   }
+  points.push_back(camara_to_marker.P());
 
-  for (int i = 0; i < points.size(); i++) {
-    current_uv.push_back(( points[i][0] * f ) / z);
-    current_uv.push_back(( points[i][1] * f ) / z);
+  if (numOfPoints == 1) {
+    current_uv.push_back(( points[0][0] * f ) / z);
+    current_uv.push_back(( points[0][1] * f ) / z);
+  } else {
+    for (int i = 0; i < points.size()-1; i++) {
+      current_uv.push_back(( points[i][0] * f ) / z);
+      current_uv.push_back(( points[i][1] * f ) / z);
+    }
   }
 
   double euclidean_dist;
@@ -394,6 +417,7 @@ void SamplePlugin::tracking_error_image_space(){
 }
 
 void SamplePlugin::tracking_error_task_space(){
+  // TODO MAKE FOR CV AS WELL
   // Where the actural points are:
   Transform3D<> world_to_marker = inverse(_Marker->wTf(_state)); // world to marker --> inverse = marker to world
   vector < Vector3D<> > marker_points;
