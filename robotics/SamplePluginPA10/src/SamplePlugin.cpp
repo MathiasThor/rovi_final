@@ -269,10 +269,10 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
 
     if (current_motion_position==0) {
       target2=uv;
-      for (int i = 0; i < numOfPoints; i++) {
-        target2[i*2]   -= uv_points[6];
-        target2[i*2+1] -= uv_points[7];
-      }
+      /*for (int i = 0; i < numOfPoints; i++) {
+        target2[i*2]   -= uv_points[uv_points.size() - 2];
+        target2[i*2+1] -= uv_points[uv_points.size() - 1];
+      }*/
     }
   }
   else{
@@ -439,10 +439,10 @@ vector<double> SamplePlugin::cam_update( ){
     cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 20, cv::Scalar(60,60,255), 4);
     }
 
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 15, cv::Scalar(255,0,0), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 5, cv::Scalar(255,0,0), -1);
     if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 15, cv::Scalar(0,255,0), -1);
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 15, cv::Scalar(0,0,255), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 5, cv::Scalar(0,255,0), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 5, cv::Scalar(0,0,255), -1);
     }
 
     // Show in QLabel
@@ -467,6 +467,9 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
     vector<Point2f> temp_points;
     cvtColor(input, color_temp, CV_RGB2HSV);
 
+    imshow("Blue", color_segmentation(color_temp, BLUE));
+    imshow("Red", color_segmentation(color_temp, RED));
+
     color_detector(color_temp, temp_points);
 
     log().info() << "Found points: " << temp_points.size() << "\n";
@@ -490,15 +493,37 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
       temp_points.erase(temp_points.begin());
       temp_points.erase(temp_points.begin() + index);
 
-      Eigen::Matrix3f A;
-      A << 1, red.x, red.y,  1, blue_op.x, blue_op.y,  1, temp_points[0].x, temp_points[0].y;
+      /*float A = (blue_op.x * temp_points[0].y - blue_op.y * temp_points[0].x) - red.x * (temp_points[0].y - blue_op.y) + red.y * (temp_points[0].x - blue_op.x);
+      log().info() << "Det: " << A << "\n";
 
-      if(A.determinant() > 0){
+      if(A >= 0){
         cv_points.push_back(temp_points[1]);
       }
       else{
         cv_points.push_back(temp_points[0]);
+      }*/
+
+      if(temp_points[0].x > temp_points[1].x){
+        cv_points.push_back(temp_points[0]);
+        cv_points.push_back(temp_points[1]);
       }
+      else{
+        cv_points.push_back(temp_points[1]);
+        cv_points.push_back(temp_points[0]);
+      }
+
+      cv_points.push_back(temp_points[4]);
+
+      //HARD CODE
+      /*cv_points[0].x = cv_points[0].x - 100;
+      cv_points[0].y = cv_points[0].y - 100;
+
+      cv_points[1].x = cv_points[1].x + 100;
+      cv_points[1].y = cv_points[1].y + 100;
+
+      cv_points[2].x = cv_points[2].x + 100;
+      cv_points[2].y = cv_points[2].y - 100;*/
+
     }
     else{
       cv_points = temp_points;
