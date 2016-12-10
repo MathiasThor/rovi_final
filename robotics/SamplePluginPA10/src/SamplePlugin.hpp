@@ -69,6 +69,8 @@ private:
 	vector<double> cam_update( );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
 	vector<double> marker_detection(Mat &input);
+	void tracking_error_task_space();
+	void tracking_error_image_space();
 
 	vector<double> target{74.0487, 74.0487,	170.361, 74.0487,	5.761, -90.5513};
 	vector<double> target2{0,0,0,0,0,0};
@@ -88,8 +90,8 @@ private:
 	ofstream jointPos_file;
 	ofstream toolPos_file;
 
-	const string path = "/home/christian/Github_projects/";
-	//const string path = "/home/mat/7_semester_workspace/";
+	//const string path = "/home/christian/Github_projects/";
+	const string path = "/home/mat/7_semester_workspace/";
 
 	int cv_choice = 1; 	// COLOR
 	//int cv_choice = 2; 	// CORNY
@@ -97,9 +99,9 @@ private:
 	int numOfPoints = 3;
 	bool cvOrFile = false;
 
-	//vector<double> PT0{ 0.0,		0.0,		0};
-	//vector<double> PT1{-0.1,		0.0,		0};
-	//vector<double> PT2{ 0.0,	 -0.1,		0};
+	// vector<double> PT0{ 0.0,		0.0,		0};
+	// vector<double> PT1{-0.1,		0.0,		0};
+	// vector<double> PT2{ 0.0,	 -0.1,		0};
 
 	//vector<double> PT0{0.054,		0.054,		0};
 	//vector<double> PT1{-0.054,		0.054,		0};

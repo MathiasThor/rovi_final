@@ -209,6 +209,7 @@ void SamplePlugin::timer() {
     getRobWorkStudio()->setState(_state);
     follow_marker( tmp_points, cvOrFile );
     getRobWorkStudio()->setState(_state);
+    tracking_error_image_space();
     current_motion_position++;
     if (test_runner)
       writeToFile();
@@ -355,26 +356,69 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     }
   }
 
-  auto determinant1 = J_PA10.e().determinant();
-  auto determinant2 = J_image.e().determinant();
-  auto determinant3 = J_sq.e().determinant();
-  auto determinant4 = z_image.e().determinant();
-  cout << determinant1 << endl;
-  cout << determinant2 << endl;
-  cout << determinant3 << endl;
-  cout << determinant4 << endl;
   cout << "=====================" << endl;
 
   //
   // Calculate dq
   //
-  Jacobian J_dq(z_image_T.e()*((z_image*z_image_T).e().inverse()*d_uv.e()));
+  Jacobian J_dq( z_image_T.e()  * (z_image*z_image_T).e().inverse() * d_uv.e() );
   Q dq(J_dq.e());
   //log().info() << "dq:\t" << dq << "\n";
   Q new_q(_PA10->getQ(_state));
   velocityLimit(dq,new_q);
   _PA10->setQ(new_q, _state);
   log().info() << "========================================================================" << "\n";
+}
+
+void SamplePlugin::tracking_error_image_space(){
+  Transform3D<> camara_to_marker = inverse(_Marker->fTf(_Camera, _state));
+  vector< Vector3D<> > points;
+  vector<double> current_uv;
+
+  points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
+  if ( numOfPoints > 1) {
+       points.push_back(camara_to_marker.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + camara_to_marker.P());
+       points.push_back(camara_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + camara_to_marker.P());
+  }
+
+  for (int i = 0; i < points.size(); i++) {
+    current_uv.push_back(( points[i][0] * f ) / z);
+    current_uv.push_back(( points[i][1] * f ) / z);
+  }
+
+  double euclidean_dist;
+  for (int i = 0; i < uv.size()/2; i++) {
+    euclidean_dist = sqrt( pow( current_uv[i*2]-target2[i*2],2) + pow( current_uv[i*2+1]-target2[i*2+1] ,2) );
+    log().info() << "Tracking error - point " << i << ": " << euclidean_dist <<"\n";
+  }
+}
+
+void SamplePlugin::tracking_error_task_space(){
+  // Where the actural points are:
+  Transform3D<> world_to_marker = inverse(_Marker->wTf(_state)); // world to marker --> inverse = marker to world
+  vector < Vector3D<> > marker_points;
+
+  marker_points.push_back(world_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + world_to_marker.P());
+  if ( numOfPoints > 1) {
+       marker_points.push_back(world_to_marker.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + world_to_marker.P());
+       marker_points.push_back(world_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + world_to_marker.P());
+  }
+
+  // Where we are looking (The cam is flipped 180 degree around y when compared to marker)
+  Transform3D<> world_to_camera = inverse(_Camera->wTf(_state));
+  vector < Vector3D<> > camera_points;
+
+  camera_points.push_back(world_to_camera.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + world_to_camera.P());
+  if ( numOfPoints > 1) {
+       camera_points.push_back(world_to_camera.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + world_to_camera.P());
+       camera_points.push_back(world_to_camera.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + world_to_camera.P());
+  }
+
+  double euclidean_dist;
+  for (int i = 0; i < marker_points.size(); i++) {
+    euclidean_dist = sqrt( pow( -camera_points[i][0]-marker_points[i][0],2) + pow( camera_points[i][1]-marker_points[i][1] ,2) );
+    log().info() << "Tracking error - point " << i << ": " << euclidean_dist <<"\n";
+  }
 }
 
 void SamplePlugin::velocityLimit( Q dq, Q &q ){
@@ -467,8 +511,8 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
     vector<Point2f> temp_points;
     cvtColor(input, color_temp, CV_RGB2HSV);
 
-    imshow("Blue", color_segmentation(color_temp, BLUE));
-    imshow("Red", color_segmentation(color_temp, RED));
+    //imshow("Blue", color_segmentation(color_temp, BLUE));
+    //imshow("Red", color_segmentation(color_temp, RED));
 
     color_detector(color_temp, temp_points);
 
