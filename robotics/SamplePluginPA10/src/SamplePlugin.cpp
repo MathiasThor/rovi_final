@@ -315,7 +315,7 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   }
 
   // TODO
-  //predictor();
+  predictor();
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
@@ -475,6 +475,17 @@ void SamplePlugin::predictor( ){
   vector< double > dudv;
   prediction.clear();
 
+
+  // for (size_t i = 0; i < uv.size(); i++) {
+  //   cout << uv[i] << " ";
+  // }
+  // cout << "\n\n";
+  //
+  // for (size_t i = 0; i < uv_old.size(); i++) {
+  //   cout << uv_old[i] << " ";
+  // }
+  // cout << "\n" << "###############";
+
   if (!uv_old.empty()) {
     for (int i = 0; i < numOfPoints; i++) {
       dudv.push_back(uv[i*2]   - uv_old[i*2]  );
@@ -484,6 +495,7 @@ void SamplePlugin::predictor( ){
     }
   }
 
+  uv_old.clear();
   for (int i = 0; i < uv.size(); i++) {
     uv_old.push_back(uv[i]);
   }
@@ -554,7 +566,7 @@ vector<double> SamplePlugin::cam_update( ){
 
     cv::circle(imflip, cv::Point(imflip.cols/2+prediction[0*2],imflip.rows/2+prediction[0*2+1]), 5, cv::Scalar(255,100,0), -1);
     if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+prediction[1*2],imflip.rows/2+prediction[1*2+1]), 5, cv::Scalar(0,255,100), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+prediction[1*2],imflip.rows/2+prediction[1*2+1]), 5, cv::Scalar(50,255,100), -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+prediction[2*2],imflip.rows/2+prediction[2*2+1]), 5, cv::Scalar(100,0,255), -1);
     }
 

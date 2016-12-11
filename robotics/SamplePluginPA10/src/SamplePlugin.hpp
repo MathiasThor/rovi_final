@@ -97,14 +97,14 @@ private:
 	ofstream toolPos_file;
 	ofstream trackErr_file;
 
-	const string path = "/home/christian/github_projects/";
-	//const string path = "/home/mat/7_semester_workspace/";
+	//const string path = "/home/christian/github_projects/";
+	const string path = "/home/mat/7_semester_workspace/";
 
-	//int cv_choice = 1; 	// COLOR
-	int cv_choice = 2; 	// CORNY
+	int cv_choice = 1; 	// COLOR
+	//int cv_choice = 2; 	// CORNY
 
-	int numOfPoints = 3;
-	bool cvOrFile = true;
+	int numOfPoints = 1;
+	bool cvOrFile = false;
 
 	// vector<double> PT0{ 0.0,		0.0,		0};
 	// vector<double> PT1{-0.1,		0.0,		0};
