@@ -66,13 +66,15 @@ private:
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
 	void follow_marker( vector<double> uv_points, bool cv );
 	void velocityLimit( Q dq, Q &q );
-	void writeToFile( );
+	void writeToFile();
 	vector<double> cam_update( );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
 	vector<double> marker_detection(Mat &input);
 	void tracking_error_task_space();
 	void tracking_error_image_space();
 	double getUnixTime(void);
+	void predictor();
+
 
 	vector<double> target2{0,0,0,0,0,0};
 
@@ -83,6 +85,8 @@ private:
 	bool test_runner = false;
 	bool test_bool = true;
 	vector<double> uv;
+	vector<double> uv_old;
+	vector<double> prediction{0,0,0,0,0,0};
 	double f = 823;
 	double z = 0.50;
 	double DT = 1;
