@@ -103,20 +103,20 @@ private:
 	int cv_choice = 1; 	// COLOR
 	//int cv_choice = 2; 	// CORNY
 
-	int numOfPoints = 1;
+	int numOfPoints = 3;
 	bool cvOrFile = false;
 
-	// vector<double> PT0{ 0.0,		0.0,		0};
-	// vector<double> PT1{-0.1,		0.0,		0};
-	// vector<double> PT2{ 0.0,	 -0.1,		0};
+	vector<double> PT0{ 0.0,		0.0,		0};
+	vector<double> PT1{-0.1,		0.0,		0};
+	vector<double> PT2{ 0.0,	 -0.1,		0};
 
 	//vector<double> PT0{0.054,		0.054,		0};
 	//vector<double> PT1{-0.054,		0.054,		0};
   //vector<double> PT2{0.054,		-0.054,		0};
 
-	vector<double> PT0{0.15,		0.15,		0};
-	vector<double> PT1{-0.15,		0.15,		0};
-	vector<double> PT2{0.15,		-0.15,		0};
+	// vector<double> PT0{0.15,		0.15,		0};
+	// vector<double> PT1{-0.15,		0.15,		0};
+	// vector<double> PT2{0.15,		-0.15,		0};
 
 	Device::Ptr _PA10;
 	MovableFrame* _Marker;

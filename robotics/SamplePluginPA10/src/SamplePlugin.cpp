@@ -385,7 +385,12 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   //
   // Calculate dq
   //
-  Jacobian J_dq( z_image_T.e()  * (z_image*z_image_T).e().inverse() * d_uv.e() );
+  Jacobian pseudoinverse( z_image_T.e()  * (z_image*z_image_T).e().inverse() );
+
+  cout << z_image * pseudoinverse << "\n" << endl;
+  // TODO: By adding a damper of 0.5 we can get through more frames (from 67 --> 108)
+  // TODO: BY ADDING A 0.05 DAMPER IT ACTURALLY RUNS (0.05*pseudoinverse)
+  Jacobian J_dq( pseudoinverse.e() * d_uv.e() );
   Q dq(J_dq.e());
   //log().info() << "dq:\t" << dq << "\n";
   Q new_q(_PA10->getQ(_state));
