@@ -511,8 +511,14 @@ vector<double> SamplePlugin::cam_update( ){
     Mat imflip;
     cv::flip(im, imflip, 0);
 
+    double start_time = getUnixTime();
+    double stop_time, difference;
+
     uv_points = marker_detection(imflip);
-    log().info() << "Detected marker" << "\n";
+
+    stop_time = getUnixTime();
+    difference = stop_time - start_time;
+    log().info() << "Time for marker detection: " << difference << " Seconds\n";
 
     cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 20, cv::Scalar(255,60,60), 4);
     if(numOfPoints>1){
@@ -548,9 +554,6 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
     vector<Point2f> temp_points;
     cvtColor(input, color_temp, CV_RGB2HSV);
 
-    //imshow("Blue", color_segmentation(color_temp, BLUE));
-    //imshow("Red", color_segmentation(color_temp, RED));
-
     color_detector(color_temp, temp_points);
 
     log().info() << "Found points: " << temp_points.size() << "\n";
@@ -571,39 +574,24 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
 
       cv_points.push_back(red);
       cv_points.push_back(blue_op);
-      temp_points.erase(temp_points.begin());
       temp_points.erase(temp_points.begin() + index);
+      temp_points.erase(temp_points.begin());
 
-      /*float A = (blue_op.x * temp_points[0].y - blue_op.y * temp_points[0].x) - red.x * (temp_points[0].y - blue_op.y) + red.y * (temp_points[0].x - blue_op.x);
-      log().info() << "Det: " << A << "\n";
+      float A = (blue_op.x * temp_points[0].y - blue_op.y * temp_points[0].x) - red.x * (temp_points[0].y - blue_op.y) + red.y * (temp_points[0].x - blue_op.x);
 
       if(A >= 0){
         cv_points.push_back(temp_points[1]);
       }
       else{
         cv_points.push_back(temp_points[0]);
-      }*/
-
-      if(temp_points[0].x > temp_points[1].x){
-        cv_points.push_back(temp_points[0]);
-        cv_points.push_back(temp_points[1]);
-      }
-      else{
-        cv_points.push_back(temp_points[1]);
-        cv_points.push_back(temp_points[0]);
       }
 
       cv_points.push_back(temp_points[4]);
 
-      //HARD CODE
-      /*cv_points[0].x = cv_points[0].x - 100;
-      cv_points[0].y = cv_points[0].y - 100;
-
-      cv_points[1].x = cv_points[1].x + 100;
-      cv_points[1].y = cv_points[1].y + 100;
-
-      cv_points[2].x = cv_points[2].x + 100;
-      cv_points[2].y = cv_points[2].y - 100;*/
+      // Z distance
+      double p_width = sqrt( pow(blue_op.x - red.x, 2) + pow(blue_op.y - red.y, 2) );
+      z = (0.15 * f) / p_width;
+      log().info() << "Z: " << z << "\n";
 
     }
     else{
@@ -615,16 +603,26 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
   else if(cv_choice == 2){
     SIFT_parameters marker;
 
-    marker.image = imread( path + "rovi_final/robotics/SamplePluginPA10/markers/corny_marker.png", IMREAD_GRAYSCALE );
+    marker.image = imread( path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm", IMREAD_GRAYSCALE );
     cv::Ptr<SURF> object_detector = SURF::create( 300 ); // MinHessian = 400;
 
     object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
 
     corny_detector(input, cv_points, marker);
     draw_object(input, cv_points);
+
+    double p_width = sqrt( pow(cv_points[0].x - cv_points[2].x, 2) + pow(cv_points[0].y - cv_points[2].y, 2) );
+    z = (0.357 * f) / p_width;
+    log().info() << "Z: " << z << "\n";
   }
 
   draw_circles(input, cv_points);
+
+  log().info() << "Passing on points: " << cv_points.size() << "\n";
+  for(int i = 0; i < cv_points.size(); i++){
+    log().info() << "Point" << i+1 << " (" << cv_points[i].x << "," << cv_points[i].y << ")\n";
+  }
+
 
   for(int i = 0; i < cv_points.size(); i++){
     uv_points.push_back(cv_points[i].x - (input.cols/2));
@@ -634,5 +632,15 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
   return uv_points;
 
 }
+
+double SamplePlugin::getUnixTime(void)
+{
+    struct timespec tv;
+
+    if(clock_gettime(CLOCK_REALTIME, &tv) != 0) return 0;
+
+    return (tv.tv_sec + (tv.tv_nsec / 1000000000.0));
+}
+
 
 Q_EXPORT_PLUGIN(SamplePlugin);

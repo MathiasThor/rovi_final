@@ -23,6 +23,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <ctime>
 
 using namespace rw::math;
 using namespace rw::common;
@@ -71,6 +72,7 @@ private:
 	vector<double> marker_detection(Mat &input);
 	void tracking_error_task_space();
 	void tracking_error_image_space();
+	double getUnixTime(void);
 
 	vector<double> target2{0,0,0,0,0,0};
 
@@ -82,7 +84,7 @@ private:
 	bool test_bool = true;
 	vector<double> uv;
 	double f = 823;
-	double z = 0.5;
+	double z = 0.50;
 	double DT = 1;
 	double last_tracking_error = 0;
 
@@ -91,14 +93,14 @@ private:
 	ofstream toolPos_file;
 	ofstream trackErr_file;
 
-	//const string path = "/home/christian/Github_projects/";
-	const string path = "/home/mat/7_semester_workspace/";
+	const string path = "/home/christian/github_projects/";
+	//const string path = "/home/mat/7_semester_workspace/";
 
-	int cv_choice = 1; 	// COLOR
-	//int cv_choice = 2; 	// CORNY
+	//int cv_choice = 1; 	// COLOR
+	int cv_choice = 2; 	// CORNY
 
-	int numOfPoints = 1;
-	bool cvOrFile = false;
+	int numOfPoints = 3;
+	bool cvOrFile = true;
 
 	// vector<double> PT0{ 0.0,		0.0,		0};
 	// vector<double> PT1{-0.1,		0.0,		0};
