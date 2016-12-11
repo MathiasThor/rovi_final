@@ -170,12 +170,12 @@ void SamplePlugin::btnPressed() {
   else if(obj==_startStopMovement){
     stop_start_motion = !stop_start_motion;
     if (stop_start_motion){
-      log().info() << "Start Motion\n";
+      log().info() << "Stop Motion\n";
       _startStopMovement->setText("Stop movement");
       _timer->start(100); // run 10 Hz
     }
     else{
-      log().info() << "Stop Motion\n";
+      log().info() << "Start Motion\n";
       _startStopMovement->setText("Start movement");
       _timer->stop();
     }
@@ -193,13 +193,17 @@ void SamplePlugin::btnPressed() {
 void SamplePlugin::timer() {
   log().info() << "Stop Motion\n";
   if (current_motion_position == marker_motion.size()){
-    resetSim();
-    _timer->start(100);
     if (test_runner){
-      test_runner = false;
       jointPos_file.close();
       toolPos_file.close();
-      log().info() << "Closed the files" << "\n";
+      trackErr_file.close();
+      cout << "Closed the files" << endl;
+      DT *= 0.5;
+      cout << "DT: " << DT << endl;
+      testRun();
+    } else{
+      resetSim();
+      _timer->start(100);
     }
   }
   else {
@@ -211,24 +215,25 @@ void SamplePlugin::timer() {
     getRobWorkStudio()->setState(_state);
     tracking_error_image_space();
     current_motion_position++;
-    if (test_runner)
+    if (test_runner){
       writeToFile();
+    }
   }
 
 }
 
 void SamplePlugin::testRun(){
-  jointPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/joint_positions.txt");
-  toolPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/tool_positions.txt");
-  log().info() << "Opened the files" << "\n";
+  jointPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/joint_positions_" + to_string(DT) + ".txt");
+  toolPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/tool_positions_" + to_string(DT) + ".txt");
+  trackErr_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/tracking_error_" + to_string(DT) + ".txt");
+  cout << "Opened the files" << endl;
 
   jointPos_file << DT << "\n";
-  if (!test_runner) {
-    test_runner=true;
-    resetSim();
-    _timer->start(100);
-    log().info() << "Collecting data..." << "\n";
-  }
+
+  resetSim();
+  test_runner=true;
+  _timer->start(100);
+  cout << "Collecting data..." << endl;
 }
 
 void SamplePlugin::stateChangedListener(const State& state) {
@@ -372,7 +377,7 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     }
   }
 
-  cout << "=====================" << endl;
+  //cout << "=====================" << endl;
 
   //
   // Calculate dq
@@ -410,10 +415,14 @@ void SamplePlugin::tracking_error_image_space(){
   }
 
   double euclidean_dist;
+  double sum;
   for (int i = 0; i < uv.size()/2; i++) {
     euclidean_dist = sqrt( pow( current_uv[i*2]-target2[i*2],2) + pow( current_uv[i*2+1]-target2[i*2+1] ,2) );
     log().info() << "Tracking error - point " << i << ": " << euclidean_dist <<"\n";
+    sum += abs(euclidean_dist);
   }
+  log().info() << "Tracking error - Total: " << sum <<"\n";
+  last_tracking_error = sum;
 }
 
 void SamplePlugin::tracking_error_task_space(){
@@ -482,6 +491,10 @@ void SamplePlugin::writeToFile( ){
     }
     jointPos_file << "\n";
   } else cout << "can't open tool position file" << endl;
+
+  if (trackErr_file.is_open())
+    trackErr_file << last_tracking_error << "\n";
+  else cout << "can't open tool position file" << endl;
 }
 
 vector<double> SamplePlugin::cam_update( ){

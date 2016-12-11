@@ -84,10 +84,12 @@ private:
 	double f = 823;
 	double z = 0.5;
 	double DT = 1;
+	double last_tracking_error = 0;
 
 	Q vel_limits;
 	ofstream jointPos_file;
 	ofstream toolPos_file;
+	ofstream trackErr_file;
 
 	//const string path = "/home/christian/Github_projects/";
 	const string path = "/home/mat/7_semester_workspace/";
@@ -95,7 +97,7 @@ private:
 	int cv_choice = 1; 	// COLOR
 	//int cv_choice = 2; 	// CORNY
 
-	int numOfPoints = 3;
+	int numOfPoints = 1;
 	bool cvOrFile = false;
 
 	// vector<double> PT0{ 0.0,		0.0,		0};
