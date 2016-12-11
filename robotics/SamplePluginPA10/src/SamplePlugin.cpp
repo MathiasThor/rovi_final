@@ -314,6 +314,9 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     }
   }
 
+  // TODO
+  //predictor();
+
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
     d_uv(i*2,0)   = target2[i*2]   -uv[i*2];
@@ -464,8 +467,25 @@ void SamplePlugin::velocityLimit( Q dq, Q &q ){
         dq[i] = -vel_limits[i] * DT;
         log().info() << "[Velocity limited]" << "\n";
     }
-
     q[i] += dq[i];
+  }
+}
+
+void SamplePlugin::predictor( ){
+  vector< double > dudv;
+  prediction.clear();
+
+  if (!uv_old.empty()) {
+    for (int i = 0; i < numOfPoints; i++) {
+      dudv.push_back(uv[i*2]   - uv_old[i*2]  );
+      dudv.push_back(uv[i*2+1] - uv_old[i*2+1]);
+      prediction.push_back( uv[i*2]  + dudv[i*2]   );
+      prediction.push_back( uv[i*2+1]+ dudv[i*2+1] );
+    }
+  }
+
+  for (int i = 0; i < uv.size(); i++) {
+    uv_old.push_back(uv[i]);
   }
 }
 
@@ -524,6 +544,12 @@ vector<double> SamplePlugin::cam_update( ){
     if(numOfPoints>1){
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 5, cv::Scalar(0,255,0), -1);
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 5, cv::Scalar(0,0,255), -1);
+    }
+
+    cv::circle(imflip, cv::Point(imflip.cols/2+prediction[0*2],imflip.rows/2+prediction[0*2+1]), 5, cv::Scalar(255,100,0), -1);
+    if(numOfPoints>1){
+    cv::circle(imflip, cv::Point(imflip.cols/2+prediction[1*2],imflip.rows/2+prediction[1*2+1]), 5, cv::Scalar(0,255,100), -1);
+    cv::circle(imflip, cv::Point(imflip.cols/2+prediction[2*2],imflip.rows/2+prediction[2*2+1]), 5, cv::Scalar(100,0,255), -1);
     }
 
     // Show in QLabel
