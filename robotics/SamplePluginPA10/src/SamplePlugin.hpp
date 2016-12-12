@@ -99,8 +99,8 @@ private:
 	ofstream toolPos_file;
 	ofstream trackErr_file;
 
-	const string path = "/home/christian/Github_projects/";
-	//const string path = "/home/mat/7_semester_workspace/";
+	//const string path = "/home/christian/Github_projects/";
+	const string path = "/home/mat/7_semester_workspace/";
 
 	int cv_choice = 1; 	// COLOR
 	//int cv_choice = 2; 	// CORNY

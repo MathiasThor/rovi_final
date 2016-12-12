@@ -338,7 +338,6 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   // Calculate the jacobian for PA10 -Ok
   //
 	Jacobian J_PA10 = _PA10->baseJframe(_Camera, _state);
-  //log().info() << "j_pa10:\n" << J_PA10 << "\n";
 
   //
   // Calculate the image jacobian
@@ -358,30 +357,23 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     J_image(i*2+1, 4) = -((uv[i*2]*uv[i*2+1])/(f));
     J_image(i*2+1, 5) = -uv[i*2];
   }
-  //log().info() << "J_img:\n" << J_image << "\n";
 
   //
   // Calculate Sq
   //
   Transform3D<> base2cam = inverse(_PA10->baseTframe(_Camera, _state));
   Jacobian J_sq = Jacobian(base2cam.R());
-  //log().info() << "sq:\n" << J_sq << "\n";
-
-
 
   //
   // Calculate Z_image
   //
   Jacobian z_image = J_image * J_sq * J_PA10;
-  //log().info() << "z:\n" << z_image << "\n";
   Jacobian z_image_T(7,numOfPoints*2);
   for(int i=0; i < 7; i++){
     for(int j=0; j < 2*numOfPoints; j++){
       z_image_T(i,j) = z_image(j,i);
     }
   }
-
-  //cout << "=====================" << endl;
 
   Eigen::MatrixXd U;
   Eigen::VectorXd SIGMA;
@@ -390,17 +382,16 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   cout << "SIGMA:\n" << SIGMA << endl;
   cout << "=====================" << endl;
 
-
+  double kappa = 1.2;
   Jacobian damper(numOfPoints*2,numOfPoints*2);
   for (int i = 0; i < numOfPoints*2; i++) {
     for (int j = 0; j < numOfPoints*2; j++) {
       if (i == j)
-        damper(i,j) = 1.1;
+        damper(i,j) = kappa*kappa;
       else
         damper(i,j) = 0;
     }
   }
-
   Jacobian damped( z_image.e()*z_image_T.e()+damper.e() );
 
   //
