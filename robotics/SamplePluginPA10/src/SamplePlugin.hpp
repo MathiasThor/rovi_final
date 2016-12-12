@@ -75,9 +75,6 @@ private:
 	double getUnixTime(void);
 	void predictor();
 
-
-	vector<double> target2{0,0,0,0,0,0};
-
 	// Global variables
 	vector< rw::math::VelocityScrew6D<double> > marker_motion;
 	int current_motion_position = 0;
@@ -87,6 +84,9 @@ private:
 	vector<double> uv;
 	vector<double> uv_old;
 	vector<double> prediction{0,0,0,0,0,0};
+	vector<double> desired{0,0,0,0,0,0};
+	double kappa = 1.2;
+	//double kappa = 0;
 	double f = 823;
 	double z = 0.50;
 	double DT = 1;
@@ -111,10 +111,6 @@ private:
 	// vector<double> PT0{ 0.0,		0.0,		0};
 	// vector<double> PT1{-0.1,		0.0,		0};
 	// vector<double> PT2{ 0.0,	 -0.1,		0};
-
-	//vector<double> PT0{0.054,		0.054,		0};
-	//vector<double> PT1{-0.054,		0.054,		0};
-  //vector<double> PT2{0.054,		-0.054,		0};
 
 	vector<double> PT0{0.15,		0.15,		0};
 	vector<double> PT1{-0.15,		0.15,		0};
