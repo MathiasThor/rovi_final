@@ -392,7 +392,7 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
         damper(i,j) = 0;
     }
   }
-  Jacobian damped( z_image.e()*z_image_T.e()+damper.e() );
+  Jacobian damped( z_image.e()*z_image_T.e() );
 
   //
   // Calculate dq
