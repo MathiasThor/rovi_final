@@ -5,7 +5,7 @@
 #include "../vision_header_files/color_detector.h"
 
 // *** Color segmentation ***
-// Example on syntax for function
+// Takes a color image and finds the reference points for marker 1.
 void color_detector(Mat &input_image, vector<Point2f> &marker_points)
 {
     vector<Point2f> temp_points;
@@ -25,6 +25,7 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
     float u_center = 0;
     float v_center = 0;
 
+    // Push back the points found and calculate center point for the marker.
     for(int i = 0; i < red_centers.size(); i++){
       u_center += red_centers[i].x;
       v_center += red_centers[i].y;
@@ -42,10 +43,12 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
 
     temp_points.push_back(Point(floor(u_center), floor(v_center)));
 
+    // If 5 points are found, based on the red circle point, find th opposite blue circle point.
     if(temp_points.size() == 5){
       int index = 0;
       float max_dist = 0;
       for(int i = 1; i < 4; i++){
+        // Calculate the distance between one of the blue circle points and the red.
         float current_dist = sqrt( powf(temp_points[0].x - temp_points[i].x, 2) + powf(temp_points[0].y - temp_points[i].y,2) );
         if(current_dist > max_dist){
           max_dist = current_dist;
@@ -53,6 +56,7 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
         }
       }
 
+      // Push back the center of the marker, along with the red and opposite blue.
       marker_points.push_back(temp_points[4]);
       Point2f red = temp_points[0];
       Point2f blue_op = temp_points[index];
@@ -62,15 +66,17 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
       temp_points.erase(temp_points.begin() + index);
       temp_points.erase(temp_points.begin());
 
-      float A = (blue_op.x * temp_points[0].y - blue_op.y * temp_points[0].x) - red.x * (temp_points[0].y - blue_op.y) + red.y * (temp_points[0].x - blue_op.x);
+      // Calculate determinant of oriented triangle. Used to correctly sort the remaining points.
+      float determinant = (blue_op.x * temp_points[0].y - blue_op.y * temp_points[0].x) - red.x * (temp_points[0].y - blue_op.y) + red.y * (temp_points[0].x - blue_op.x);
 
-      if(A >= 0){
+      if(determinant >= 0){
         marker_points.push_back(temp_points[1]);
       }
       else{
         marker_points.push_back(temp_points[0]);
       }
     }
+    // If 5 points are not found, return all points.
     else{
       marker_points = temp_points;
     }
@@ -78,25 +84,28 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
 }
 
 // *** Color segmentation ***
-// Example on syntax for function
+// Segments either blue or red color and returns binary image.
 Mat color_segmentation(Mat &input, int type)
 {
   Mat output;
 
-  int Sat_lower = 100;
-  int Sat_upper = 255;
-  int Val_lower = 0;
-  int Val_upper = 255;
-  int Hue_lower = 0;
-  int Hue_upper = 10;
+  // Values used for segmentation
+  int Sat_lower = 100;    // Saturation lower limit
+  int Sat_upper = 255;    // Saturation upper limit
+  int Val_lower = 0;      // Value lower limit
+  int Val_upper = 255;    // Value upper limit
+  int Hue_lower = 0;      // Hue lower limit
+  int Hue_upper = 10;     // Hue upper limit
 
   if(type == RED){
+    // Change hue limits to match red colors
     Hue_lower = 0;
     Hue_upper = 5;
 
     inRange(input, Scalar(Hue_lower, Sat_lower, Val_lower), Scalar(Hue_upper, Sat_upper, Val_upper), output);
   }
   else if(type == BLUE){
+    // Change hue limits to match blue colors
     Hue_lower = 110;
     Hue_upper = 130;
 
@@ -111,7 +120,7 @@ Mat color_segmentation(Mat &input, int type)
 }
 
 // *** Find Circle Contours ***
-// Example on syntax for function
+// Sorts out circle contours based on parameters of the input contours.
 vector<vector<Point> > find_circle_contours(Mat &input, int perimeter_thresh, int circle_thresh)
 {
   vector<vector<Point> > contours;
@@ -129,6 +138,7 @@ vector<vector<Point> > find_circle_contours(Mat &input, int perimeter_thresh, in
     double perimeter        = arcLength(contours[j], 1);
     double circle_constant  = (4 * PI * area) / (perimeter*perimeter);
 
+    // Sort out bad contours
     if(perimeter > 100 && circle_constant > 0.7)
     {
       circle_contours.push_back(contours[j]);
@@ -140,13 +150,14 @@ vector<vector<Point> > find_circle_contours(Mat &input, int perimeter_thresh, in
 }
 
 // *** Find Centers ***
-// Example on syntax for function
+// Find the centers of the contours based on image moments
 vector<Point2f> find_centers(vector<vector<Point> > &input_contours)
 {
   vector<Point2f> circle_centers;
 
   for(int i = 0; i < input_contours.size(); i++) // For every contour
   {
+    // Calculate moments and determine center
     Moments circle_moments = moments(input_contours[i], false);
     int center_u = floor(circle_moments.m10/circle_moments.m00);
     int center_v = floor(circle_moments.m01/circle_moments.m00);

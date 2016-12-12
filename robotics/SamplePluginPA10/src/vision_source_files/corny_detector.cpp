@@ -1,7 +1,9 @@
 
 #include "../vision_header_files/corny_detector.h"
 
-// http://docs.opencv.org/3.1.0/d7/dff/tutorial_feature_homography.html
+// ******* CORNY DETECTOR **********
+// Find the corny marker based on SURF or SIFT feature extraction.
+// Inspired by: http://docs.opencv.org/3.1.0/d7/dff/tutorial_feature_homography.html
 void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_parameters &object)
 {
   // Generate SIFT class object and parameters needed for the scene
@@ -15,10 +17,10 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
   // Generate Flann Based Matcher
   FlannBasedMatcher matcher;
 
+  // Convert types if not correct
   if(object.descriptors.type()!=CV_32F) {
     object.descriptors.convertTo(object.descriptors, CV_32F);
   }
-
   if(scene.descriptors.type()!=CV_32F) {
       scene.descriptors.convertTo(scene.descriptors, CV_32F);
   }
@@ -36,7 +38,7 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
     }
   }
 
-  // Collect the good matches (Those who are below 3 times the smallest distance)
+  // Collect the good matches (Those who are below 6 times the smallest distance)
   vector< DMatch > good_matches;
   for( int i = 0; i < object.descriptors.rows; i++ ){
     if( scene.matches[i].distance < 6*min_dist ){
@@ -45,27 +47,26 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
   }
   scene.matches = good_matches;
 
-  // Find the keypoints of both the object and the scene, from all the matches.
+  // Find the keypoints of both the object and the scene, that belongs to the good matches.
   vector<Point2f> obj_points;
   vector<Point2f> scene_points;
   for( size_t i = 0; i < scene.matches.size(); i++ )
   {
-    //-- Get the keypoints from the good matches
     obj_points.push_back( object.keypoints[ scene.matches[i].queryIdx ].pt );
     scene_points.push_back( scene.keypoints[ scene.matches[i].trainIdx ].pt );
   }
 
-  // Find Homography based on the object points and scene points.
+  // Find Homography based on the object points and scene points using RANSAC.
   Mat H = findHomography( obj_points, scene_points, RANSAC );
 
-  // Find the corners of object.
+  // Specify the corners of the object image.
   vector<Point2f> object_corners(4);
   object_corners[0] = cvPoint(0,0);
   object_corners[1] = cvPoint( object.image.cols, 0 );
   object_corners[2] = cvPoint( object.image.cols, object.image.rows );
   object_corners[3] = cvPoint( 0, object.image.rows );
 
-  // Find the corners of the scene.
+  // Find the corners of the marker on the scene, based on the object image and the homography.
   vector<Point2f> scene_corners(4);
   perspectiveTransform( object_corners, scene_corners, H);
 
@@ -78,6 +79,8 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
   }
 }
 
+// ******** DRAW SIFT MATCHES ***********
+// Used to generate an image containing the matches of either SIFT or SURF.
 Mat draw_sift_matches(SIFT_parameters &object, SIFT_parameters &scene)
 {
   Mat img_matches;
@@ -87,6 +90,8 @@ Mat draw_sift_matches(SIFT_parameters &object, SIFT_parameters &scene)
   return img_matches;
 }
 
+// *********** DRAW OBJECT **********
+// Draw the object found in the scene
 void draw_object(Mat &input, vector<Point2f> &marker_points)
 {
   if(marker_points.size() == 5){
@@ -109,6 +114,7 @@ void draw_object(Mat &input, vector<Point2f> &marker_points)
 
 
 // **** INIT OBJECT ****
+// Initiliaze the SIFT/SURF parameters for the marker. (NOT USED ANYMORE)
 void init_corny(SIFT_parameters &marker)
 {
   marker.image;

@@ -636,24 +636,27 @@ vector<double> SamplePlugin::cam_update( bool get_points ){
 }
 
 vector<double> SamplePlugin::marker_detection(Mat &input){
-  // Initiliaze point vector
+  // Initialize point vector
   vector<double> uv_points;
   vector<Point2f> cv_points;
 
   // *********** COLOR ****************
   if(cv_choice == 1){
+    // Generate HSV image for color detection
     Mat color_temp;
     cvtColor(input, color_temp, CV_RGB2HSV);
 
+    // Find reference points
     color_detector(color_temp, cv_points);
 
-    // Z distance
+    // Estimate z distance
     double p_width = sqrt( pow(cv_points[2].x - cv_points[1].x, 2) + pow(cv_points[2].y - cv_points[1].y, 2) );
     z = (0.15 * f) / p_width;
     log().info() << "Z: " << z << "\n";
   }
   // ************** CORNY ****************
   else if(cv_choice == 2){
+    // Find Parameters for the marker
     SIFT_parameters marker;
 
     marker.image = imread( path + "rovi_final/robotics/SamplePluginPA10/markers/Marker3.ppm", IMREAD_GRAYSCALE );
@@ -661,14 +664,17 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
 
     object_detector->detectAndCompute( marker.image, Mat(), marker.keypoints, marker.descriptors );
 
+    // Find reference points based on the marker and draw the object
     corny_detector(input, cv_points, marker);
     draw_object(input, cv_points);
 
+    // Estimate the z distance
     double p_width = sqrt( pow(cv_points[0].x - cv_points[2].x, 2) + pow(cv_points[0].y - cv_points[2].y, 2) );
     z = (0.357 * f) / p_width;
     log().info() << "Z: " << z << "\n";
   }
 
+  // Draw reference points
   draw_circles(input, cv_points);
 
   log().info() << "Passing on points: " << cv_points.size() << "\n";
@@ -676,7 +682,7 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
     log().info() << "Point" << i+1 << " (" << cv_points[i].x << "," << cv_points[i].y << ")\n";
   }
 
-
+  // Adjust the points to the type of input used for the robotics part.
   for(int i = 0; i < cv_points.size(); i++){
     uv_points.push_back(cv_points[i].x - (input.cols/2));
     uv_points.push_back(cv_points[i].y - (input.rows/2));
@@ -686,6 +692,7 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
 
 }
 
+// Function used to retrieve execution time for computer vision.
 double SamplePlugin::getUnixTime(void)
 {
     struct timespec tv;

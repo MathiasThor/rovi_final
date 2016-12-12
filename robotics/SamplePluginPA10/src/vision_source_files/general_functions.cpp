@@ -32,7 +32,7 @@ void load_data(vector<Mat> &input, String &path, int type)
 }
 
 // *** Draw Circles ***
-// Loads the image data into a vector of Mat's, and converts to either gray or HSV
+// Draws circles based on the input centers
 void draw_circles(Mat &input, vector<Point2f> &centers)
 {
   for(int i = 0; i < centers.size(); i++){
