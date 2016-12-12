@@ -67,7 +67,7 @@ private:
 	void follow_marker( vector<double> uv_points, bool cv );
 	void velocityLimit( Q dq, Q &q );
 	void writeToFile();
-	vector<double> cam_update( );
+	vector<double> cam_update( bool get_points );
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
 	vector<double> marker_detection(Mat &input);
 	void tracking_error_task_space();
@@ -90,15 +90,17 @@ private:
 	double f = 823;
 	double z = 0.50;
 	double DT = 1;
+	double marker_dt = 0;
 	double last_tracking_error = 0;
+	double dampening = 1;
 
 	Q vel_limits;
 	ofstream jointPos_file;
 	ofstream toolPos_file;
 	ofstream trackErr_file;
 
-	//const string path = "/home/christian/github_projects/";
-	const string path = "/home/mat/7_semester_workspace/";
+	const string path = "/home/christian/Github_projects/";
+	//const string path = "/home/mat/7_semester_workspace/";
 
 	int cv_choice = 1; 	// COLOR
 	//int cv_choice = 2; 	// CORNY
@@ -114,9 +116,9 @@ private:
 	//vector<double> PT1{-0.054,		0.054,		0};
   //vector<double> PT2{0.054,		-0.054,		0};
 
-	// vector<double> PT0{0.15,		0.15,		0};
-	// vector<double> PT1{-0.15,		0.15,		0};
-	// vector<double> PT2{0.15,		-0.15,		0};
+	//vector<double> PT0{0.15,		0.15,		0};
+	//vector<double> PT1{-0.15,		0.15,		0};
+	//vector<double> PT2{0.15,		-0.15,		0};
 
 	Device::Ptr _PA10;
 	MovableFrame* _Marker;

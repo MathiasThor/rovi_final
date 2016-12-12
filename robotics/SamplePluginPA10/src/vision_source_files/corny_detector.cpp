@@ -71,12 +71,11 @@ void corny_detector(Mat &input_image, vector<Point2f> &marker_points, SIFT_param
 
   // Generate center point and push back reference points (corners + center)
   Point2f marker_center_point = (scene_corners[0] + scene_corners[1] + scene_corners[2] +scene_corners[3]) / 4;
+  marker_points.push_back(marker_center_point);
 
   for(int i = 0; i < scene_corners.size(); i++) {
     marker_points.push_back(scene_corners[i]);
   }
-
-  marker_points.push_back(marker_center_point);
 }
 
 Mat draw_sift_matches(SIFT_parameters &object, SIFT_parameters &scene)

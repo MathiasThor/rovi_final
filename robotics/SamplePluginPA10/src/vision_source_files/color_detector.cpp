@@ -8,6 +8,8 @@
 // Example on syntax for function
 void color_detector(Mat &input_image, vector<Point2f> &marker_points)
 {
+    vector<Point2f> temp_points;
+
     // Segment the blue and red color in the images
     Mat blue_output  = color_segmentation(input_image, BLUE);
     Mat red_output   = color_segmentation(input_image, RED);
@@ -26,19 +28,53 @@ void color_detector(Mat &input_image, vector<Point2f> &marker_points)
     for(int i = 0; i < red_centers.size(); i++){
       u_center += red_centers[i].x;
       v_center += red_centers[i].y;
-      marker_points.push_back(red_centers[i]);
+      temp_points.push_back(red_centers[i]);
     }
 
     for(int i = 0; i < blue_centers.size(); i++){
        u_center += blue_centers[i].x;
        v_center += blue_centers[i].y;
-       marker_points.push_back(blue_centers[i]);
+       temp_points.push_back(blue_centers[i]);
     }
 
     u_center = u_center/(blue_centers.size() + red_centers.size());
     v_center = v_center/(blue_centers.size() + red_centers.size());
 
-    marker_points.push_back(Point(floor(u_center), floor(v_center)));
+    temp_points.push_back(Point(floor(u_center), floor(v_center)));
+
+    if(temp_points.size() == 5){
+      int index = 0;
+      float max_dist = 0;
+      for(int i = 1; i < 4; i++){
+        float current_dist = sqrt( powf(temp_points[0].x - temp_points[i].x, 2) + powf(temp_points[0].y - temp_points[i].y,2) );
+        if(current_dist > max_dist){
+          max_dist = current_dist;
+          index = i;
+        }
+      }
+
+      marker_points.push_back(temp_points[4]);
+      Point2f red = temp_points[0];
+      Point2f blue_op = temp_points[index];
+
+      marker_points.push_back(red);
+      marker_points.push_back(blue_op);
+      temp_points.erase(temp_points.begin() + index);
+      temp_points.erase(temp_points.begin());
+
+      float A = (blue_op.x * temp_points[0].y - blue_op.y * temp_points[0].x) - red.x * (temp_points[0].y - blue_op.y) + red.y * (temp_points[0].x - blue_op.x);
+
+      if(A >= 0){
+        marker_points.push_back(temp_points[1]);
+      }
+      else{
+        marker_points.push_back(temp_points[0]);
+      }
+    }
+    else{
+      marker_points = temp_points;
+    }
+
 }
 
 // *** Color segmentation ***

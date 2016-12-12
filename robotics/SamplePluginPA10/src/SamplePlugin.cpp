@@ -141,7 +141,7 @@ void SamplePlugin::resetSim(){
   stop_start_motion = false;
   test_runner = false;
   current_motion_position = 0;
-  cam_update();
+  cam_update( false );
 }
 
 Mat SamplePlugin::toOpenCVImage(const Image& img) {
@@ -165,7 +165,7 @@ void SamplePlugin::btnPressed() {
 		image = ImageLoader::Factory::load(bg_file.c_str());
 		_bgRender->setImage(*image);
 		getRobWorkStudio()->updateAndRepaint();
-    cam_update();
+    cam_update( false );
 	}
   else if(obj==_startStopMovement){
     stop_start_motion = !stop_start_motion;
@@ -209,11 +209,12 @@ void SamplePlugin::timer() {
   else {
     move_marker(marker_motion[current_motion_position]);
     getRobWorkStudio()->setState(_state);
-    vector<double> tmp_points = cam_update();
+    vector<double> tmp_points = cam_update( true );
     getRobWorkStudio()->setState(_state);
     follow_marker( tmp_points, cvOrFile );
     getRobWorkStudio()->setState(_state);
     tracking_error_image_space();
+    cam_update( false );
     current_motion_position++;
     if (test_runner){
       writeToFile();
@@ -270,16 +271,17 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   // TODO - PLACE MIDTPOINT AS THE FIRST ONE
   if( use_cv ){
     for (int i = 0; i < numOfPoints; i++) {
-      uv[i*2]   = uv_points[i*2];
-      uv[i*2+1] = uv_points[i*2+1];
+      uv[i*2]   = uv_points[i*2 + 2];
+      uv[i*2 + 1] = uv_points[i*2 + 3];
+
     }
 
     if (current_motion_position==0) {
       target2=uv;
-      // for (int i = 0; i < numOfPoints; i++) {
-      //   target2[i*2]   -= uv_points[0];
-      //   target2[i*2+1] -= uv_points[1];
-      // }
+      /*for (int i = 0; i < numOfPoints; i++) {
+         target2[i*2]   -= uv_points[0];
+         target2[i*2+1] -= uv_points[1];
+      }*/
     }
   }
   else{
@@ -313,9 +315,6 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
       }
     }
   }
-
-  // TODO
-  predictor();
 
   Jacobian d_uv(numOfPoints*2,1);
   for (int i = 0; i < numOfPoints; i++) {
@@ -368,6 +367,8 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   Jacobian J_sq = Jacobian(base2cam.R());
   //log().info() << "sq:\n" << J_sq << "\n";
 
+
+
   //
   // Calculate Z_image
   //
@@ -382,12 +383,32 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
 
   //cout << "=====================" << endl;
 
+  Eigen::MatrixXd U;
+  Eigen::VectorXd SIGMA;
+  Eigen::MatrixXd V;
+  LinearAlgebra::svd(J_image.e(),U,SIGMA,V);
+  cout << "SIGMA:\n" << SIGMA << endl;
+  cout << "=====================" << endl;
+
+
+  Jacobian damper(numOfPoints*2,numOfPoints*2);
+  for (int i = 0; i < numOfPoints*2; i++) {
+    for (int j = 0; j < numOfPoints*2; j++) {
+      if (i == j)
+        damper(i,j) = 1.1;
+      else
+        damper(i,j) = 0;
+    }
+  }
+
+  Jacobian damped( z_image.e()*z_image_T.e()+damper.e() );
+
   //
   // Calculate dq
   //
-  Jacobian pseudoinverse( z_image_T.e()  * (z_image*z_image_T).e().inverse() );
+  Jacobian pseudoinverse( z_image_T.e() * (damped).e().inverse() );
 
-  cout << z_image * pseudoinverse << "\n" << endl;
+
   // TODO: By adding a damper of 0.5 we can get through more frames (from 67 --> 108)
   // TODO: BY ADDING A 0.05 DAMPER IT ACTURALLY RUNS (0.05*pseudoinverse)
   Jacobian J_dq( pseudoinverse.e() * d_uv.e() );
@@ -534,7 +555,7 @@ void SamplePlugin::writeToFile( ){
   else cout << "can't open tool position file" << endl;
 }
 
-vector<double> SamplePlugin::cam_update( ){
+vector<double> SamplePlugin::cam_update( bool get_points ){
   vector<double> uv_points;
   if (_framegrabber != NULL) {
     // Get the image as a RW image
@@ -548,31 +569,39 @@ vector<double> SamplePlugin::cam_update( ){
     Mat imflip;
     cv::flip(im, imflip, 0);
 
-    double start_time = getUnixTime();
-    double stop_time, difference;
+    if(cvOrFile && get_points){
+      double start_time = getUnixTime();
+      double stop_time;
 
-    uv_points = marker_detection(imflip);
+      uv_points = marker_detection(imflip);
 
-    stop_time = getUnixTime();
-    difference = stop_time - start_time;
-    log().info() << "Time for marker detection: " << difference << " Seconds\n";
+      stop_time = getUnixTime();
+      marker_dt = stop_time - start_time;
+
+      set_dt();
+      DT = DT - marker_dt;
+      if(DT < 0.01){
+        DT = 0.01;
+      }
+      log().info() << "Time for marker detection: " << marker_dt << " Seconds\n";
+    }
 
     cv::circle(imflip, cv::Point(imflip.cols/2+target2[0*2], imflip.rows/2+target2[0*2+1]), 20, cv::Scalar(255,60,60), 4);
     if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 20, cv::Scalar(60,255,60), 4);
-    cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 20, cv::Scalar(60,60,255), 4);
+      cv::circle(imflip, cv::Point(imflip.cols/2+target2[1*2], imflip.rows/2+target2[1*2+1]), 20, cv::Scalar(60,255,60), 4);
+      cv::circle(imflip, cv::Point(imflip.cols/2+target2[2*2], imflip.rows/2+target2[2*2+1]), 20, cv::Scalar(60,60,255), 4);
+      if(numOfPoints == 4){
+        cv::circle(imflip, cv::Point(imflip.cols/2+target2[3*2],imflip.rows/2+target2[3*2+1]), 20, cv::Scalar(255,60,255), 4);
+      }
     }
 
     cv::circle(imflip, cv::Point(imflip.cols/2+uv[0*2],imflip.rows/2+uv[0*2+1]), 5, cv::Scalar(255,0,0), -1);
     if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 5, cv::Scalar(0,255,0), -1);
-    cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 5, cv::Scalar(0,0,255), -1);
-    }
-
-    cv::circle(imflip, cv::Point(imflip.cols/2+prediction[0*2],imflip.rows/2+prediction[0*2+1]), 5, cv::Scalar(255,100,0), -1);
-    if(numOfPoints>1){
-    cv::circle(imflip, cv::Point(imflip.cols/2+prediction[1*2],imflip.rows/2+prediction[1*2+1]), 5, cv::Scalar(50,255,100), -1);
-    cv::circle(imflip, cv::Point(imflip.cols/2+prediction[2*2],imflip.rows/2+prediction[2*2+1]), 5, cv::Scalar(100,0,255), -1);
+      cv::circle(imflip, cv::Point(imflip.cols/2+uv[1*2],imflip.rows/2+uv[1*2+1]), 5, cv::Scalar(0,255,0), -1);
+      cv::circle(imflip, cv::Point(imflip.cols/2+uv[2*2],imflip.rows/2+uv[2*2+1]), 5, cv::Scalar(0,0,255), -1);
+      if(numOfPoints == 4){
+        cv::circle(imflip, cv::Point(imflip.cols/2+uv[3*2],imflip.rows/2+uv[3*2+1]), 5, cv::Scalar(255,0,255), -1);
+      }
     }
 
     // Show in QLabel
@@ -582,6 +611,7 @@ vector<double> SamplePlugin::cam_update( ){
     unsigned int maxH = 800;
     _label->setPixmap(p.scaled(maxW,maxH,Qt::KeepAspectRatio));
   }
+
   return uv_points;
 }
 
@@ -594,53 +624,14 @@ vector<double> SamplePlugin::marker_detection(Mat &input){
   // *********** COLOR ****************
   if(cv_choice == 1){
     Mat color_temp;
-    vector<Point2f> temp_points;
     cvtColor(input, color_temp, CV_RGB2HSV);
 
-    color_detector(color_temp, temp_points);
+    color_detector(color_temp, cv_points);
 
-    log().info() << "Found points: " << temp_points.size() << "\n";
-
-    if(temp_points.size() == 5){
-      int index = 0;
-      float max_dist = 0;
-      for(int i = 1; i < 4; i++){
-        float current_dist = sqrt( powf(temp_points[0].x - temp_points[i].x, 2) + powf(temp_points[0].y - temp_points[i].y,2) );
-        if(current_dist > max_dist){
-          max_dist = current_dist;
-          index = i;
-        }
-      }
-
-      Point2f red = temp_points[0];
-      Point2f blue_op = temp_points[index];
-
-      cv_points.push_back(red);
-      cv_points.push_back(blue_op);
-      temp_points.erase(temp_points.begin() + index);
-      temp_points.erase(temp_points.begin());
-
-      float A = (blue_op.x * temp_points[0].y - blue_op.y * temp_points[0].x) - red.x * (temp_points[0].y - blue_op.y) + red.y * (temp_points[0].x - blue_op.x);
-
-      if(A >= 0){
-        cv_points.push_back(temp_points[1]);
-      }
-      else{
-        cv_points.push_back(temp_points[0]);
-      }
-
-      cv_points.push_back(temp_points[4]);
-
-      // Z distance
-      double p_width = sqrt( pow(blue_op.x - red.x, 2) + pow(blue_op.y - red.y, 2) );
-      z = (0.15 * f) / p_width;
-      log().info() << "Z: " << z << "\n";
-
-    }
-    else{
-      cv_points = temp_points;
-    }
-
+    // Z distance
+    double p_width = sqrt( pow(cv_points[2].x - cv_points[1].x, 2) + pow(cv_points[2].y - cv_points[1].y, 2) );
+    z = (0.15 * f) / p_width;
+    log().info() << "Z: " << z << "\n";
   }
   // ************** CORNY ****************
   else if(cv_choice == 2){
