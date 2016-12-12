@@ -8,8 +8,8 @@ delim = '\t';
 header = 0;
 
 % Data matrices
-joint_import  = importdata('fast_singlepoint/joint_positions_1.000000.txt', delim, header +1);
-tool_import   = importdata('fast_singlepoint/tool_positions_1.000000.txt', delim, header);
+joint_import  = importdata('new_points/joint_positions_1.000000.txt', delim, header +1);
+tool_import   = importdata('new_points/tool_positions_1.000000.txt', delim, header);
 
 
 dt = joint_import.textdata;
@@ -17,7 +17,6 @@ dt = joint_import.textdata;
 %%
 joint_data = joint_import.data
 tool_data = [];
-
 
 [rows, columns] = size(tool_import);
 
@@ -33,23 +32,24 @@ end
 
 %[samples,obs] = size(joint_data);
 
-dt = 0:1:48;
+dt = 0:1:500;
 
 figure(1)
 subplot(2,2,[1,3])
 hold on
-plot(dt, joint_data(:,1), '--', 'DisplayName','Q1');
-plot(dt, joint_data(:,2), 'DisplayName','Q2');
-plot(dt, joint_data(:,3), '--', 'DisplayName','Q3');
-plot(dt, joint_data(:,4), 'DisplayName','Q4');
-plot(dt, joint_data(:,5), '--', 'DisplayName','Q5');
-plot(dt, joint_data(:,6), 'DisplayName','Q6');
-plot(dt, joint_data(:,7), '--', 'DisplayName','Q7');
+plot(dt, joint_data(:,1), '--', 'LineWidth', 2, 'DisplayName','Q1');
+plot(dt, joint_data(:,2), 'LineWidth', 2, 'DisplayName','Q2');
+plot(dt, joint_data(:,3), '--', 'LineWidth', 2, 'DisplayName','Q3');
+plot(dt, joint_data(:,4), 'LineWidth', 2, 'DisplayName','Q4');
+plot(dt, joint_data(:,5), '--', 'LineWidth', 2, 'DisplayName','Q5');
+plot(dt, joint_data(:,6), 'LineWidth', 2, 'DisplayName','Q6');
+plot(dt, joint_data(:,7), '--', 'LineWidth', 2, 'DisplayName','Q7');
 hold off
 title('Joint configurations')
 ylabel('Q [radians]')
 xlabel('Time [s]')
 legend('show')
+axis([0 inf -2.5 2])
 subplot(2,2,2)
 hold on
 plot(dt, tool_data(:,1), 'LineWidth', 2 , 'DisplayName','X');
@@ -60,13 +60,15 @@ title('Tool Position')
 ylabel('Coordinate [m]');
 xlabel('Time [s]')
 legend('show')
+axis([0 inf -0.4 1])
 subplot(2,2,4)
 hold on
-plot(dt, tool_data(:,4), 'DisplayName','Xr');
-plot(dt, tool_data(:,5), 'DisplayName','Yr');
-plot(dt, tool_data(:,6), 'DisplayName','Zr');
+plot(dt, tool_data(:,4), 'LineWidth', 2, 'DisplayName','Xr');
+plot(dt, tool_data(:,5), 'LineWidth', 2, 'DisplayName','Yr');
+plot(dt, tool_data(:,6), 'LineWidth', 2, 'DisplayName','Zr');
 hold off
 title('Tool Rotation')
 ylabel('Rotation [radians]')
 xlabel('Time [s]')
 legend('show')
+axis([0 inf -3.5 3.5])
