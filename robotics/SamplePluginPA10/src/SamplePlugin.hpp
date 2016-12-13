@@ -61,7 +61,6 @@ private slots:
 	void stateChangedListener(const rw::kinematics::State& state);
 
 private:
-
 	// Private funcs
 	void move_marker( rw::math::VelocityScrew6D<> v6D );
 	void follow_marker( vector<double> uv_points, bool cv );
@@ -71,7 +70,7 @@ private:
 	static cv::Mat toOpenCVImage(const rw::sensor::Image& img);
 	vector<double> marker_detection(Mat &input);
 	void tracking_error_task_space();
-	void tracking_error_image_space();
+	void tracking_error_image_space( vector<double> uv_points );
 	double getUnixTime(void);
 	void predictor();
 
@@ -80,19 +79,15 @@ private:
 	int current_motion_position = 0;
 	bool stop_start_motion = false;
 	bool test_runner = false;
-	bool test_bool = true;
 	vector<double> uv;
 	vector<double> uv_old;
 	vector<double> prediction{0,0,0,0,0,0};
 	vector<double> desired{0,0,0,0,0,0};
-	double kappa = 1.2;
-	//double kappa = 0;
 	double f = 823;
 	double z = 0.50;
 	double DT = 1;
 	double marker_dt = 0;
-	double last_tracking_error = 0;
-	double dampening = 1;
+	double highest_tracking_error = 0;
 
 	Q vel_limits;
 	ofstream jointPos_file;
@@ -101,20 +96,26 @@ private:
 
 	//const string path = "/home/christian/Github_projects/";
 	const string path = "/home/mat/7_semester_workspace/";
+	// INSERT YOUR PATH TO THE FOLDER THAT CONTAINS "PA10WorkCell" and "SamplePluginPA10"
 
-	int cv_choice = 1; 	// COLOR
-	//int cv_choice = 2; 	// CORNY
+	int cv_choice = 1; 			// FOLLOW MARKER 1 (COLOR)
+//int cv_choice = 2; 			// TRACK MARKER 4 (CORNY)
 
-	int numOfPoints = 3;
-	bool cvOrFile = false;
+	int numOfPoints = 3;		// NUMBER OF POINTS TO TRACK
+	bool cvOrFile = false;	// TRUE = USE CV POINTS, FALSE = USE POINTS ON THE MARKER FRAME
 
-	// vector<double> PT0{ 0.0,		0.0,		0};
-	// vector<double> PT1{-0.1,		0.0,		0};
-	// vector<double> PT2{ 0.0,	 -0.1,		0};
+  double kappa = 1.2;			// KAPPA FOR DAMPED LEAST SQUARE - WITHOUT CV
+//double kappa = 3.0;			// KAPPA FOR DAMPED LEAST SQUARE - FOR COLOR MARKER TRACKING
 
-	vector<double> PT0{0.15,		0.15,		0};
-	vector<double> PT1{-0.15,		0.15,		0};
-	vector<double> PT2{0.15,		-0.15,	0};
+	// ORIGINAL POINTS TO TRACK
+	vector<double> PT0{ 0.0,		0.0,		0};
+	vector<double> PT1{-0.1,		0.0,		0};
+	vector<double> PT2{ 0.0,	 -0.1,		0};
+
+	// NEW POINTS TO TRACK
+	// vector<double> PT0{0.15,		0.15,		0};
+	// vector<double> PT1{-0.15,	0.15,		0};
+	// vector<double> PT2{0.15,		-0.15,	0};
 
 	Device::Ptr _PA10;
 	MovableFrame* _Marker;
@@ -125,7 +126,6 @@ private:
 	rw::kinematics::State _state;
 	rwlibs::opengl::RenderImage *_textureRender, *_bgRender;
 	rwlibs::simulation::GLFrameGrabber* _framegrabber;
-
 };
 
 #endif /*SAMPLEPLUGIN_HPP*/

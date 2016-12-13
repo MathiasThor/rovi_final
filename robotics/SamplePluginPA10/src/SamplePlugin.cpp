@@ -18,9 +18,9 @@ SamplePlugin::SamplePlugin():
   connect(_startStopMovement, SIGNAL(pressed()),            this, SLOT(btnPressed()) );
   connect(_comboBox,          SIGNAL(activated(int)),       this, SLOT(btnPressed()) );
   connect(_followMarker,      SIGNAL(pressed()),            this, SLOT(btnPressed()) );
-  connect(_resetSim,          SIGNAL(pressed()),            this, SLOT(resetSim()) );
-  connect(_DT,                SIGNAL(valueChanged(double)), this, SLOT(set_dt()) );
-  connect(_testRun,           SIGNAL(pressed()),            this, SLOT(testRun()) );
+  connect(_resetSim,          SIGNAL(pressed()),            this, SLOT(resetSim())   );
+  connect(_DT,                SIGNAL(valueChanged(double)), this, SLOT(set_dt())     );
+  connect(_testRun,           SIGNAL(pressed()),            this, SLOT(testRun())    );
 
 	Image textureImage(300,300,Image::GRAY,Image::Depth8U);
 	_textureRender = new RenderImage(textureImage);
@@ -37,8 +37,8 @@ SamplePlugin::~SamplePlugin()
 
 // Function for setting DT through the UI
 void SamplePlugin::set_dt(){
-  DT = _DT->value();
-  log().info() << "DT: " << _DT->value() << "\n";
+  //DT = _DT->value();
+  log().info() << "DT: " << DT << "\n";
 }
 
 void SamplePlugin::initialize() {
@@ -219,7 +219,7 @@ void SamplePlugin::timer() {
       jointPos_file.close();
       toolPos_file.close();
       trackErr_file.close();
-      cout << "Closed the files" << endl;
+
       DT *= 0.5;
       cout << "DT: " << DT << endl;
       testRun();
@@ -243,8 +243,8 @@ void SamplePlugin::timer() {
     getRobWorkStudio()->setState(_state);
     follow_marker( tmp_points, cvOrFile );
     getRobWorkStudio()->setState(_state);
-    tracking_error_image_space();
-    cam_update( false );
+    vector<double> tmp2_points = cam_update( true );
+    tracking_error_image_space(tmp2_points);
     current_motion_position++;
     if (test_runner){
       writeToFile();
@@ -255,11 +255,12 @@ void SamplePlugin::timer() {
 
 // The function handles test run buttom presses
 void SamplePlugin::testRun(){
+  cout << "DT: " << DT << endl;
   // Open files for the data
   jointPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/joint_positions_" + to_string(DT) + ".txt");
   toolPos_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/tool_positions_" + to_string(DT) + ".txt");
   trackErr_file.open (path + "rovi_final/robotics/SamplePluginPA10/data/tracking_error_" + to_string(DT) + ".txt");
-  cout << "Opened the files" << endl;
+  //cout << "Opened the files" << endl;
 
   jointPos_file << DT << "\n";
 
@@ -312,10 +313,10 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
     // (the center is the first to pointe given as input)
     if (current_motion_position==0) {
       desired=uv;
-      /*for (int i = 0; i < numOfPoints; i++) { //TODO
+      for (int i = 0; i < numOfPoints; i++) {
          desired[i*2]   -= uv_points[0];
          desired[i*2+1] -= uv_points[1];
-      }*/
+      }
     }
   }
   // Else calulate the interest points from the actual marker frame
@@ -410,12 +411,12 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
   }
 
   // Write out the singular values from SVD to the terminal
-  cout << "=====================" << endl;
+  //cout << "=====================" << endl;
   Eigen::MatrixXd U;
   Eigen::VectorXd SIGMA;
   Eigen::MatrixXd V;
   LinearAlgebra::svd(J_image.e(),U,SIGMA,V);
-  cout << "SIGMA:\n" << SIGMA << endl;
+  //cout << "SIGMA:\n" << SIGMA << endl;
 
   // The damped least square explained in the report
   Jacobian damper(numOfPoints*2,numOfPoints*2);
@@ -445,26 +446,33 @@ void SamplePlugin::follow_marker( vector<double> uv_points, bool use_cv){
 }
 
 // Function that calculates the tracking error in pixels (image space)
-void SamplePlugin::tracking_error_image_space(){
-  // TODO MAKE FOR CV AS WELL
-
-  // Calculate current u and v
-  Transform3D<> camara_to_marker = inverse(_Marker->fTf(_Camera, _state));
-  vector< Vector3D<> > points;
+void SamplePlugin::tracking_error_image_space(  vector< double > uv_points ){
   vector< double > current_uv;
-  if ( numOfPoints != 1) {
-       points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
-       points.push_back(camara_to_marker.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + camara_to_marker.P());
-       points.push_back(camara_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + camara_to_marker.P());
+  if (cvOrFile) {
+    // Calculate current u and v
+    for (int i = 0; i < numOfPoints; i++) {
+      current_uv.push_back(uv_points[i*2 + 2]);
+      current_uv.push_back(uv_points[i*2 + 3]);
+    }
   }
-  points.push_back(camara_to_marker.P());
-  if (numOfPoints == 1) {
-    current_uv.push_back(( points[0][0] * f ) / z);
-    current_uv.push_back(( points[0][1] * f ) / z);
-  } else {
-    for (int i = 0; i < points.size()-1; i++) {
-      current_uv.push_back(( points[i][0] * f ) / z);
-      current_uv.push_back(( points[i][1] * f ) / z);
+  else{
+    // Calculate current u and v
+    Transform3D<> camara_to_marker = inverse(_Marker->fTf(_Camera, _state));
+    vector< Vector3D<> > points;
+    if ( numOfPoints != 1) {
+         points.push_back(camara_to_marker.R() * Vector3D<>(PT0[0],PT0[1],PT0[2]) + camara_to_marker.P());
+         points.push_back(camara_to_marker.R() * Vector3D<>(PT1[0],PT1[1],PT1[2]) + camara_to_marker.P());
+         points.push_back(camara_to_marker.R() * Vector3D<>(PT2[0],PT2[1],PT2[2]) + camara_to_marker.P());
+    }
+    points.push_back(camara_to_marker.P());
+    if (numOfPoints == 1) {
+      current_uv.push_back(( points[0][0] * f ) / z);
+      current_uv.push_back(( points[0][1] * f ) / z);
+    } else {
+      for (int i = 0; i < points.size()-1; i++) {
+        current_uv.push_back(( points[i][0] * f ) / z);
+        current_uv.push_back(( points[i][1] * f ) / z);
+      }
     }
   }
 
@@ -477,8 +485,8 @@ void SamplePlugin::tracking_error_image_space(){
     log().info() << "Tracking error - point " << i << ": " << euclidean_dist <<"\n";
     sum += abs(euclidean_dist);
   }
-  log().info() << "Tracking error - Total: " << sum <<"\n";
-  last_tracking_error = sum;
+  log().info() << "Tracking error - Total: " << sum <<"\n"; // MED 160 -- FAS
+    highest_tracking_error = sum;
 }
 
 // Function that calculates the tracking error in task space (not used!)
@@ -568,9 +576,9 @@ void SamplePlugin::writeToFile( ){
     jointPos_file << "\n";
   } else cout << "can't open tool position file" << endl;
 
-  if (trackErr_file.is_open())
-    trackErr_file << last_tracking_error << "\n";
-  else cout << "can't open tool position file" << endl;
+    if (trackErr_file.is_open())
+      trackErr_file << highest_tracking_error << "\n";
+    else cout << "can't open tool position file" << endl;
 }
 
 // Functions that updates the camera (in the UI) and finds interest points (if get points is true)
@@ -600,10 +608,7 @@ vector<double> SamplePlugin::cam_update( bool get_points ){
 
       // Substract the time it took to do computer vision from the overall DT
       set_dt();
-      DT = DT - marker_dt;
-      if(DT < 0.01){
-        DT = 0.01;
-      }
+      DT = 0.1 - 0.00612; //marker_dt;
       log().info() << "Time for marker detection: " << marker_dt << " Seconds\n";
     }
 
