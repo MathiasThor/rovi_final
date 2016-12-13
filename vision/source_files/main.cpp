@@ -16,6 +16,7 @@
 // _____________ GLOBAL VARIABLES ____________________
 char* window_name = "Output Sequence";
 
+// Function used for timing
 double getUnixTime(void)
 {
     struct timespec tv;
@@ -54,10 +55,11 @@ int main( int argc, char** argv)
 
           for(int i = 0; i < input_sequence.size(); i++){
             // Start timer
-            clock_t start = clock();
+            double start_time = getUnixTime();
+            double stop_time, difference;
 
             // Find marker points
-            vector<Point> marker_points;
+            vector<Point2f> marker_points;
             color_detector(input_sequence[i], marker_points);
 
             // Convert to RGB and draw circles
@@ -65,9 +67,9 @@ int main( int argc, char** argv)
             draw_circles(input_sequence[i], marker_points);
 
             // End timer
-            clock_t end = clock();
-            double secs = double(end - start) / CLOCKS_PER_SEC;
-            cout << "Time for frame " << i << ": " << secs << " Seconds" << endl;
+            stop_time = getUnixTime();
+            difference = stop_time - start_time;
+            cout << "Time for frame " << i << ": " << difference << " Seconds" << endl;
           }
         }
         break;
@@ -83,7 +85,7 @@ int main( int argc, char** argv)
             double stop_time, difference;
 
             // Find marker points
-            vector<Point> marker_points;
+            vector<Point2f> marker_points;
             color_detector(input_sequence[i], marker_points);
 
             // Convert to RGB and draw circles
@@ -100,104 +102,55 @@ int main( int argc, char** argv)
     case CORNY_INPUT:
         {
           String color_path("./../sequences/marker_corny/*.png");
-          load_data(input_sequence, color_path, GRAY);
+          load_data(input_sequence, color_path, HSV);
 
+          // Collect parameters from marker
           SIFT_parameters marker;
           init_corny(marker);
 
           for(int i = 0; i < input_sequence.size(); i++){
-            clock_t start = clock();
-
-            vector<Point2f> marker_points;
-            corny_detector(input_sequence[i], marker_points, marker);
-            draw_object(input_sequence[i], marker_points);
-
-            clock_t end = clock();
-            double secs = double(end - start) / CLOCKS_PER_SEC;
-            cout << "Time for frame " << i << ": " << secs << " Seconds" << endl;
-          }
-        }
-        break;
-    case CORNY_INPUT_HARD:
-        {
-          String color_path("./../sequences/marker_corny_hard/*.png");
-          load_data(input_sequence, color_path, GRAY);
-
-          SIFT_parameters marker;
-          init_corny(marker);
-
-          for(int i = 0; i < input_sequence.size(); i++){
+            // Start timer
             double start_time = getUnixTime();
             double stop_time, difference;
 
+            // Find marker points and draw object
             vector<Point2f> marker_points;
+            cvtColor(input_sequence[i], input_sequence[i], CV_HSV2BGR);
             corny_detector(input_sequence[i], marker_points, marker);
             draw_object(input_sequence[i], marker_points);
 
+            // End timer
             stop_time = getUnixTime();
             difference = stop_time - start_time;
             cout << "Time for frame " << i << ": " << difference << " Seconds" << endl;
           }
         }
         break;
-    case TEST:
+    case CORNY_INPUT_HARD:
         {
           String color_path("./../sequences/marker_corny_hard/*.png");
-          load_data(input_sequence, color_path, GRAY);
+          load_data(input_sequence, color_path, HSV);
 
-          for(int i = 0; i < 3; i++){
+          // Collect parameters from marker
+          SIFT_parameters marker;
+          init_corny(marker);
+
+          for(int i = 0; i < input_sequence.size(); i++){
+            // Start timer
+            double start_time = getUnixTime();
+            double stop_time, difference;
+
+            // Collect marker points and draw object
             vector<Point2f> marker_points;
-            SIFT_parameters marker;
-            init_corny(marker);
-            if(i == 0)
-            {
-              //color_detector(input_sequence[0], marker_points);
-              Mat test1 = color_segmentation(input_sequence[0], RED);
-              Mat test2 = color_segmentation(input_sequence[0], BLUE);
+            cvtColor(input_sequence[i], input_sequence[i], CV_HSV2BGR);
+            corny_detector(input_sequence[i], marker_points, marker);
+            draw_object(input_sequence[i], marker_points);
 
-              Mat test;
-              addWeighted(test1, 1, test2, 1, 1, test);
-              //cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
-              //draw_circles(input_sequence[0], marker_points);
-              imshow("Test", test);
-              waitKey(0);
-              waitKey(0);
-            }
-            if(i == 1){
-              //color_detector(input_sequence[0], marker_points);
-              Mat test1 = color_segmentation(input_sequence[34], RED);
-              Mat test2 = color_segmentation(input_sequence[34], BLUE);
-
-              vector<vector<Point> > blue_circles = find_circle_contours(blue_output, 100, 0.7);
-              vector<vector<Point> > red_circles  = find_circle_contours(red_output, 100, 0.7);
-
-              for(int i = 0; i < blue_circles.size(); i++){
-                for(int j = 0; j < blue_circles[i].size(); j++){
-
-                }
-              }
-              //cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
-              //draw_circles(input_sequence[0], marker_points);
-              imshow("Test", test);
-
-              waitKey(0);
-              waitKey(0);
-            }
-            if(i == 2){
-              //color_detector(input_sequence[0], marker_points);
-              Mat test1 = color_segmentation(input_sequence[49], RED);
-              Mat test2 = color_segmentation(input_sequence[49], BLUE);
-
-              Mat test;
-              addWeighted(test1, 1, test2, 1, 1, test);
-              //cvtColor(input_sequence[0], input_sequence[0], CV_HSV2BGR);
-              //draw_circles(input_sequence[0], marker_points);
-              imshow("Test", test);
-              waitKey(0);
-              waitKey(0);
-            }
+            // End timer
+            stop_time = getUnixTime();
+            difference = stop_time - start_time;
+            cout << "Time for frame " << i << ": " << difference << " Seconds" << endl;
           }
-
         }
         break;
   }
