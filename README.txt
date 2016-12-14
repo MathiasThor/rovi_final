@@ -16,9 +16,9 @@ Code guide by Mathias Thor & Christian Koed Pedersen
 ****************
 * INSTALLATION *
 ****************
-  Go to SamplePluginPA10/build
+  Go to robotics/SamplePluginPA10/build
 
-  Execute:  cmake ./..
+  Execute:  cmake ..
 
   Open to SamplePluginPA10/src/SamplePlugin.hpp and change the path variable
   to the location of your SamplePluginPA10 folder.
@@ -26,7 +26,11 @@ Code guide by Mathias Thor & Christian Koed Pedersen
   Execute: make (inside the build folder)
 
   Then just start RobWorkStudio and load the plug in which is located in:
-  SamplePluginPA10/libs/release/libSamplePlugin.so
+  robotics/SamplePluginPA10/libs/release/libSamplePlugin.so
+
+  ----
+  Note: To install the vision part only go to "vision/build" and "cmake .."
+        and then execute "make"
 
 *********************
 * PLUG IN INTERFACE *
@@ -50,7 +54,7 @@ Code guide by Mathias Thor & Christian Koed Pedersen
           current delta T if it is altered inside the program.
 
   The Test Run button start a test run and stores the data inside the folder:
-  SamplePluginPA10/data
+  robotics/SamplePluginPA10/data
 
 ********************************
 * CHANGING THE TRACKING METHOD *
@@ -59,19 +63,53 @@ Code guide by Mathias Thor & Christian Koed Pedersen
   It is only possible to do this in the SamplePlugin.hpp file.
 
   TRACKING METHOD USING THE MARKER FRAME:
+    In the "robotics/SamplePluginPA10/src/SamplePlugin.hpp" set:
+      bool cvOrFile = false;
+      comment in the points you want to track (that is PT0, PT1, PT3)
+      comment out the other set of point
+        If original points are chosen, then set double kappa = 1.2;
 
   TRACKING METHOD USING FEATURE EXTRACTION:
+    In the "robotics/SamplePluginPA10/src/SamplePlugin.hpp" set:
+      bool cvOrFile = true;
+      int cv_choice = 1; (to follow the color marker)
+      double kappa  = 3;
+      REMEMBER TO LOAD THE RIGHT MARKER TEXTURE IN THE SIMULATION
+
+  CHANGE NUMBER OF POINTS TO BE TRACKED:
+    In the "robotics/SamplePluginPA10/src/SamplePlugin.hpp" set:
+      int numOfPoints = 1; (Tracks the middle point of the marker or from CV)
+      int numOfPoints = 3; (Tracks three points from CV or PT0, PT1, PT2)
 
 ********************
 * CONTENT OF FILES *
 ********************
+All of the C++ files are well commented, so this list will only
+give a brief overview of whet the purpose of the files is.
+---
 
-  src/SamplePlugin.cpp:
+  robotics/SamplePluginPA10/src/SamplePlugin.cpp:
+    Includes most of the code for the sample plug in
+    Includes the code used to control the robot (algorithm 1)
+    Includes the code used for testing the system
 
-  src/SamplePlugin.hpp:
+  robotics/SamplePluginPA10/src/vision_source_files/color_detector.cpp:
+    Write here.
 
-  src/vision_source_files/color_detector.cpp:
+  robotics/SamplePluginPA10/src/SamplePlugin.ui:
+    Includes the code used to present the plug in visually.
 
-  src/vision_header_files/color_detector.hpp:
+  vision/source_files/main.cpp
+    Write here.
 
-  ../vision FORTSÆT HERFRA
+  vision/source_files/general_functions.cpp
+    Write here.
+
+  vision/source_files/color_detector.cpp:
+    Write here.
+
+  vision/source_files/corny_detector.cpp
+    Write here.
+
+  vision/header_files/*.hpp:
+    Contains all the header files for the vision code.

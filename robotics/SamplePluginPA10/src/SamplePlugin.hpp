@@ -94,25 +94,29 @@ private:
 	ofstream toolPos_file;
 	ofstream trackErr_file;
 
-	//const string path = "/home/christian/Github_projects/";
+//const string path = "/home/christian/Github_projects/";
 	const string path = "/home/mat/7_semester_workspace/";
-	// INSERT YOUR PATH TO THE FOLDER THAT CONTAINS "PA10WorkCell" and "SamplePluginPA10"
+//const string path = "/your_path_to_the_folder_w._samplepluginpa10/";
 
 	int cv_choice = 1; 			// FOLLOW MARKER 1 (COLOR)
 //int cv_choice = 2; 			// TRACK MARKER 4 (CORNY)
 
-	int numOfPoints = 3;		// NUMBER OF POINTS TO TRACK
-	bool cvOrFile = false;	// TRUE = USE CV POINTS, FALSE = USE POINTS ON THE MARKER FRAME
+//int numOfPoints = 1;		// TRACK MIDTPOINT
+	int numOfPoints = 3;		// TRACK PT0, PT1, PT2
 
-  double kappa = 1.2;			// KAPPA FOR DAMPED LEAST SQUARE - WITHOUT CV
+//bool cvOrFile = true;	  // TRUE = USE POINTS FROM CV
+	bool cvOrFile = false;	// FALSE = USE PT0, PT1, PT2 or MIDPOINT
+
+//double kappa = 0.0;			// KAPPA FOR DAMPED LEAST SQUARE - WITHOUT CV AND NEW POINTS
+	double kappa = 1.2;			// KAPPA FOR DAMPED LEAST SQUARE - WITHOUT CV
 //double kappa = 3.0;			// KAPPA FOR DAMPED LEAST SQUARE - FOR COLOR MARKER TRACKING
 
-	// ORIGINAL POINTS TO TRACK
+	// ORIGINAL POINTS TO TRACK (needs kappa = 1.2)
 	vector<double> PT0{ 0.0,		0.0,		0};
 	vector<double> PT1{-0.1,		0.0,		0};
 	vector<double> PT2{ 0.0,	 -0.1,		0};
 
-	// NEW POINTS TO TRACK
+	// NEW POINTS TO TRACK (can have kappa = 0)
 	// vector<double> PT0{0.15,		0.15,		0};
 	// vector<double> PT1{-0.15,	0.15,		0};
 	// vector<double> PT2{0.15,		-0.15,	0};
