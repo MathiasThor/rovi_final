@@ -94,22 +94,17 @@ give a brief overview of whet the purpose of the files is.
     Includes the code used for testing the system
 
   robotics/SamplePluginPA10/src/vision_source_files/color_detector.cpp:
-    Write here.
 
   robotics/SamplePluginPA10/src/SamplePlugin.ui:
     Includes the code used to present the plug in visually.
 
   vision/source_files/main.cpp
-    Write here.
 
   vision/source_files/general_functions.cpp
-    Write here.
 
   vision/source_files/color_detector.cpp:
-    Write here.
 
   vision/source_files/corny_detector.cpp
-    Write here.
-
+  
   vision/header_files/*.hpp:
     Contains all the header files for the vision code.
